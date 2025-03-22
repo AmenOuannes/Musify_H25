@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
-from backend.app.routes.userRoute import user_bp
+from backend.app.routes.UserRoute import user_bp
 
 app = Flask(__name__)
 app.register_blueprint(user_bp, url_prefix='/')
