@@ -6,6 +6,7 @@ import Playlists from "@/views/Playlists.vue";
 import Settings from "@/views/Settings.vue";
 import SignIn from "@/views/SignIn.vue";
 import SignUp from "@/views/SignUp.vue";
+import users from "@/views/users.vue";
 
 const routes = [
     {
@@ -43,6 +44,12 @@ const routes = [
         name: "SignUp",
         component: SignUp,
     },
+    {
+        path: "/users",
+        name: "users",
+        component: users,
+    },
+
 ];
 
 const router = createRouter({
