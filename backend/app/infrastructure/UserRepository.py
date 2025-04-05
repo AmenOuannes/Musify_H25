@@ -22,6 +22,7 @@ class UserRepository:
         db.session.commit()
 
     def getUser(self, username):
+        self.users = []
         user_exists = find_similar_users_query(username)
         count = db.session.execute(text(user_exists))
 
@@ -44,6 +45,7 @@ class UserRepository:
             return None
 
     def getAllUsers(self, limit):
+        self.users = []
         query = get_all_users_query(limit)
         result = db.session.execute(text(query))
 
@@ -60,6 +62,3 @@ class UserRepository:
             self.users.append(User().fromUserSQL(userSQL))
 
         return self.users
-
-    def emailExists(self, email):
-        return next((u for u in self.users if u.email == email), None)
