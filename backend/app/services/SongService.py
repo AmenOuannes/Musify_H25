@@ -1,7 +1,7 @@
 from werkzeug.exceptions import NotFound
 from backend.app.infrastructure.ArtistRepository import ArtistRepository
 from backend.app.infrastructure.SongRepository import SongRepository
-from backend.app.utils.Song import Song
+from backend.app.domain.Song import Song
 artist_repository = ArtistRepository()
 
 class SongService:

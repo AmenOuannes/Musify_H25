@@ -9,7 +9,7 @@ userService = UserService()
 
 @user_bp.route('/users', methods=['GET'])
 def get_users():
-    limit = request.args.get('limit', type=int)
+    limit = request.args.get('limit', type=int) if 'limit' in request.args else -1
     all_users = userService.getUsers(limit)
     return responseFormat({"users": all_users}), 200
 
@@ -20,9 +20,10 @@ def signUp():
     last_name = request.json.get('last_name')
     email = request.json.get('email')
     password = request.json.get('password')
+    date_naissance = request.json.get('date_naissance')
 
     try:
-        userService.createUser(user_name, first_name, last_name, email, password)
+        userService.createUser(user_name, first_name, last_name, email, password, date_naissance)
         return jsonify({"message": "User created"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -44,6 +45,8 @@ def login():
 @user_bp.route('/users/user', methods=['GET'])
 @jwt_required()
 def userProfile():
+    print("user profile")
     current_user = get_jwt_identity()
+    print(current_user)
     user_info = userService.retrieveUser(current_user)
     return responseFormat(user_info), 200

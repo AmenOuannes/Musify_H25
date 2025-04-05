@@ -1,29 +1,46 @@
 from flask import Flask
-from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+from app.config import Config
 
-from backend.app.routes.ArtistRoute import artist_bp
-from backend.app.routes.PlaylistRoute import playlist_bp
-from backend.app.routes.SongRoute import song_bp
-from backend.app.routes.UserRoute import user_bp
-
-app = Flask(__name__)
-app.register_blueprint(user_bp, url_prefix='/')
-app.register_blueprint(song_bp, url_prefix='/')
-app.register_blueprint(artist_bp, url_prefix='/')
-app.register_blueprint(playlist_bp, url_prefix='/')
-CORS(app)
-app.config["JWT_SECRET_KEY"] = "HS256"
-jwt = JWTManager(app)
-
-@app.route("/")
-def main():
-
-    return "musify_h25 API"
+# Initialize Flask extensions
+db = SQLAlchemy()
+migrate = Migrate()
+jwt = JWTManager()
 
 
-if __name__ == "__main__":
+def create_app():
+    app = Flask(__name__)
 
-    app.run()
+    # Load config
+    app.config.from_object(Config)
+    app.config["JWT_SECRET_KEY"] = "HS256"
+
+    # Init extensions
+    db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
+    CORS(app)
+
+    # Register routes (blueprints)
+    from app.routes.ArtistRoute import artist_bp
+    from app.routes.PlaylistRoute import playlist_bp
+    from app.routes.SongRoute import song_bp
+    from app.routes.UserRoute import user_bp
+
+    app.register_blueprint(user_bp, url_prefix='/')
+    app.register_blueprint(song_bp, url_prefix='/')
+    app.register_blueprint(artist_bp, url_prefix='/')
+    app.register_blueprint(playlist_bp, url_prefix='/')
+
+    # Test route
+    @app.route("/")
+    def main():
+        return "musify_h25 API"
+
+
+    return app
 
 

@@ -1,4 +1,4 @@
-from backend.app.utils.Playlist import Playlist
+from backend.app.domain.Playlist import Playlist
 
 
 class PlaylistRepository():
