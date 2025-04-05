@@ -1,4 +1,4 @@
-from backend.app.utils.Song import Song
+from backend.app.domain.Song import Song
 
 
 class SongRepository:
