@@ -8,9 +8,9 @@ class UserService:
     def getUsers(self, limit):
         return [user.to_dict() for user in self.repository.getAllUsers(limit)]
 
-    def createUser(self, username, first_name, last_name, email, password, date_naissance):
+    def createUser(self, username, first_name, last_name, email, password, birth_date):
         try:
-            user = User().fromRequest(username, first_name, last_name, email, password, date_naissance)
+            user = User().fromRequest(username, first_name, last_name, email, password, birth_date)
             self.repository.addUser(user)
         except (Exception) as e:
             raise e
