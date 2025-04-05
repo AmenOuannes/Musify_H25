@@ -18,7 +18,7 @@ CREATE TABLE Users (
     first_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL, 
     password_hash VARCHAR(100) NOT NULL, 
-    date_naissance DATE,
+    birth_date DATE,
     image TEXT
 );
 
@@ -138,7 +138,3 @@ CREATE TABLE MayNot (
     FOREIGN KEY (user_id) REFERENCES Users(username),
     FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
 );
-
-INSERT INTO Song (song_name, genre, release_date, url, artist_id) VALUES
-('Bohemian Rhapsody', 'Rock', '1975-10-31', 'https://www.youtube.com/watch?v=fJ9rUzIMcZQ', 1),
-('Billie Jean', 'Pop', '1983-01-02', 'https://www.youtube.com/watch?v=Zi_XLOBDo_Y', 2);

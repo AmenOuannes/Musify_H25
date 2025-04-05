@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from app.config import Config
+from .app.config import Config
 
 # Initialize Flask extensions
 db = SQLAlchemy()
@@ -25,10 +25,10 @@ def create_app():
     CORS(app)
 
     # Register routes (blueprints)
-    from app.routes.ArtistRoute import artist_bp
-    from app.routes.PlaylistRoute import playlist_bp
-    from app.routes.SongRoute import song_bp
-    from app.routes.UserRoute import user_bp
+    from .app.routes.ArtistRoute import artist_bp
+    from .app.routes.PlaylistRoute import playlist_bp
+    from .app.routes.SongRoute import song_bp
+    from .app.routes.UserRoute import user_bp
 
     app.register_blueprint(user_bp, url_prefix='/')
     app.register_blueprint(song_bp, url_prefix='/')

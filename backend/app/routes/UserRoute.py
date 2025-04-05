@@ -20,16 +20,16 @@ def signUp():
     last_name = request.json.get('last_name')
     email = request.json.get('email')
     password = request.json.get('password')
-    date_naissance = request.json.get('date_naissance')
+    birth_date = request.json.get('birth_date')
 
     try:
-        userService.createUser(user_name, first_name, last_name, email, password, date_naissance)
+        userService.createUser(user_name, first_name, last_name, email, password, birth_date)
         return jsonify({"message": "User created"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
 
-@user_bp.route('/users/login', methods=['GET'])
+@user_bp.route('/users/login', methods=['POST'])
 def login():
     username = request.json.get('username')
     password = request.json.get('password')

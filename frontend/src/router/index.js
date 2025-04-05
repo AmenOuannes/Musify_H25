@@ -1,60 +1,41 @@
-import { createRouter, createWebHistory } from "vue-router";
-import Home from "@/views/Home.vue";
-import Library from "@/views/Library.vue";
-import Favorites from "@/views/Favorites.vue";
-import Playlists from "@/views/Playlists.vue";
-import Settings from "@/views/Settings.vue";
-import SignIn from "@/views/SignIn.vue";
-import SignUp from "@/views/SignUp.vue";
-import users from "@/views/users.vue";
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '../views/Home.vue'
+import SignIn from '../views/SignIn.vue'
+import SignUp from '../views/SignUp.vue'
+import Favorites from '../views/Favorites.vue'
+import Library from '../views/Library.vue'
+import Playlists from '../views/Playlists.vue'
+import Settings from '../views/Settings.vue'
+import Users from '../views/users.vue'
+import store from '../Store/Store.js'
 
 const routes = [
-    {
-        path: "/",
-        name: "Home",
-        component: Home,
-    },
-    {
-        path: "/library",
-        name: "Library",
-        component: Library,
-    },
-    {
-        path: "/favorites",
-        name: "Favorites",
-        component: Favorites,
-    },
-    {
-        path: "/playlists",
-        name: "Playlists",
-        component: Playlists,
-    },
-    {
-        path: "/settings",
-        name: "Settings",
-        component: Settings,
-    },
-    {
-        path: "/signin",
-        name: "SignIn",
-        component: SignIn,
-    },
-    {
-        path: "/signup",
-        name: "SignUp",
-        component: SignUp,
-    },
-    {
-        path: "/users",
-        name: "users",
-        component: users,
-    },
-
-];
+    { path: '/', redirect: '/home' },
+    { path: '/signin', component: SignIn },
+    { path: '/signup', component: SignUp },
+    { path: '/home', component: Home, meta: { requiresAuth: true } },
+    { path: '/favorites', component: Favorites, meta: { requiresAuth: true } },
+    { path: '/library', component: Library, meta: { requiresAuth: true } },
+    { path: '/playlists', component: Playlists, meta: { requiresAuth: true } },
+    { path: '/settings', component: Settings, meta: { requiresAuth: true } },
+    { path: '/users', component: Users, meta: { requiresAuth: true } },
+]
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
-});
+})
 
-export default router;
+// Garde de navigation
+router.beforeEach((to, from, next) => {
+    const isLoggedIn = store.getters.isLoggedIn
+    if (to.meta.requiresAuth && !isLoggedIn) {
+        next('/signin')
+    } else if ((to.path === '/signin' || to.path === '/signup') && isLoggedIn) {
+        next('/home')
+    } else {
+        next()
+    }
+})
+
+export default router

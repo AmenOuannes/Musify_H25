@@ -17,7 +17,7 @@ class UserRepository:
         if count.scalar()>0:
             raise Exception('User already exists')
 
-        add_query = insert_user_query(user.username, user.last_name, user.first_name, user.email, user.password,user.date_naissance)
+        add_query = insert_user_query(user.username, user.last_name, user.first_name, user.email, user.password, user.birth_date)
         db.session.execute(text(add_query))
         db.session.commit()
 
@@ -37,7 +37,7 @@ class UserRepository:
                 email=row_data["email"],
                 first_name=row_data["first_name"],
                 last_name=row_data["last_name"],
-                date_naissance=row_data["date_naissance"]
+                birth_date=row_data["birth_date"]
             )
             return User().fromUserSQL(userSQL)
         else:
@@ -55,7 +55,7 @@ class UserRepository:
                 email=row_data["email"],
                 first_name=row_data["first_name"],
                 last_name=row_data["last_name"],
-                date_naissance=row_data["date_naissance"]
+                birth_date=row_data["birth_date"]
             )
             self.users.append(User().fromUserSQL(userSQL))
 
