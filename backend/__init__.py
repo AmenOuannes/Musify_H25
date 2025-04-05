@@ -13,6 +13,7 @@ app.register_blueprint(song_bp, url_prefix='/')
 app.register_blueprint(artist_bp, url_prefix='/')
 app.register_blueprint(playlist_bp, url_prefix='/')
 CORS(app)
+
 app.config["JWT_SECRET_KEY"] = "HS256"
 jwt = JWTManager(app)
 

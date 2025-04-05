@@ -1,72 +1,84 @@
 <template>
-  <div class="signin">
-    <h1>Sign In</h1>
-    <form @submit.prevent="login">
-      <input type="text" v-model="username" placeholder="Username" required />
-      <input type="password" v-model="password" placeholder="Password" required />
-      <button type="submit">Sign In</button>
+  <div class="auth-container">
+    <h2>Sign In</h2>
+
+    <form @submit.prevent="handleSignIn">
+      <input v-model="username" type="text" placeholder="Username" required />
+      <input v-model="password" type="password" placeholder="Password" required />
+      <button type="submit" :disabled="loading">
+        {{ loading ? 'Signing in...' : 'Sign In' }}
+      </button>
+      <p v-if="error" class="error-message">{{ error }}</p>
     </form>
-    <p>Don't have an account? <router-link to="/signup">Sign Up</router-link></p>
+
+    <p class="switch-link">
+      Don't have an account?
+      <router-link to="/signup">Create one</router-link>
+    </p>
   </div>
 </template>
 
-<script>
-import { auth } from "@/auth"; // Import the auth state
+<script setup>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { login, getUser } from '@/api/AuthApi'
 
-export default {
-  name: "SignIn",
-  data() {
-    return {
-      username: "",
-      password: "",
-    };
-  },
-  methods: {
-    login() {
-      // Hardcoded admin credentials
-      const adminUsername = "admin";
-      const adminPassword = "admin123";
+const store = useStore()
+const router = useRouter()
 
-      if (this.username === adminUsername && this.password === adminPassword) {
-        auth.login({ username: this.username }, true); // Log in as admin
-        this.$router.push("/"); // Redirect to home after login
-      } else {
-        alert("Invalid username or password");
-      }
-    },
-  },
-};
+const username = ref('')
+const password = ref('')
+const loading = ref(false)
+const error = ref(null)
+
+const handleSignIn = async () => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const { token } = await login(username.value, password.value)
+    const user = await getUser(token)
+
+    await store.dispatch('login', { user, token })
+    router.push('/home')
+  } catch (err) {
+    error.value = 'Invalid username or password.'
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <style scoped>
-.signin {
-  background-color: #222;
-  padding: 40px;
-  border-radius: 10px;
-  text-align: center;
-  width: 100%;
+.auth-container {
   max-width: 400px;
+  margin: 5rem auto;
+  padding: 2rem;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 10px #000;
 }
 
-h1 {
-  font-size: 40px;
-  margin: 0 0 20px;
-  color: #0f0;
+h2 {
+  margin-bottom: 1.5rem;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1rem;
 }
 
 input {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #444;
-  font-size: 16px;
   background-color: #333;
   color: white;
+  font-size: 16px;
 }
 
 button {
@@ -84,18 +96,23 @@ button:hover {
   background-color: #0c0;
 }
 
-p {
-  font-size: 16px;
-  margin: 20px 0 0;
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.switch-link {
+  margin-top: 1.5rem;
+  font-size: 14px;
   color: #ccc;
 }
 
-a {
+.switch-link a {
   color: #0f0;
   text-decoration: none;
 }
 
-a:hover {
+.switch-link a:hover {
   text-decoration: underline;
 }
 </style>

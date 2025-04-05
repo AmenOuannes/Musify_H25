@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import Cookies from 'js-cookie'
-import { getTokenApi } from '@/api/authApi'
+import { getUser } from '@/api/authApi'
 
 export default createStore({
     state: {
@@ -42,7 +42,7 @@ export default createStore({
             try {
                 const token = Cookies.get('ufood-token')
                 if (token) {
-                    const response = await getTokenApi(token)
+                    const response = await getUser(token)
                     if (response.status === 200) {
                         commit('setUser', response.data)
                         commit('setToken', token)

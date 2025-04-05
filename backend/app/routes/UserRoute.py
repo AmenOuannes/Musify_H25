@@ -28,7 +28,7 @@ def signUp():
         return jsonify({"message": str(e)}), 400
 
 
-@user_bp.route('/users/login', methods=['GET'])
+@user_bp.route('/users/login', methods=['POST'])
 def login():
     username = request.json.get('username')
     password = request.json.get('password')
