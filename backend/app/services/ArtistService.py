@@ -1,7 +1,7 @@
 from werkzeug.exceptions import NotFound
 
 from backend.app.infrastructure.ArtistRepository import ArtistRepository
-from backend.app.utils.Artist import Artist
+from backend.app.domain.Artist import Artist
 
 
 class ArtistService:

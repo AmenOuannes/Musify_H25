@@ -1,6 +1,10 @@
 # Musify_H25
-run python
+## run python
 ```
 pip install -r backend/requirements.txt
+
+```
+## environment variables
+```
 
 ```

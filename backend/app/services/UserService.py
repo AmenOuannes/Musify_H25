@@ -1,16 +1,17 @@
 from backend.app.infrastructure.UserRepository import UserRepository
-from backend.app.utils.User import User
+from backend.app.domain.User import User
 
 class UserService:
     def __init__(self):
         self.repository = UserRepository()
 
-    def getUsers(self, limit=-1):
+    def getUsers(self, limit):
         return [user.to_dict() for user in self.repository.getAllUsers(limit)]
 
-    def createUser(self, username, first_name, last_name, email, password):
+    def createUser(self, username, first_name, last_name, email, password, date_naissance):
         try:
-            self.repository.addUser(User(username, first_name, last_name, email, password))
+            user = User().fromRequest(username, first_name, last_name, email, password, date_naissance)
+            self.repository.addUser(user)
         except (Exception) as e:
             raise e
 
