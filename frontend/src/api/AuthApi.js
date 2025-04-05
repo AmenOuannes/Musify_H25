@@ -44,13 +44,13 @@ export async function getUser(token) {
 
 export async function register({ username, first_name, last_name, email, password, birth_date }) {
     try {
-        const response = await axios.post(URL + '/users', {
+        const response = await axios.post(`${URL}/users`, {
             username,
             first_name,
             last_name,
             email,
             password,
-            birth_date
+            birth_date: birth_date?.toString()
         }, {
             headers: {
                 'Content-Type': 'application/json'
@@ -62,4 +62,3 @@ export async function register({ username, first_name, last_name, email, passwor
         throw new Error(err.response?.data?.message || err.message)
     }
 }
-

@@ -5,7 +5,7 @@
     </div>
     <div class="auth-buttons">
       <!-- Logged In State -->
-      <div v-if="auth.isLoggedIn" class="profile-button">
+      <div v-if="isLoggedIn" class="profile-button">
         <button @click.stop="toggleDropdown">Profile</button>
         <div v-if="isDropdownVisible" class="dropdown-menu" ref="dropdown">
           <ul>
@@ -21,55 +21,56 @@
 </template>
 
 <script>
-import { auth } from "@/auth"; // Import the auth state
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "TopBar",
   data() {
     return {
       isDropdownVisible: false,
-      auth, // Use the auth state
     };
   },
+  computed: {
+    ...mapGetters(["isLoggedIn"]),
+  },
   methods: {
+    ...mapActions(["logout"]),
     toggleDropdown() {
       this.isDropdownVisible = !this.isDropdownVisible;
     },
-    logout() {
-      this.auth.logout(); // Call the logout method
-      this.$router.push("/"); // Redirect to home after logout
+    async logout() {
+      await this.$store.dispatch("logout");
+      this.$router.push("/signin");
     },
     handleClickOutside(event) {
-      // Close the dropdown if the click is outside the dropdown
       if (this.$refs.dropdown && !this.$refs.dropdown.contains(event.target)) {
         this.isDropdownVisible = false;
       }
     },
   },
   mounted() {
-    // Add a click event listener to the document
     document.addEventListener("click", this.handleClickOutside);
   },
   beforeUnmount() {
-    // Remove the click event listener when the component is destroyed
     document.removeEventListener("click", this.handleClickOutside);
   },
 };
 </script>
 
 <style scoped>
+/* unchanged styling — all preserved */
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #333;
   padding: 10px 20px;
-  height: 60px; /* Fixed height */
+  height: 60px;
   position: fixed;
   top: 0;
-  left: 120px; /* Matches the sidebar width + buffer */
+  left: 120px;
   right: 0;
-  z-index: 1000; /* Ensure it stays above other content */
+  z-index: 1000;
 }
 
 .search-bar {
