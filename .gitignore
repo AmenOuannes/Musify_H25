@@ -35,3 +35,4 @@ frontend/.output/
 # macOS & Windows system files
 .DS_Store
 Thumbs.db
+.venv
