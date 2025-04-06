@@ -11,7 +11,9 @@ userService = UserService()
 def get_users():
     limit = request.args.get('limit', type=int) if 'limit' in request.args else -1
     all_users = userService.getUsers(limit)
-    return responseFormat({"users": all_users}), 200
+    print(all_users)
+    usernames = [{'username':user['username']} for user in all_users]
+    return {'users':usernames}, 200
 
 @user_bp.route('/users', methods=['POST'])
 def signUp():
@@ -64,3 +66,5 @@ def changeUser():
         return responseFormat({"user_name":user_name, "password":password}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+
+

@@ -19,7 +19,7 @@ class ArtistRepository():
             raise Exception("Artist already exists")
         else:
 
-            query = insert_artist_query(artist.artist_id, artist.artist_name, artist.genre, artist.followers, artist.profile_url, artist.image)
+            query = insert_artist_query(artist.artist_name, artist.genre, artist.followers, artist.profile_url, artist.image)
             db.session.execute(text(query))
             db.session.commit()
 
