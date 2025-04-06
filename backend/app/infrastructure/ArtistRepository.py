@@ -48,11 +48,13 @@ class ArtistRepository():
 
 
     def getArtistByName(self, artist_name):
+        print("getArtistByName", artist_name)
         query = get_artist_by_name_query(artist_name)
         result = db.session.execute(text(query))
         row = result.fetchone()
-
+        print("hello", row)
         if row:
+
             row_data = row._mapping
 
             artistSQL = ArtistSQL(

@@ -6,11 +6,11 @@ class Song:
     def __init__(self):
         self.a=""
 
-    def fromRequest(self,song_name, genre, artist, release_date, url):
+    def fromRequest(self,song_name, genre, artist_name, release_date, url):
         self.song_name = song_name
         self.song_id = random.randint(100000, 999999)
         self.genre = genre
-        self.artist = artist
+        self.artist_name = artist_name
         self.release_date = release_date
         self.url = url
         return self

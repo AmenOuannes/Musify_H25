@@ -61,7 +61,6 @@ def changeUser():
     birth_date = request.json.get('birth_date')
     try:
         userService.updateUser(current_user,user_name, first_name, last_name, email, password, birth_date)
-        access_token = create_access_token(identity=user_name)
-        return responseFormat({"token":access_token}), 200
+        return responseFormat({"user_name":user_name, "password":password}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
