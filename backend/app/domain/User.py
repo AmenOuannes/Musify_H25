@@ -35,5 +35,6 @@ class User:
             ("first_name", self.first_name),
             ("last_name", self.last_name),
             ("email", self.email),
+            ("birth_date", self.birth_date.isoformat()),
             ("password", self.password)
         ])

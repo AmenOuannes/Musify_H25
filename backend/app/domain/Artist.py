@@ -8,7 +8,6 @@ class Artist:
         self.a=''
     def fromRequest(self, artist_name, genre, profile_url, image, followers):
         self.artist_name = artist_name
-        self.artist_id = random.randint(100000, 999999)
         self.genre = genre
         self.profile_url = profile_url
         self.followers = followers
