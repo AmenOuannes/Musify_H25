@@ -62,3 +62,23 @@ export async function register({ username, first_name, last_name, email, passwor
         throw new Error(err.response?.data?.message || err.message)
     }
 }
+ export async function putUser({ username, first_name, last_name, email, password, birth_date }) {
+    try {
+        const response = await axios.put(`${URL}/users`, {
+            username,
+            first_name,
+            last_name,
+            email,
+            password,
+            birth_date
+    },  {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return response.data
+} catch (err) {
+    console.error(err)
+    throw new Error(err.response?.data?.message || err.message)
+}
+}
