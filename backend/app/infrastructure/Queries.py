@@ -27,3 +27,15 @@ def insert_artist_query(artist_id, artist_name, genre, followers, profile_url, i
         VALUES ({artist_id}, '{artist_name}', '{genre}', {followers}, '{profile_url}', '{image}');
     """
 
+def update_user_query(current_username, username, first_name, last_name, email, password_hash, birth_date):
+    return f"""
+        UPDATE Users
+        SET username = '{username}',
+            first_name = '{first_name}',
+            last_name = '{last_name}',
+            email = '{email}',
+            password_hash = '{password_hash}',
+            birth_date = '{birth_date}'
+
+        WHERE username = '{current_username}';
+        """

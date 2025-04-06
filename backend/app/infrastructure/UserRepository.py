@@ -3,7 +3,7 @@ from backend.__init__ import db
 from sqlalchemy import text
 
 from backend.app.infrastructure.Queries import get_all_users_query, find_similar_users_query, insert_user_query, \
-    get_user_with_username_query
+    get_user_with_username_query, update_user_query
 from backend.app.infrastructure.UserSQL import UserSQL
 
 
@@ -62,3 +62,8 @@ class UserRepository:
             self.users.append(User().fromUserSQL(userSQL))
 
         return self.users
+
+    def updateUser(self,current_username, user_name, first_name, last_name, email, password, birth_date):
+        query = update_user_query(current_username,user_name, first_name, last_name, email, password, birth_date)
+        db.session.execute(text(query))
+        db.session.commit()
