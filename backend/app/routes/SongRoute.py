@@ -28,7 +28,7 @@ def create_song():
         current_user = get_jwt_identity()
         song_name = request.json.get('song_name')
         genre = request.json.get('genre')
-        artist = request.json.get('artist')
+        artist = request.json.get('artist_name')
         release_date = request.json.get('release_date')
         url = request.json.get('url')
 

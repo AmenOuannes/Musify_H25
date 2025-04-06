@@ -20,7 +20,7 @@ def get_all_artists_query(limit, research):
 
 
 def get_artist_by_name_query(artist_name):
-    return f"SELECT artist_id, artist_name, genre, followers, celebrity, profile_url, image FROM Artists WHERE artist_name = '{artist_name}';"
+    return f"SELECT artist_id, artist_name, genre, followers, celebrity, profile_url, image FROM Artists WHERE artist_name='{artist_name}';"
 
 def find_similar_artists_query(artist_name):
     return f"SELECT COUNT(*) AS count FROM Artists WHERE artist_name = '{artist_name}';"
@@ -62,11 +62,6 @@ def get_song_by_name_query(song_name):
     """
 
 def insert_song_query(song_id, song_name, genre, release_date, url):
-    # Safely escape single quotes in string values
-    song_name = song_name.replace("'", "''")
-    genre = genre.replace("'", "''")
-    url = url.replace("'", "''")
-
     return f"""
         INSERT INTO Songs (song_id, song_name, genre, release_date, url)
         VALUES ({song_id}, '{song_name}', '{genre}', '{release_date}', '{url}');
