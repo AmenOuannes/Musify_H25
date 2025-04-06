@@ -8,8 +8,9 @@ song_bp = Blueprint('song_bp', __name__)
 songService = SongService()
 @song_bp.route('/songs', methods=['GET'])
 def get_songs():
-    limit = request.args.get('limit')
-    songs = songService.getAllSongs(limit)
+    limit = request.args.get('limit') if 'limit' in request.args else -1
+    research = request.args.get('research') if 'research' in request.args else ""
+    songs = songService.getAllSongs(limit, research)
     return responseFormat({"songs": songs}), 200
 
 @song_bp.route('/songs/<song_name>', methods=['GET'])

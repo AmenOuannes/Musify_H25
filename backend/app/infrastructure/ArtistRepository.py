@@ -24,9 +24,9 @@ class ArtistRepository():
             db.session.commit()
 
 
-    def getAllArtists(self, limit):
+    def getAllArtists(self, limit,research):
         self.artists=[]
-        query = get_all_artists_query(limit)
+        query = get_all_artists_query(limit,research)
 
         result = db.session.execute(text(query))
         for row in result:
