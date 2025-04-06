@@ -45,8 +45,23 @@ def login():
 @user_bp.route('/users/user', methods=['GET'])
 @jwt_required()
 def userProfile():
-    print("user profile")
     current_user = get_jwt_identity()
-    print(current_user)
     user_info = userService.retrieveUser(current_user)
     return responseFormat(user_info), 200
+
+@user_bp.route('/users', methods=['PUT'])
+@jwt_required()
+def changeUser():
+    current_user = get_jwt_identity()
+    user_name = request.json.get('username')
+    first_name = request.json.get('first_name')
+    last_name = request.json.get('last_name')
+    email = request.json.get('email')
+    password = request.json.get('password')
+    birth_date = request.json.get('birth_date')
+    try:
+        userService.updateUser(current_user,user_name, first_name, last_name, email, password, birth_date)
+        access_token = create_access_token(identity=user_name)
+        return responseFormat({"token":access_token}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400

@@ -1,13 +1,30 @@
+import uuid
 from collections import OrderedDict
+import random
 
 
 class Artist:
-    def __init__(self, artist_name, genre, profile_url):
+    def __init__(self):
+        self.a=''
+    def fromRequest(self, artist_name, genre, profile_url, image, followers):
         self.artist_name = artist_name
+        self.artist_id = random.randint(100000, 999999)
         self.genre = genre
         self.profile_url = profile_url
-        self.followers = 0
+        self.followers = followers
         self.celebrity = False
+        self.image=image
+        return self
+
+    def fromArtistSQL(self, artistSQL):
+        self.artist_id = artistSQL.artist_id
+        self.artist_name = artistSQL.artist_name
+        self.genre = artistSQL.genre
+        self.profile_url = artistSQL.profile_url
+        self.celebrity = artistSQL.celebrity
+        self.followers = artistSQL.followers
+        self.image = artistSQL.image
+        return self
 
     def to_dict(self):
         return OrderedDict([
@@ -16,4 +33,5 @@ class Artist:
             ("profile_url", self.profile_url),
             ("followers", self.followers),
             ("celebrity", self.celebrity),
+            ("image", self.image)
         ])

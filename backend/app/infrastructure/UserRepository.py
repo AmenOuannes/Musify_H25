@@ -3,7 +3,7 @@ from backend.__init__ import db
 from sqlalchemy import text
 
 from backend.app.infrastructure.Queries import get_all_users_query, find_similar_users_query, insert_user_query, \
-    get_user_with_username_query
+    get_user_with_username_query, update_user_query
 from backend.app.infrastructure.UserSQL import UserSQL
 
 
@@ -22,6 +22,7 @@ class UserRepository:
         db.session.commit()
 
     def getUser(self, username):
+        self.users = []
         user_exists = find_similar_users_query(username)
         count = db.session.execute(text(user_exists))
 
@@ -44,6 +45,7 @@ class UserRepository:
             return None
 
     def getAllUsers(self, limit):
+        self.users = []
         query = get_all_users_query(limit)
         result = db.session.execute(text(query))
 
@@ -61,5 +63,7 @@ class UserRepository:
 
         return self.users
 
-    def emailExists(self, email):
-        return next((u for u in self.users if u.email == email), None)
+    def updateUser(self,current_username, user_name, first_name, last_name, email, password, birth_date):
+        query = update_user_query(current_username,user_name, first_name, last_name, email, password, birth_date)
+        db.session.execute(text(query))
+        db.session.commit()

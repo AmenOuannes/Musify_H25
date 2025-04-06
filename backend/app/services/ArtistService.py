@@ -8,10 +8,10 @@ class ArtistService:
     def __init__(self):
         self.artistRepository = ArtistRepository()
 
-    def addArtist(self, artist_name, genre, profile_url):
+    def addArtist(self, artist_name, genre, profile_url, image, followers):
         try:
-            artist = Artist(artist_name, genre, profile_url)
-            self.artistRepository.addArtist(artist)
+
+            self.artistRepository.addArtist(Artist().fromRequest(artist_name,genre,profile_url,image, followers))
         except Exception as e:
             raise e
 

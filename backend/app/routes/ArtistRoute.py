@@ -9,7 +9,7 @@ artistService = ArtistService()
 
 @artist_bp.route('/artists', methods=['GET'])
 def get_artists():
-    limit = request.args.get('limit', type=int)
+    limit = request.args.get('limit', type=int) if 'limit' in request.args else -1
     artists = artistService.getArtists(limit)
     return responseFormat({"artists": artists}), 200
 
@@ -21,8 +21,10 @@ def add_artist():
         artist_name = request.json.get('artist_name')
         genre = request.json.get('genre')
         profile_url = request.json.get('profile_url')
+        followers = request.json.get('followers')
+        image = request.json.get('image')
 
-        artistService.addArtist(artist_name, genre, profile_url)
+        artistService.addArtist(artist_name, genre, profile_url, image, followers)
         return jsonify({"message": "artist created"}), 201
     except Exception as e:
         return jsonify({"message": str(e)}), 400

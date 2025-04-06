@@ -29,3 +29,6 @@ class UserService:
         if not user:
             raise Exception('User not found')
         return user.to_dict()
+
+    def updateUser(self,current_username, user_name, first_name, last_name, email, password, birth_date):
+        self.repository.updateUser(current_username,user_name, first_name, last_name, email, password, birth_date)
