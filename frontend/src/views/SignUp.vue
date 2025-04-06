@@ -28,7 +28,7 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { register, login, getUser } from '@/api/AuthApi'
+import { postUser, login, getUser } from '@/api/AuthApi'
 
 const store = useStore()
 const router = useRouter()
@@ -59,7 +59,7 @@ const handleSignUp = async () => {
 
   loading.value = true
   try {
-    await register({
+    await postUser({
       username: username.value,
       first_name: firstName.value,
       last_name: lastName.value,
