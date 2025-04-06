@@ -3,17 +3,12 @@
     <h1 class="logo" @click="goHome">Musify</h1>
     <nav>
       <ul class="menu">
-        <li><router-link to="/library">Library</router-link></li>
-        <li><router-link to="/favorites">Favorites</router-link></li> <!-- Updated -->
-        <li><router-link to="/playlists">Playlists</router-link></li> <!-- Updated -->
-      </ul>
-      <hr class="sidebar-divider" />
-      <h2 class="recents-title">Recents</h2>
-      <ul class="playlist-list">
-        <li><a href="#">Chill Vibes</a></li>
-        <li><a href="#">Workout Mix</a></li>
-        <li><a href="#">Top Hits</a></li>
-        <li><a href="#">Rock Classics</a></li>
+        <li><router-link to="/artists">Artists</router-link></li>
+        <li><router-link to="/albums">Albums</router-link></li>
+        <li><router-link to="/songs">Songs</router-link></li>
+        <li><router-link to="/playlists">Playlists</router-link></li>
+        <li><router-link to="/favorites">Favorites</router-link></li>
+        <li><router-link to="/myplaylists">My Playlists</router-link></li>
       </ul>
     </nav>
   </aside>
