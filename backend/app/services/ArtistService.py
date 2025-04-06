@@ -10,7 +10,6 @@ class ArtistService:
 
     def addArtist(self, artist_name, genre, profile_url, image, followers):
         try:
-
             self.artistRepository.addArtist(Artist().fromRequest(artist_name,genre,profile_url,image, followers))
         except Exception as e:
             raise e

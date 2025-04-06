@@ -15,12 +15,10 @@ class SongService:
 
     def createSong(self, song_name, genre, artist_name, release_date, url):
         try:
-            print(artist_name)
             artist = artist_repository.getArtistByName(artist_name)
-            print(artist)
             date = datetime.strptime(release_date, "%Y-%m-%d")
             if artist is  not None:
-                self.songRepository.addSong(Song().fromRequest(song_name, genre, artist_name, release_date, url))
+                self.songRepository.addSong(Song().fromRequest(song_name, genre, artist_name, release_date, url), artist)
             else:
                 raise NotFound("Artist not found")
         except Exception as e:

@@ -29,11 +29,13 @@ def create_app():
     from .app.routes.PlaylistRoute import playlist_bp
     from .app.routes.SongRoute import song_bp
     from .app.routes.UserRoute import user_bp
+    from .app.routes.AlbumRoute import album_bp
 
     app.register_blueprint(user_bp, url_prefix='/')
     app.register_blueprint(song_bp, url_prefix='/')
     app.register_blueprint(artist_bp, url_prefix='/')
     app.register_blueprint(playlist_bp, url_prefix='/')
+    app.register_blueprint(album_bp, url_prefix='/')
 
     # Test route
     @app.route("/")
