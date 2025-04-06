@@ -22,5 +22,5 @@ class ArtistService:
         else:
             raise NotFound("Artist not found")
 
-    def getArtists(self, limit=-1):
-        return [artist.to_dict() for artist in self.artistRepository.getAllArtists(limit)]
+    def getArtists(self, limit=-1, research=""):
+        return [artist.to_dict() for artist in self.artistRepository.getAllArtists(limit,research)]

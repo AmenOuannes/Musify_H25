@@ -13,8 +13,7 @@ class SongService:
         try:
             artist = artist_repository.getArtistByName(artist_name)
             if artist is  not None:
-                song = Song(song_name, genre, artist_name, release_date, url)
-                self.songRepository.addSong(song)
+                self.songRepository.addSong(Song().fromRequest(song_name, artist, genre, release_date, url))
         except Exception as e:
             raise e
 
@@ -26,7 +25,7 @@ class SongService:
         else:
             raise NotFound(song_name)
 
-    def getAllSongs(self, limit=-1):
-        return [song.to_dict() for song in self.songRepository.getAllSongs(limit)]
+    def getAllSongs(self, limit=-1, research=""):
+        return [song.to_dict() for song in self.songRepository.getAllSongs(limit,research)]
 
 
