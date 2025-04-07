@@ -7,10 +7,6 @@ export async function login(username, password) {
         const response = await axios.post(URL + "/users/login", {
             username,
             password
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
         });
         return response.data;
     } catch (error) {
