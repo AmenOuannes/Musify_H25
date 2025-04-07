@@ -21,6 +21,7 @@
           :key="song.song_name"
           :song="song"
           @click="goToSong(song.song_name)"
+          :onRemove="() => removeSong(song.song_name)"
       />
     </div>
 
@@ -50,15 +51,19 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getAlbumByName, getAlbumSongs } from '@/api/albumAPI'
+import { getAlbumByName, getAlbumSongs, deleteSongFromAlbum } from '@/api/albumAPI'
 import AddSongToAlbum from '@/Albums/AddSongToAlbum.vue'
 import SongDisplay from '@/Songs/SongDisplay.vue'
+import { useStore } from 'vuex'
 
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
 const album = ref(null)
 const songs = ref([])
 const showAddSongModal = ref(false)
+
+const token = store.getters.currentToken
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString()
@@ -76,6 +81,18 @@ const refreshSongs = async () => {
     songs.value = songsData.songs || []
   } catch (err) {
     console.error('Failed to refresh songs:', err)
+  }
+}
+
+const removeSong = async (songName) => {
+  const confirmed = confirm(`Remove \"${songName}\" from album?`)
+  if (!confirmed) return
+
+  try {
+    await deleteSongFromAlbum(album.value.album_name, songName, token)
+    await refreshSongs()
+  } catch (err) {
+    alert(err.message)
   }
 }
 

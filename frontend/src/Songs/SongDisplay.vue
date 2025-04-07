@@ -1,25 +1,51 @@
 <template>
-  <button class="song-button" @click="$emit('click')">
-    <div class="info">
-      <span class="name">{{ song.song_name }}</span>
-      <span class="genre">{{ song.genre }}</span>
-      <span class="artist">🎤 {{ song.artist_name }}</span>
-      <span class="date">📅 {{ song.release_date }}</span>
-    </div>
-  </button>
+  <div class="song-button-container">
+    <button class="song-button" @click="$emit('click')">
+      <div class="info">
+        <span class="name">{{ song.song_name }}</span>
+        <span class="genre">{{ song.genre }}</span>
+        <span class="artist">🎤 {{ song.artist_name }}</span>
+        <span class="date">📅 {{ song.release_date }}</span>
+      </div>
+    </button>
+
+    <button
+        v-if="onRemove"
+        class="remove-btn"
+        @click.stop="confirmRemove"
+        title="Remove from album"
+    >
+      🗑
+    </button>
+  </div>
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   song: {
     type: Object,
     required: true
-  }
+  },
+  onRemove: Function // facultatif : si fourni, on affiche le bouton
 })
+
+const confirmRemove = () => {
+  if (confirm(`Are you sure you want to remove "${props.song.song_name}" from the album?`)) {
+    props.onRemove?.(props.song.song_name)
+  }
+}
 </script>
 
 <style scoped>
+.song-button-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .song-button {
+  flex-grow: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,7 +54,6 @@ defineProps({
   border-radius: 10px;
   padding: 1rem 1.5rem;
   color: white;
-  width: 100%;
   text-align: left;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.2s;
@@ -37,6 +62,14 @@ defineProps({
 .song-button:hover {
   background-color: #2a9d8f22;
   transform: scale(1.01);
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #f87171;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .info {

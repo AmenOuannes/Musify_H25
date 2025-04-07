@@ -7,7 +7,7 @@ export async function postSong(song_name, genre, artist_name, release_date, url,
         const response = await axios.post(URL + "/songs", {
             song_name: song_name.toLowerCase(),
             genre: genre.toLowerCase(),
-            artist_name: artist_name.toLowerCase(),  // ✅ FIXED KEY
+            artist_name: artist_name.toLowerCase(),
             release_date,
             url
         }, {
