@@ -123,3 +123,32 @@ def delete_song_from_album_query(song_id, album_id):
         DELETE FROM Has
         WHERE song_id = {song_id} AND album_id = {album_id};
     """
+
+def get_playlist_by_name_query(playlist_name):
+    return f"""
+        SELECT playlist_id, playlist_name, owner, private
+        FROM Playlists
+        WHERE playlist_name = '{playlist_name}';
+    """
+
+def get_all_playlists_query(limit, research, owner):
+    conditions = []
+
+    if research:
+        safe_research = research.replace("'", "''")
+        conditions.append(f"playlist_name LIKE '{safe_research}%'")
+
+    if owner:
+        safe_owner = owner.replace("'", "''")
+        conditions.append(f"owner = '{safe_owner}'")
+
+    where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
+    limit_clause = f" LIMIT {limit}" if limit != -1 else ""
+
+    return f"SELECT * FROM Playlists{where_clause}{limit_clause};"
+
+def insert_playlist_query(playlist_name, owner, private):
+    return f"""
+        INSERT INTO Playlists (playlist_name, owner, private)
+        VALUES ('{playlist_name}', '{owner}', {private});
+    """

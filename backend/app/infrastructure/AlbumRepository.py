@@ -93,11 +93,8 @@ class AlbumRepository:
 
         songs_query = get_songs_of_album(album_id)
         result = db.session.execute(text(songs_query))
-        count = result.scalar() or 0
 
-
-        if count > 0:
-            for row in result:
+        for row in result:
                 row_data = row._mapping
 
                 songSQL = SongSQL(
@@ -111,8 +108,7 @@ class AlbumRepository:
 
                 self.songs.append(Song().fromSQL(songSQL))
 
-            return self.songs
-        return None
+        return self.songs
 
     def addSongToAlbum(self, album_name, song_name):
         get_song_id = get_song_by_name_query(song_name)
