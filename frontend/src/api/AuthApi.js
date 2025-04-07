@@ -1,9 +1,9 @@
 import axios from "axios";
-import store from "@/Store/Store.js";
 export const URL = "/api";
 
 export async function login(username, password) {
     try {
+        username = username.toLowerCase();
         const response = await axios.post(URL + "/users/login", {
             username,
             password
@@ -19,9 +19,17 @@ export async function login(username, password) {
     }
 }
 
-export async function getUsers() {
+export async function getUsers(limit = 10, research = "") {
     try {
-        const response = await axios.get(URL + "/users");
+        const params = {
+            limit,
+        }
+
+        if (research) params.research = research.toLowerCase();
+
+        const response = await axios.get(URL + "/users", {
+            params: params
+        });
         return response.data;
     }catch(err) {
         console.error(err);
@@ -46,16 +54,12 @@ export async function getUser(token) {
 export async function postUser({ username, first_name, last_name, email, password, birth_date }) {
     try {
         const response = await axios.post(`${URL}/users`, {
-            username,
-            first_name,
-            last_name,
+            username: username.toLowerCase(),
+            first_name: first_name.toLowerCase(),
+            last_name: last_name.toLowerCase(),
             email,
             password,
             birth_date
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
         })
         return response.data
     } catch (err) {
@@ -66,10 +70,11 @@ export async function postUser({ username, first_name, last_name, email, passwor
 
 export async function putUser({ username, first_name, last_name, email, password, birth_date }, currentToken) {
     try {
+        username = username.toLowerCase()
         const response = await axios.put(`${URL}/users`, {
-            username,
-            first_name,
-            last_name,
+            username: username,
+            first_name: first_name.toLowerCase(),
+            last_name: last_name.toLowerCase(),
             email,
             password,
             birth_date

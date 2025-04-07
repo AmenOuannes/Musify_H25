@@ -1,18 +1,18 @@
 <template>
-  <div class="library">
-    <h1>Library</h1>
-    <p>Your music library is empty. Start adding some songs!</p>
+  <div class="MyPlaylists">
+    <h1>MyPlaylists</h1>
+    <p>Your music MyPlaylists is empty. Start adding some songs!</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Library",
+  name: "MyPlaylists",
 };
 </script>
 
 <style scoped>
-.library {
+.MyPlaylists {
   padding: 20px;
 }
 
