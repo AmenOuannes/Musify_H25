@@ -202,3 +202,45 @@ def delete_song_from_playlist_query(playlist_id, song_id):
         WHERE playlist_id = {playlist_id} AND song_id = {song_id};
     """
 
+def get_liked_artists_query(username):
+    return f"""
+    SELECT *
+    FROM Artists A
+    INNER JOIN LikedArtists L ON A.artist_id = L.artist_id
+    WHERE L.user_id = '{username}';
+    """
+
+def add_artist_to_likes(username, artist_id):
+    return f"""
+    INSERT INTO LikedArtists (artist_id, user_id) VALUES ({artist_id},'{username}');
+    """
+def unlike_artist(username, artist_id):
+    return f"""
+    DELETE FROM LikedArtists 
+    WHERE artist_id = {artist_id} AND user_id = '{username}';
+    """
+
+def get_liked_playlists_query(user_id):
+    return f"""
+        SELECT *
+        FROM Playlists P
+        JOIN LikedPlaylists L ON P.playlist_id = L.playlist_id  -- This is just an example, update if you have a real playlist-like table
+        WHERE L.user_id = '{user_id}';
+    """
+
+def unlike_playlist_query(user_id, playlist_id):
+    return f"""
+        DELETE FROM LikedPlaylists
+        WHERE user_id = '{user_id}' AND playlist_id = {playlist_id};
+    """
+def like_playlist_query(user_id, playlist_id):
+    return f"""
+        INSERT INTO LikedPlaylists (user_id, playlist_id)
+        VALUES ('{user_id}', {playlist_id});
+    """
+def get_liked_playlist_count_query(user_id, playlist_id):
+    return f"""
+        SELECT COUNT(*) 
+        FROM LikedPlaylists
+        WHERE user_id = '{user_id}' AND playlist_id = {playlist_id};
+    """

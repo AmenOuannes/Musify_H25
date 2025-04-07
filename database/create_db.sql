@@ -3,10 +3,8 @@ DROP TABLE IF EXISTS ConsistsOf;
 DROP TABLE IF EXISTS Has;
 DROP TABLE IF EXISTS Creates;
 DROP TABLE IF EXISTS Likes;
-DROP TABLE IF EXISTS Owns;
-DROP TABLE IF EXISTS FavSong;
-DROP TABLE IF EXISTS Collaborates;
-DROP TABLE IF EXISTS MayNot;
+DROP TABLE IF EXISTS LikedPlaylists;
+DROP TABLE IF EXISTS LikedArtists;
 DROP TABLE IF EXISTS Playlists;
 DROP TABLE IF EXISTS Sings;
 DROP TABLE IF EXISTS Songs;
@@ -109,41 +107,20 @@ CREATE TABLE Likes (
     FOREIGN KEY (song_id) REFERENCES Songs(song_id)
 );
 
--- Table pour gérer les utilisateurs qui possèdent des playlists
-CREATE TABLE Owns (
+-- Table pour gérer les favoris des utilisateurs
+CREATE TABLE LikedPlaylists (
     user_id VARCHAR(50),
     playlist_id INT,
+    fav_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, playlist_id),
     FOREIGN KEY (user_id) REFERENCES Users(username),
     FOREIGN KEY (playlist_id) REFERENCES Playlists(playlist_id)
 );
 
--- Table pour gérer les favoris des utilisateurs
-CREATE TABLE FavSong (
-    user_id VARCHAR(50),
-    song_id INT,
-    fav_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, song_id),
-    FOREIGN KEY (user_id) REFERENCES Users(username),
-    FOREIGN KEY (song_id) REFERENCES Songs(song_id)
-);
-
--- Table pour gérer la collaboration entre artistes
-CREATE TABLE Collaborates (
-    artist1_id INT,
-    artist2_id INT,
-    album_id INT,
-    PRIMARY KEY (artist1_id, artist2_id, album_id),
-    FOREIGN KEY (artist1_id) REFERENCES Artists(artist_id),
-    FOREIGN KEY (artist2_id) REFERENCES Artists(artist_id),
-    FOREIGN KEY (album_id) REFERENCES Albums(album_id)
-);
-
 -- Table pour gérer les artistes que l'utilisateur ne veut pas voir
-CREATE TABLE MayNot (
+CREATE TABLE LikedArtists (
     user_id VARCHAR(50),
     artist_id INT,
-    reason TEXT,
     PRIMARY KEY (user_id, artist_id),
     FOREIGN KEY (user_id) REFERENCES Users(username),
     FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
