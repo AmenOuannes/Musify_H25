@@ -41,7 +41,6 @@ export async function getArtistByName(artist_name) {
     try {
         artist_name = artist_name.toLowerCase();
         const response = await axios.get(`${URL}/artists/${artist_name}`);
-        console.log(response);
         return response.data;
     } catch (error) {
         console.error(error);

@@ -1,5 +1,4 @@
 import axios from "axios";
-import store from "@/Store/Store.js";
 export const URL = "/api";
 
 export async function login(username, password) {

@@ -26,19 +26,31 @@ const routes = [
         meta: { requiresAuth: true }
     },
     { path: '/songs', component: Songs, meta: { requiresAuth: true } },
+    {
+        path: '/songs/:name',
+        name: 'SongDetail',
+        component: () => import('../Songs/Song.vue'),
+        meta: { requiresAuth: true }
+    },
     { path: '/albums', component: Albums, meta: { requiresAuth: true } },
+    {
+        path: '/albums/:name',
+        name: 'AlbumDetail',
+        component: () => import('../Albums/Album.vue'),
+        meta: { requiresAuth: true }
+    },
     { path: '/playlists', component: Playlists, meta: { requiresAuth: true } },
     { path: '/myplaylists', component: MyPlaylists, meta: { requiresAuth: true } },
     { path: '/settings', component: Settings, meta: { requiresAuth: true } },
     { path: '/users', component: Users, meta: { requiresAuth: true } }
 ]
 
+
 const router = createRouter({
     history: createWebHistory(),
     routes,
 })
 
-// Auth guard
 router.beforeEach((to, from, next) => {
     const isLoggedIn = store.getters.isLoggedIn
     if (to.meta.requiresAuth && !isLoggedIn) {
