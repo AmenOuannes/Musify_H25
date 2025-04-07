@@ -16,26 +16,12 @@
     </div>
 
     <div class="artist-list">
-      <div
-          class="artist-card"
+      <ArtistDisplay
           v-for="artist in artists"
           :key="artist.artist_name"
+          :artist="artist"
           @click="goToArtist(artist.artist_name)"
-      >
-        <img
-            :src="artist.image"
-            alt="artist image"
-            class="artist-image"
-        />
-        <div class="artist-info">
-          <h3 class="artist-name">
-            {{ artist.artist_name }}
-            <span v-if="artist.celebrity">⭐</span>
-          </h3>
-          <p class="artist-genre">{{ artist.genre }}</p>
-          <p class="artist-followers">{{ artist.followers.toLocaleString() }} followers</p>
-        </div>
-      </div>
+      />
     </div>
 
     <!-- MODAL -->
@@ -54,6 +40,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getArtists } from '@/api/artistsAPI'
 import AddArtist from '@/Artists/AddArtists.vue'
+import ArtistDisplay from '@/Artists/ArtistDisplay.vue' // ✅ imported component
 
 const router = useRouter()
 const artists = ref([])
@@ -97,8 +84,6 @@ onMounted(() => {
 })
 </script>
 
-
-
 <style scoped>
 .artist-search {
   padding: 2rem;
@@ -136,50 +121,10 @@ onMounted(() => {
 
 .artist-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.artist-card {
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 1rem;
-  width: 200px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.artist-card:hover {
-  transform: scale(1.05);
-}
-
-.artist-image {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
-
-.artist-info {
-  text-align: center;
-}
-
-.artist-name {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #2a9d8f;
-}
-
-.artist-genre,
-.artist-followers {
-  font-size: 0.9rem;
-  color: #ccc;
-}
-
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;

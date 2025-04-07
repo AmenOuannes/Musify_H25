@@ -1,175 +1,145 @@
 <template>
   <div class="add-song-to-album">
-    <h3>Add Song to {{ albumName }}</h3>
-    <div class="search-container">
-      <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search for a song..."
-          @input="handleSearch"
-      />
-      <div v-if="showDropdown && filteredSongs.length > 0" class="search-dropdown">
-        <div
-            v-for="song in filteredSongs"
-            :key="song.song_name"
-            class="dropdown-item"
-            @click="selectSong(song)"
-        >
-          {{ song.song_name }} - {{ song.artist_name }}
-        </div>
+    <h2>Add a Song to {{ albumName }}</h2>
+
+    <form @submit.prevent="submit">
+      <div class="form-group">
+        <label for="song">Select Song:</label>
+        <select v-model="selectedSongName" required>
+          <option disabled value="">-- Choose a song --</option>
+          <option
+              v-for="song in filteredSongs"
+              :key="song.song_name"
+              :value="song.song_name"
+          >
+            {{ song.song_name }}
+          </option>
+        </select>
       </div>
-    </div>
-    <button @click="addSong" :disabled="!selectedSong || loading">
-      {{ loading ? 'Adding...' : 'Add Song' }}
-    </button>
-    <p v-if="error" class="error">{{ error }}</p>
-    <p v-if="success" class="success">{{ success }}</p>
+
+      <button type="submit" :disabled="loading">
+        {{ loading ? 'Adding...' : 'Add Song' }}
+      </button>
+
+      <p v-if="success" class="success-message">✅ Song added to album!</p>
+      <p v-if="error" class="error-message">❌ {{ error }}</p>
+    </form>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { getSongs } from '@/api/songAPI'
-import { addSongToAlbum } from '@/api/albumAPI'
+import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
+import { getSongs } from '@/api/songAPI'
+import { addSongToAlbum } from '@/api/albumAPI' // ✅ CORRECTED
+
+const store = useStore()
+const token = store.getters.currentToken
 
 const props = defineProps({
-  albumName: {
-    type: String,
-    required: true
-  }
+  albumName: String,
+  artistName: String
 })
 
 const emit = defineEmits(['close', 'song-added'])
 
-const store = useStore()
-const token = store.getters.currentToken
-const searchQuery = ref('')
-const songs = ref([])
-const selectedSong = ref(null)
-const showDropdown = ref(false)
+const selectedSongName = ref('')
+const allSongs = ref([])
+const filteredSongs = ref([])
+
 const loading = ref(false)
+const success = ref(false)
 const error = ref(null)
-const success = ref(null)
-
-const filteredSongs = computed(() => {
-  if (!searchQuery.value) return []
-  return songs.value.filter(song =>
-      song.song_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      song.artist_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
-
-const handleSearch = () => {
-  showDropdown.value = searchQuery.value.length > 0
-}
-
-const selectSong = (song) => {
-  selectedSong.value = song
-  searchQuery.value = song.song_name
-  showDropdown.value = false
-}
 
 const fetchSongs = async () => {
   try {
-    const data = await getSongs(50)
-    songs.value = data.songs || []
+    const response = await getSongs(100)
+    allSongs.value = response.songs || []
+
+    filteredSongs.value = allSongs.value.filter(
+        song => song.artist_name.toLowerCase() === props.artistName.toLowerCase()
+    )
   } catch (err) {
     console.error('Error fetching songs:', err)
-    songs.value = []
   }
 }
 
-const addSong = async () => {
-  if (!selectedSong.value) return
-
+const submit = async () => {
   loading.value = true
+  success.value = false
   error.value = null
-  success.value = null
 
   try {
-    await addSongToAlbum(
-        props.albumName,
-        selectedSong.value.song_name,
-        token
-    )
-    success.value = 'Song added successfully!'
-    setTimeout(() => {
-      emit('song-added')
-      emit('close')
-    }, 1000)
+    await addSongToAlbum(props.albumName, selectedSongName.value, token)
+    success.value = true
+    emit('song-added')
+    setTimeout(() => emit('close'), 1000)
   } catch (err) {
-    error.value = err.message || 'Failed to add song to album'
+    error.value = 'Failed to add song to album.'
   } finally {
     loading.value = false
   }
 }
 
-fetchSongs()
+onMounted(() => {
+  fetchSongs()
+})
 </script>
 
 <style scoped>
 .add-song-to-album {
   color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
-.search-container {
-  position: relative;
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #2a9d8f;
 }
 
-.search-container input {
-  padding: 8px 12px;
+.form-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+select {
   width: 100%;
-  border-radius: 4px;
-  border: 1px solid #444;
-  background-color: #333;
+  padding: 10px;
+  background-color: #222;
+  border: 1px solid #555;
+  border-radius: 5px;
   color: white;
-}
-
-.search-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  background-color: #333;
-  border: 1px solid #444;
-  border-radius: 0 0 4px 4px;
-  z-index: 10;
-}
-
-.dropdown-item {
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.dropdown-item:hover {
-  background-color: #2a9d8f;
 }
 
 button {
-  padding: 8px 16px;
+  width: 100%;
+  padding: 10px;
   background-color: #2a9d8f;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-weight: bold;
   cursor: pointer;
 }
 
 button:disabled {
-  background-color: #555;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-.error {
-  color: #ff6b6b;
+.success-message {
+  margin-top: 1rem;
+  color: #3ccf7a;
+  text-align: center;
 }
 
-.success {
-  color: #51cf66;
+.error-message {
+  margin-top: 1rem;
+  color: #f87171;
+  text-align: center;
 }
 </style>

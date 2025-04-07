@@ -1,6 +1,7 @@
 import axios from "axios";
 import { URL } from "./api";
 
+
 export async function postArtists(artist_name, genre, profile_url, image, followers, token) {
     try {
         followers = 0
@@ -10,7 +11,7 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
             profile_url,
             image,
             followers
-        }, {
+        },  {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -18,8 +19,8 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
 
         return response.data;
     } catch (error) {
-        console.error("Failed to post artist:", error.response?.data || error.message);
-        throw new Error(error.response?.data?.message || "Something went wrong");
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -33,7 +34,7 @@ export async function getArtists(limit = 5, research = "") {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -44,6 +45,6 @@ export async function getArtistByName(artist_name) {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }

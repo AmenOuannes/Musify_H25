@@ -18,7 +18,7 @@ export async function postAlbum(album_name, genre, artist_name, release_date, im
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -31,7 +31,7 @@ export async function getAlbums(limit = 10, research = '') {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -42,7 +42,7 @@ export async function getAlbumByName(album_name) {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -53,7 +53,7 @@ export async function getAlbumSongs(album_name) {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw error;
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -71,7 +71,7 @@ export async function addSongToAlbum(album_name, song_name, token) {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -89,6 +89,6 @@ export async function deleteSongFromAlbum(album_name, song_name, token) {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }

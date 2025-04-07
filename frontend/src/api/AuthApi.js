@@ -11,7 +11,7 @@ export async function login(username, password) {
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -27,9 +27,9 @@ export async function getUsers(limit = 10, research = "") {
             params: params
         });
         return response.data;
-    }catch(err) {
-        console.error(err);
-        throw new Error(err.message);
+    }catch(error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -41,9 +41,9 @@ export async function getUser(token) {
             }
         });
         return response.data;
-    } catch (err) {
-        console.error(err);
-        throw new Error(err.message);
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -58,9 +58,9 @@ export async function postUser({ username, first_name, last_name, email, passwor
             birth_date
         })
         return response.data
-    } catch (err) {
-        console.error(err)
-        throw new Error(err.response?.data?.message || err.message)
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -81,8 +81,8 @@ export async function putUser({ username, first_name, last_name, email, password
         })
 
         return { username, password }
-    } catch (err) {
-        console.error(err)
-        throw new Error(err.response?.data?.message || err.message)
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
