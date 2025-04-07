@@ -152,3 +152,53 @@ def insert_playlist_query(playlist_name, owner, private):
         INSERT INTO Playlists (playlist_name, owner, private)
         VALUES ('{playlist_name}', '{owner}', {private});
     """
+
+def delete_playlist_query(playlist_name):
+    safe_name = playlist_name.replace("'", "''")
+    return f"""
+            DELETE FROM Playlists
+            WHERE playlist_name = '{safe_name}';
+        """
+
+def get_song_count_from_playlist_query(playlist_name, song_name):
+    safe_playlist_name = playlist_name.replace("'", "''")
+    safe_song_name = song_name.replace("'", "''")
+
+    return f"""
+        SELECT COUNT(*) 
+        FROM Playlists P
+        JOIN ConsistsOf C ON P.playlist_id = C.playlist_id
+        JOIN Songs S ON C.song_id = S.song_id
+        WHERE P.playlist_name = '{safe_playlist_name}'
+          AND S.song_name = '{safe_song_name}';
+    """
+
+def get_songs_from_playlist_query(playlist_name, owner):
+    safe_name = playlist_name.replace("'", "''")
+
+    query = f"""
+        SELECT S.song_id, S.song_name, S.genre, S.release_date, S.url
+        FROM Playlists P
+        JOIN ConsistsOf C ON P.playlist_id = C.playlist_id
+        JOIN Songs S ON C.song_id = S.song_id
+        WHERE P.playlist_name = '{safe_name}'
+    """
+
+    if owner:
+        safe_owner = owner.replace("'", "''")
+        query += f" AND P.owner = '{safe_owner}'"
+
+    return query + ";"
+
+def insert_song_into_playlist_query(playlist_id, song_id):
+    return f"""
+        INSERT INTO ConsistsOf (playlist_id, song_id)
+        VALUES ({playlist_id}, {song_id});
+    """
+
+def delete_song_from_playlist_query(playlist_id, song_id):
+    return f"""
+        DELETE FROM ConsistsOf
+        WHERE playlist_id = {playlist_id} AND song_id = {song_id};
+    """
+
