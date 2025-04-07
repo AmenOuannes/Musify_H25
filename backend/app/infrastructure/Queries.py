@@ -152,3 +152,95 @@ def insert_playlist_query(playlist_name, owner, private):
         INSERT INTO Playlists (playlist_name, owner, private)
         VALUES ('{playlist_name}', '{owner}', {private});
     """
+
+def delete_playlist_query(playlist_name):
+    safe_name = playlist_name.replace("'", "''")
+    return f"""
+            DELETE FROM Playlists
+            WHERE playlist_name = '{safe_name}';
+        """
+
+def get_song_count_from_playlist_query(playlist_name, song_name):
+    safe_playlist_name = playlist_name.replace("'", "''")
+    safe_song_name = song_name.replace("'", "''")
+
+    return f"""
+        SELECT COUNT(*) 
+        FROM Playlists P
+        JOIN ConsistsOf C ON P.playlist_id = C.playlist_id
+        JOIN Songs S ON C.song_id = S.song_id
+        WHERE P.playlist_name = '{safe_playlist_name}'
+          AND S.song_name = '{safe_song_name}';
+    """
+
+def get_songs_from_playlist_query(playlist_name, owner):
+    safe_name = playlist_name.replace("'", "''")
+
+    query = f"""
+        SELECT S.song_id, S.song_name, S.genre, S.release_date, S.url
+        FROM Playlists P
+        JOIN ConsistsOf C ON P.playlist_id = C.playlist_id
+        JOIN Songs S ON C.song_id = S.song_id
+        WHERE P.playlist_name = '{safe_name}'
+    """
+
+    if owner:
+        safe_owner = owner.replace("'", "''")
+        query += f" AND P.owner = '{safe_owner}'"
+
+    return query + ";"
+
+def insert_song_into_playlist_query(playlist_id, song_id):
+    return f"""
+        INSERT INTO ConsistsOf (playlist_id, song_id)
+        VALUES ({playlist_id}, {song_id});
+    """
+
+def delete_song_from_playlist_query(playlist_id, song_id):
+    return f"""
+        DELETE FROM ConsistsOf
+        WHERE playlist_id = {playlist_id} AND song_id = {song_id};
+    """
+
+def get_liked_artists_query(username):
+    return f"""
+    SELECT *
+    FROM Artists A
+    INNER JOIN LikedArtists L ON A.artist_id = L.artist_id
+    WHERE L.user_id = '{username}';
+    """
+
+def add_artist_to_likes(username, artist_id):
+    return f"""
+    INSERT INTO LikedArtists (artist_id, user_id) VALUES ({artist_id},'{username}');
+    """
+def unlike_artist(username, artist_id):
+    return f"""
+    DELETE FROM LikedArtists 
+    WHERE artist_id = {artist_id} AND user_id = '{username}';
+    """
+
+def get_liked_playlists_query(user_id):
+    return f"""
+        SELECT *
+        FROM Playlists P
+        JOIN LikedPlaylists L ON P.playlist_id = L.playlist_id  -- This is just an example, update if you have a real playlist-like table
+        WHERE L.user_id = '{user_id}';
+    """
+
+def unlike_playlist_query(user_id, playlist_id):
+    return f"""
+        DELETE FROM LikedPlaylists
+        WHERE user_id = '{user_id}' AND playlist_id = {playlist_id};
+    """
+def like_playlist_query(user_id, playlist_id):
+    return f"""
+        INSERT INTO LikedPlaylists (user_id, playlist_id)
+        VALUES ('{user_id}', {playlist_id});
+    """
+def get_liked_playlist_count_query(user_id, playlist_id):
+    return f"""
+        SELECT COUNT(*) 
+        FROM LikedPlaylists
+        WHERE user_id = '{user_id}' AND playlist_id = {playlist_id};
+    """

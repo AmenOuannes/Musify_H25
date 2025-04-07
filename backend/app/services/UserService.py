@@ -32,3 +32,42 @@ class UserService:
 
     def updateUser(self,current_username, user_name, first_name, last_name, email, password, birth_date):
         self.repository.updateUser(current_username,user_name, first_name, last_name, email, password, birth_date)
+
+    def getLikedArtists(self, current_user):
+        try:
+            artists = self.repository.getLikedArtists(current_user)
+            return [artist.to_dict() for artist in artists]
+        except (Exception) as e:
+            raise e
+
+    def addArtistTolikes(self, current_user, artist_name):
+        try:
+            self.repository.addLikedArtist(current_user, artist_name)
+        except (Exception) as e:
+            raise e
+
+    def unlikeArtist(self, current_user, artist_name):
+        try:
+            self.repository.unlikeArtist(current_user, artist_name)
+        except (Exception) as e:
+            raise e
+
+    def getLikedPlaylists(self, current_user):
+        try:
+            playlists = self.repository.getLikedPlaylists(current_user)
+            return [playlist.to_dict() for playlist in playlists]
+        except (Exception) as e:
+            raise e
+
+    def unlikePlaylist(self, current_user, playlist_name):
+        try:
+            self.repository.unlikePlaylist(current_user, playlist_name)
+        except (Exception) as e:
+            raise e
+
+    def likePlaylist(self, current_user, playlist_name):
+        try:
+            self.repository.likePlaylist(current_user, playlist_name)
+        except (Exception) as e:
+            raise e
+

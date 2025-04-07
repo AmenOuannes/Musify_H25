@@ -67,4 +67,65 @@ def changeUser():
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
+@user_bp.route('/users/likes/artists/<artist_name>', methods=['POST'])
+@jwt_required()
+def likeArtist(artist_name):
+    try:
+        current_user = get_jwt_identity()
+        userService.addArtistTolikes(current_user, artist_name)
+        return jsonify({"message": "Artist liked"}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
 
+
+@user_bp.route('/users/likes/artists', methods=['GET'])
+@jwt_required()
+def likedArtists():
+    try:
+        current_user = get_jwt_identity()
+        artists = userService.getLikedArtists(current_user)
+        return jsonify({"artists":artists}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+
+
+@user_bp.route('/users/likes/artists/<artist_name>', methods=['DELETE'])
+@jwt_required()
+def unlikeArtist(artist_name):
+    try:
+        current_user = get_jwt_identity()
+        userService.unlikeArtist(current_user, artist_name)
+        return jsonify({"message": "Artist unliked"}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+
+
+@user_bp.route('/users/likes/playlists', methods=['GET'])
+@jwt_required()
+def likePlaylists():
+    try:
+        current_user = get_jwt_identity()
+        playlists = userService.getLikedPlaylists(current_user)
+        return jsonify({"playlists":playlists}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+
+@user_bp.route('/users/likes/playlists/<playlist_name>', methods=['DELETE'])
+@jwt_required()
+def unlikePlaylists(playlist_name):
+    try:
+        current_user = get_jwt_identity()
+        userService.unlikePlaylist(current_user, playlist_name)
+        return jsonify({"message": "Playlist unliked"}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+
+@user_bp.route('/users/likes/playlists/<playlist_name>', methods=['POST'])
+@jwt_required()
+def likeAPlaylist(playlist_name):
+    try:
+        current_user = get_jwt_identity()
+        userService.likePlaylist(current_user, playlist_name)
+        return jsonify({"message": "Playlist liked"}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
