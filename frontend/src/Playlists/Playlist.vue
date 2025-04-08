@@ -1,17 +1,11 @@
 <template>
-  <div class="album-page" v-if="album">
-    <div class="album-header">
-      <img :src="album.image" alt="Album cover" class="album-cover" />
-      <div class="album-details">
-        <h1>{{ album.album_name }}</h1>
-        <p class="artist">By {{ album.artist_name }}</p>
-        <p class="meta">
-          {{ album.genre }} • {{ formatDate(album.release_date) }}
-        </p>
-        <button @click="showAddSongModal = true" class="add-song-btn">
-          Add Song to Album
-        </button>
-      </div>
+  <div class="playlist-page" v-if="playlist">
+    <div class="playlist-header">
+      <h1>{{ playlist.playlist_name }}</h1>
+      <p class="meta">By {{ playlist.owner }} <span v-if="playlist.private">• Private</span></p>
+      <button @click="showAddSongModal = true" class="add-song-btn">
+        Add Song to Playlist
+      </button>
     </div>
 
     <div class="songs-list" v-if="songs.length > 0">
@@ -26,15 +20,14 @@
     </div>
 
     <div v-else>
-      <p>No songs in this album yet.</p>
+      <p>No songs in this playlist yet.</p>
     </div>
 
     <teleport to="body">
       <div v-if="showAddSongModal" class="modal-overlay" @click.self="showAddSongModal = false">
         <div class="modal-content">
-          <AddSongToAlbum
-              :albumName="album.album_name"
-              :artistName="album.artist_name"
+          <AddSongToPlaylist
+              :playlistName="playlist.playlist_name"
               @close="handleAddSongClose"
               @song-added="refreshSongs"
           />
@@ -44,7 +37,7 @@
       <div v-if="confirmPopup" class="modal-overlay" @click.self="confirmPopup = false">
         <div class="modal-content">
           <h3>Confirm Removal</h3>
-          <p>Are you sure you want to remove "{{ songToRemove }}" from the album?</p>
+          <p>Are you sure you want to remove "{{ songToRemove }}" from the playlist?</p>
           <div class="popup-actions">
             <button @click="performRemove" class="confirm-btn">Yes</button>
             <button @click="confirmPopup = false" class="cancel-btn">Cancel</button>
@@ -55,31 +48,30 @@
   </div>
 
   <div v-else>
-    <p>Loading album...</p>
+    <p>Loading playlist...</p>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getAlbumByName, getAlbumSongs, deleteSongFromAlbum } from '@/api/albumAPI'
-import AddSongToAlbum from '@/Albums/AddSongToAlbum.vue'
+import { getPlaylistByName, getPlaylistSongs, deleteSongFromPlaylist } from '@/api/playlistAPI'
 import SongDisplay from '@/Songs/SongDisplay.vue'
+import AddSongToPlaylist from '@/Playlists/AddSongsToPlaylist.vue'
 import { useStore } from 'vuex'
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
-const album = ref(null)
+const token = store.getters.currentToken
+
+const playlist = ref(null)
 const songs = ref([])
 const showAddSongModal = ref(false)
 const confirmPopup = ref(false)
 const songToRemove = ref(null)
-const token = store.getters.currentToken
 
-const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString()
-}
+const formatDate = (date) => new Date(date).toLocaleDateString()
 
 const goToSong = (name) => {
   const formatted = name.toLowerCase().replace(/\s+/g, '_')
@@ -88,11 +80,11 @@ const goToSong = (name) => {
 
 const refreshSongs = async () => {
   try {
-    const cleaned = route.params.name.replace(/_/g, ' ').toLowerCase()
-    const songsData = await getAlbumSongs(cleaned)
-    songs.value = songsData.songs || []
+    const cleanedName = route.params.name.replace(/_/g, ' ').toLowerCase()
+    const result = await getPlaylistSongs(cleanedName, playlist.value.owner)
+    songs.value = result.songs || []
   } catch (err) {
-    console.error('Failed to refresh songs:', err)
+    console.error('Failed to fetch songs from playlist:', err)
   }
 }
 
@@ -103,66 +95,51 @@ const confirmRemove = (name) => {
 
 const performRemove = async () => {
   try {
-    await deleteSongFromAlbum(album.value.album_name, songToRemove.value, token)
+    await deleteSongFromPlaylist(playlist.value.playlist_name, songToRemove.value, token)
     confirmPopup.value = false
     await refreshSongs()
   } catch (err) {
-    console.error(err.message)
+    console.error('Failed to remove song:', err)
   }
 }
 
 const handleAddSongClose = () => {
   showAddSongModal.value = false
+  refreshSongs()
 }
 
 onMounted(async () => {
   try {
     const cleaned = route.params.name.replace(/_/g, ' ').toLowerCase()
-    const albumData = await getAlbumByName(cleaned)
-    album.value = albumData
+    const data = await getPlaylistByName(cleaned)
+    playlist.value = data
     await refreshSongs()
   } catch (err) {
-    console.error('Failed to load album:', err)
+    console.error('Failed to load playlist:', err)
   }
 })
 </script>
 
 <style scoped>
-.album-page {
+.playlist-page {
   padding: 2rem;
   color: white;
   background-color: #111;
 }
 
-.album-header {
-  display: flex;
-  gap: 2rem;
+.playlist-header {
   margin-bottom: 2rem;
-  align-items: center;
 }
 
-.album-cover {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-.album-details h1 {
+.playlist-header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
   color: #2a9d8f;
 }
 
-.album-details .artist {
-  font-size: 1.2rem;
-  margin-bottom: 0.3rem;
-  color: #ddd;
-}
-
-.album-details .meta {
-  font-size: 0.95rem;
-  color: #aaa;
+.playlist-header .meta {
+  font-size: 1.1rem;
+  color: #ccc;
 }
 
 .add-song-btn {

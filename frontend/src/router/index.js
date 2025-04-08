@@ -6,7 +6,7 @@ import Favorites from '../views/Favorites.vue'
 import Artists from '../Artists/Artists.vue'
 import Songs from '../Songs/Songs.vue'
 import Albums from '../Albums/Albums.vue'
-import Playlists from '../views/Playlists.vue'
+import Playlists from '../Playlists/Playlists.vue'
 import MyPlaylists from '../views/MyPlaylists.vue'
 import Settings from '../views/Settings.vue'
 import Users from '../views/users.vue'
@@ -40,11 +40,22 @@ const routes = [
         meta: { requiresAuth: true }
     },
     { path: '/playlists', component: Playlists, meta: { requiresAuth: true } },
+    {
+        path: '/playlists/:name',
+        name: 'PlaylistDetail',
+        component: () => import('../Playlists/Playlist.vue'),
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/playlists/:name/play',
+        name: 'PlaylistPlayer',
+        component: () => import('@/views/PlaylistPlayer.vue'),
+        meta: { requiresAuth: true }
+    },
     { path: '/myplaylists', component: MyPlaylists, meta: { requiresAuth: true } },
     { path: '/settings', component: Settings, meta: { requiresAuth: true } },
     { path: '/users', component: Users, meta: { requiresAuth: true } }
 ]
-
 
 const router = createRouter({
     history: createWebHistory(),

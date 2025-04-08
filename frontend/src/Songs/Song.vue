@@ -5,6 +5,8 @@
     <p><strong>Artist:</strong> {{ song.artist_name }}</p>
     <p><strong>Release Date:</strong> {{ song.release_date }}</p>
     <p><strong>URL:</strong> {{ song.url }}</p>
+
+    <YoutubeEmbed :url="song.url" />
   </div>
 
   <div v-else>
@@ -16,6 +18,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { getSongByName } from '@/api/songAPI'
+import YoutubeEmbed from '@/components/YoutubeEmbed.vue'
 
 const route = useRoute()
 const song = ref(null)
@@ -24,13 +27,12 @@ onMounted(async () => {
   try {
     const cleaned = route.params.name.replace(/_/g, ' ').toLowerCase()
     const data = await getSongByName(cleaned)
-    song.value = data // ✅ direct object, not `data.song`
+    song.value = data
   } catch (err) {
     console.error('Failed to load song:', err)
   }
 })
 </script>
-
 
 <style scoped>
 .card {

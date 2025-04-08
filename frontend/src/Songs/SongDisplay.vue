@@ -12,7 +12,7 @@
     <button
         v-if="onRemove"
         class="remove-btn"
-        @click.stop="confirmRemove"
+        @click.stop="onRemove(song.song_name)"
         title="Remove from album"
     >
       🗑
@@ -21,19 +21,13 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   song: {
     type: Object,
     required: true
   },
-  onRemove: Function // facultatif : si fourni, on affiche le bouton
+  onRemove: Function
 })
-
-const confirmRemove = () => {
-  if (confirm(`Are you sure you want to remove "${props.song.song_name}" from the album?`)) {
-    props.onRemove?.(props.song.song_name)
-  }
-}
 </script>
 
 <style scoped>

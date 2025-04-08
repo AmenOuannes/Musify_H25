@@ -48,3 +48,39 @@ export async function getArtistByName(artist_name) {
         throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
+
+export async function likeArtist(artist_name, token) {
+    try {
+        const response = await axios.post(`${URL}/users/likes/artists/${artist_name.toLowerCase()}`, {}, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Unexpected error');
+    }
+}
+
+export async function unlikeArtist(artist_name, token) {
+    try {
+        const response = await axios.delete(`${URL}/users/likes/artists/${artist_name.toLowerCase()}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Unexpected error');
+    }
+}
+
+export async function getLikedArtists(token) {
+    try {
+        const response = await axios.get(`${URL}/users/likes/artists`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Unexpected error');
+    }
+}
