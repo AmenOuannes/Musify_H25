@@ -35,3 +35,52 @@ def create_playlist():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+@playlist_bp.route('/playlists/<playlist_name>', methods=['DELETE'])
+@jwt_required()
+def delete_playlist(playlist_name):
+    try:
+        playlistService.deletePlaylist(playlist_name)
+        return jsonify({"message": "Playlist deleted"}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@playlist_bp.route('/playlists/<playlist_name>/songs/<song_name>', methods=['GET'])
+def get_song(playlist_name, song_name):
+    try:
+        song = playlistService.getSongFromPlaylist(playlist_name, song_name)
+        return responseFormat({"song":song}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+
+@playlist_bp.route('/playlists/<playlist_name>/songs', methods=['GET'])
+def get_songs(playlist_name):
+    try:
+        owner = request.args.get('owner', type=str) if 'owner' in request.args else ""
+        songs = playlistService.getAllSongsFromPlaylist(playlist_name, owner)
+        return responseFormat({"songs":songs}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+
+@playlist_bp.route('/playlists/<playlist_name>/songs/<song_name>', methods=['POST'])
+@jwt_required()
+def create_song(playlist_name, song_name):
+    try:
+        current_user = get_jwt_identity()
+        playlistService.addSongToPlaylist(playlist_name, song_name)
+        return jsonify({"message": "Song added"}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+@playlist_bp.route('/playlists/<playlist_name>/songs/<song_name>', methods=['DELETE'])
+@jwt_required()
+def delete_song(playlist_name, song_name):
+    try:
+        current_user = get_jwt_identity()
+        playlistService.deleteSongFromPlaylist(playlist_name,song_name)
+        return jsonify({"message": "Song deleted"}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
