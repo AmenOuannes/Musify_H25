@@ -6,10 +6,10 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
     try {
         followers = 0
         const response = await axios.post(`${URL}/artists`, {
-            artist_name: artist_name.toLowerCase(),
-            genre: genre.toLowerCase(),
-            profile_url,
-            image,
+            artist_name: encodeURIComponent(artist_name.toLowerCase()),
+            genre: encodeURIComponent(genre.toLowerCase()),
+            profile_url: encodeURIComponent(profile_url),
+            image: encodeURIComponent(image.toLowerCase()),
             followers
         },  {
             headers: {
@@ -27,7 +27,7 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
 export async function getArtists(limit = 5, research = "") {
     try {
         const params = { limit };
-        if (research) params.research = research.toLowerCase();
+        if (research) params.research = encodeURIComponent(research.toLowerCase());
 
         const response = await axios.get(URL + "/artists", { params });
 
@@ -40,7 +40,7 @@ export async function getArtists(limit = 5, research = "") {
 
 export async function getArtistByName(artist_name) {
     try {
-        artist_name = artist_name.toLowerCase();
+        artist_name = encodeURIComponent(artist_name.toLowerCase());
         const response = await axios.get(`${URL}/artists/${artist_name}`);
         return response.data;
     } catch (error) {
@@ -51,7 +51,7 @@ export async function getArtistByName(artist_name) {
 
 export async function likeArtist(artist_name, token) {
     try {
-        const response = await axios.post(`${URL}/users/likes/artists/${artist_name.toLowerCase()}`, {}, {
+        const response = await axios.post(`${URL}/users/likes/artists/${encodeURIComponent(artist_name.toLowerCase())}`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;
@@ -63,7 +63,7 @@ export async function likeArtist(artist_name, token) {
 
 export async function unlikeArtist(artist_name, token) {
     try {
-        const response = await axios.delete(`${URL}/users/likes/artists/${artist_name.toLowerCase()}`, {
+        const response = await axios.delete(`${URL}/users/likes/artists/${encodeURIComponent(artist_name.toLowerCase())}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;

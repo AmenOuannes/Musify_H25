@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from urllib.parse import unquote
 
 from backend.app.routes.ResponseFormat import responseFormat
 from backend.app.services.AlbumService import AlbumService
@@ -17,7 +18,8 @@ def get_albums():
 @album_bp.route('/albums/<album_name>', methods=['GET'])
 def get_album(album_name):
     try:
-        song = albumService.getAlbum(album_name)
+        decoded_name = unquote(album_name)
+        song = albumService.getAlbum(decoded_name)
         return responseFormat(song),200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -28,9 +30,9 @@ def get_album(album_name):
 def create_album():
     try:
         current_user = get_jwt_identity()
-        album_name = request.json.get('album_name')
-        genre = request.json.get('genre')
-        artist_name = request.json.get('artist_name')
+        album_name = unquote(request.json.get('album_name'))
+        genre = unquote(request.json.get('genre'))
+        artist_name = unquote(request.json.get('artist_name'))
         release_date = request.json.get('release_date')
         image = request.json.get('image')
 
@@ -41,7 +43,8 @@ def create_album():
 
 @album_bp.route('/albums/<album_name>/songs', methods=['GET'])
 def getAlbumSongs(album_name):
-    songs = albumService.getSongsFromAlbum(album_name)
+    decoded_name = unquote(album_name)
+    songs = albumService.getSongsFromAlbum(decoded_name)
     return responseFormat({"songs": songs}), 200
 
 @album_bp.route('/albums/<album_name>/songs/<song_name>', methods=['POST'])

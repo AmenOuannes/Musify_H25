@@ -19,19 +19,38 @@ class AlbumRepository:
 
     def getAlbums(self, limit, research):
         self.albums = []
+
         query = get_all_albums_query(limit, research)
-        result = db.session.execute(text(query))
+        params = {}
+
+        if research:
+            params["research"] = f"{research.lower()}%"
+        if int(limit) != -1:
+            params["limit"] = int(limit)
+
+        result = db.session.execute(query, params)
+
         for row in result:
             row_data = row._mapping
-            owner_query = get_album_owner_query(row_data["album_name"])
-            owner = db.session.execute(text(owner_query)).fetchone()._mapping
+
+            owner_query = text("""
+                SELECT A.artist_name
+                FROM Artists A
+                JOIN Creates C ON A.artist_id = C.artist_id
+                JOIN Albums Al ON C.album_id = Al.album_id
+                WHERE LOWER(Al.album_name) = LOWER(:name)
+            """)
+            owner_result = db.session.execute(owner_query, {"name": row_data["album_name"]}).fetchone()
+
+            artist_name = owner_result._mapping["artist_name"] if owner_result else "Unknown"
+
             albumSQL = AlbumSQL(
                 album_id=row_data["album_id"],
                 album_name=row_data["album_name"],
                 genre=row_data["genre"],
                 release_date=row_data["release_date"],
                 cover_image=row_data["cover_image"],
-                artist_name=owner["artist_name"]
+                artist_name=artist_name
             )
 
             self.albums.append(Album().fromSQL(albumSQL))
@@ -39,13 +58,15 @@ class AlbumRepository:
         return self.albums
 
     def get_album(self, album_name):
-        query = get_album_by_name_query(album_name)
-        result = db.session.execute(text(query))
-        row = result.fetchone()
-        if row:
-            row_data = row._mapping
-            owner_query = get_album_owner_query(row_data["album_name"])
-            owner = db.session.execute(text(owner_query)).fetchone()._mapping
+        query = get_album_by_name_query()
+        result = db.session.execute(query, {"name": album_name}).fetchone()
+
+        if result:
+            row_data = result._mapping
+
+            owner_query = get_album_owner_query()
+            owner = db.session.execute(owner_query, {"name": row_data["album_name"]}).fetchone()._mapping
+
             albumSQL = AlbumSQL(
                 album_id=row_data["album_id"],
                 album_name=row_data["album_name"],
@@ -59,54 +80,67 @@ class AlbumRepository:
         return None
 
     def addAlbum(self, album, artist):
-        album_exists = get_album_by_name_query(album.album_name)
-        result = db.session.execute(text(album_exists))
+        # Vérifie si l'album existe
+        exists_query = get_album_by_name_query()
+        result = db.session.execute(exists_query, {"name": album.album_name})
         count = result.scalar() or 0
 
         if count > 0:
             raise Exception("Album already exists")
         else:
-            album_query = insert_album_query(
-                album.album_name,
-                album.genre,
-                album.release_date,
-                album.cover_image
-            )
-
-            db.session.execute(text(album_query))
+            # Insertion sécurisée
+            insert_query = insert_album_query()
+            db.session.execute(insert_query, {
+                "name": album.album_name,
+                "genre": album.genre,
+                "date": album.release_date,
+                "cover": album.cover_image
+            })
             db.session.commit()
-            print('inserted')
-            id_query = get_album_id_query(album.album_name)
-            id =db.session.execute(text(id_query)).fetchone()._mapping["album_id"]
-            print(id)
-            creates_query = insert_creates(id, artist.artist_id)
-            db.session.execute(text(creates_query))
+
+            # Récupère l'ID
+            id_query = get_album_id_query()
+            id_result = db.session.execute(id_query, {"name": album.album_name}).fetchone()
+            album_id = id_result._mapping["album_id"]
+
+            # Insertion dans Creates (ici tu peux rester en f-string si tu veux)
+            creates_query = insert_creates()
+            db.session.execute(creates_query, {
+                "album_id": album_id,
+                "artist_id": artist.artist_id
+            })
             db.session.commit()
 
     def get_album_songs(self, album_name):
-        self.songs = []
-        album_id_query = get_album_id_query(album_name)
-        album_id = db.session.execute(text(album_id_query)).fetchone()._mapping["album_id"]
 
-        owner_query = get_album_owner_query(album_name)
-        owner = db.session.execute(text(owner_query)).fetchone()._mapping
+        # Sélection sécurisée de l'ID de l'album
+        album_id_query = get_album_id_query()
+        album_id_result = db.session.execute(album_id_query, {"name": album_name}).fetchone()
+        if not album_id_result:
+            return []
 
-        songs_query = get_songs_of_album(album_id)
-        result = db.session.execute(text(songs_query))
+        album_id = album_id_result._mapping["album_id"]
+
+        # Sélection sécurisée du propriétaire de l'album
+        owner_query = get_album_owner_query()
+        owner_result = db.session.execute(owner_query, {"name": album_name}).fetchone()
+        artist_name = owner_result._mapping["artist_name"] if owner_result else "Unknown"
+
+        # Récupération sécurisée des chansons
+        songs_query = get_songs_of_album()
+        result = db.session.execute(songs_query, {"album_id": album_id})
 
         for row in result:
-                row_data = row._mapping
-
-                songSQL = SongSQL(
-                    song_id=row_data["song_id"],
-                    song_name=row_data["song_name"],
-                    genre=row_data["genre"],
-                    artist_name=owner["artist_name"],
-                    release_date=row_data["release_date"],
-                    url=row_data["url"]
-                )
-
-                self.songs.append(Song().fromSQL(songSQL))
+            row_data = row._mapping
+            songSQL = SongSQL(
+                song_id=row_data["song_id"],
+                song_name=row_data["song_name"],
+                genre=row_data["genre"],
+                artist_name=artist_name,
+                release_date=row_data["release_date"],
+                url=row_data["url"]
+            )
+            self.songs.append(Song().fromSQL(songSQL))
 
         return self.songs
 

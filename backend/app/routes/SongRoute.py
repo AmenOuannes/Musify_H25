@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from urllib.parse import unquote
 
 from backend.app.routes.ResponseFormat import responseFormat
 from backend.app.services.SongService import SongService
@@ -16,7 +17,8 @@ def get_songs():
 @song_bp.route('/songs/<song_name>', methods=['GET'])
 def get_song(song_name):
     try:
-        song = songService.getSong(song_name)
+        decoded_name = unquote(song_name)
+        song = songService.getSong(decoded_name)
         return responseFormat(song),200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -26,11 +28,12 @@ def get_song(song_name):
 def create_song():
     try:
         current_user = get_jwt_identity()
-        song_name = request.json.get('song_name')
-        genre = request.json.get('genre')
-        artist = request.json.get('artist_name')
-        release_date = request.json.get('release_date')
-        url = request.json.get('url')
+
+        song_name = unquote(request.json.get('song_name'))
+        genre = unquote(request.json.get('genre'))
+        artist = unquote(request.json.get('artist_name'))
+        release_date = unquote(request.json.get('release_date'))
+        url = unquote(request.json.get('url'))
 
         songService.createSong(song_name, genre, artist, release_date, url)
         return jsonify({"message": "created"}), 201

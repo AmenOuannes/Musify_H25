@@ -54,7 +54,7 @@ export default createStore({
             } catch (error) {
                 commit('clearUser')
                 commit('clearToken')
-                window.location.href = '/login'
+                window.location.href = '/signin'
             }
         },
         login({ commit }, { user, token }) {

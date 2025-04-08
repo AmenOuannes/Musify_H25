@@ -12,70 +12,91 @@ class SongRepository:
         self.songs = []
 
     def addSong(self, song, artist):
-        song_exists = get_song_by_name_query(song.song_name)
-        result = db.session.execute(text(song_exists))
+        # Vérifie si la chanson existe déjà
+        exists_query = get_song_by_name_query()
+        result = db.session.execute(exists_query, {"name": song.song_name})
         count = result.scalar() or 0
-        print("Song inserted")
 
         if count > 0:
             raise Exception("Song already exists")
-        else:
-            song_query = insert_song_query(
-                song.song_name,
-                song.genre,
-                song.release_date,
-                song.url
-            )
 
-            db.session.execute(text(song_query))
-            db.session.commit()
+        # Insère la chanson avec paramètres sécurisés
+        insert_query = insert_song_query()
+        db.session.execute(insert_query, {
+            "name": song.song_name,
+            "genre": song.genre,
+            "date": song.release_date,
+            "url": song.url
+        })
+        db.session.commit()
 
-            song_id = db.session.execute(text(get_song_by_name_query(song.song_name))).fetchone()._mapping["song_id"]
+        # Récupère son ID
+        song_id = db.session.execute(get_song_by_name_query(), {"name": song.song_name}).fetchone()._mapping["song_id"]
 
-            sings_query = insert_sings(song_id, artist.artist_id)
-            db.session.execute(text(sings_query))
-            db.session.commit()
-
+        # Ajoute dans Sings
+        sings_query = insert_sings(song_id, artist.artist_id)
+        db.session.execute(sings_query)
+        db.session.commit()
 
     def getSong(self, song_name):
-        query = get_song_by_name_query(song_name)
-        singer_query = get_singer_query(song_name)
-        result = db.session.execute(text(query))
-        row = result.fetchone()
-        singer = db.session.execute(text(singer_query)).fetchone()
-        if row:
-            row_data = row._mapping
+        query = get_song_by_name_query()
+        singer_query = get_singer_query()
 
+        result = db.session.execute(query, {"name": song_name}).fetchone()
+        singer = db.session.execute(singer_query, {"name": song_name}).fetchone()
+
+        if result:
+            row_data = result._mapping
             songSQL = SongSQL(
                 song_id=row_data["song_id"],
                 song_name=row_data["song_name"],
                 genre=row_data["genre"],
-                artist_name=singer._mapping["artist_name"],
+                artist_name=singer._mapping["artist_name"] if singer else "Unknown",
                 release_date=row_data["release_date"],
                 url=row_data["url"]
             )
-
             return Song().fromSQL(songSQL)
         else:
             return None
 
     def getAllSongs(self, limit, research):
-        query = get_all_songs_query(limit,research)
-        result = db.session.execute(text(query))
-        self.songs = []
-        for row in result:
-            row_data = row._mapping
-            sing_query = get_singer_query(row_data["song_name"])
-            singer = db.session.execute(text(sing_query)).fetchone()
-            songSQL = SongSQL(
-                song_id=row_data["song_id"],
-                song_name=row_data["song_name"],
-                genre=row_data["genre"],
-                artist_name=singer._mapping["artist_name"],
-                release_date=row_data["release_date"],
-                url=row_data["url"]
-            )
-            self.songs.append(Song().fromSQL(songSQL))
+        try:
+            query = get_all_songs_query(limit, research)
 
-        return self.songs
+            params = {}
+            if research:
+                params["research"] = f"{research}%"
+            if int(limit) != -1:
+                params["limit"] = int(limit)
+
+            result = db.session.execute(query, params)
+
+            self.songs = []
+            for row in result:
+                row_data = row._mapping
+
+                # secure query for artist name
+                artist_query = text("""
+                    SELECT A.artist_name FROM Artists A
+                    JOIN Sings R ON A.artist_id = R.artist_id
+                    WHERE R.song_id = :song_id
+                """)
+                artist = db.session.execute(artist_query, {"song_id": row_data["song_id"]}).fetchone()
+
+                songSQL = SongSQL(
+                    song_id=row_data["song_id"],
+                    song_name=row_data["song_name"],
+                    genre=row_data["genre"],
+                    artist_name=artist._mapping["artist_name"] if artist else "Unknown",
+                    release_date=row_data["release_date"],
+                    url=row_data["url"]
+                )
+                self.songs.append(Song().fromSQL(songSQL))
+
+            return self.songs
+
+        except Exception as e:
+            print("Error in getAllSongs:", e)
+            raise e
+
 

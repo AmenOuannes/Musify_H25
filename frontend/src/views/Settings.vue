@@ -101,7 +101,7 @@ export default {
     onMounted(() => {
       if (!store.getters.isLoggedIn) {
         error.value = 'Vous devez être connecté pour accéder à cette page'
-        setTimeout(() => router.push('/login'), 2000)
+        setTimeout(() => router.push('/signin'), 2000)
       } else {
         loadUserData()
       }
