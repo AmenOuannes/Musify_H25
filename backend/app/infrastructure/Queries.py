@@ -168,8 +168,10 @@ def get_playlist_by_name_query():
     """)
 
 
-def get_all_playlists_query(limit, research, owner):
-    if not research and not owner:
+from sqlalchemy.sql import text
+
+def get_all_playlists_query(limit, research, owner, private):
+    if not research and not owner and private != 0:
         if int(limit) == -1:
             return text("SELECT * FROM Playlists")
         return text("SELECT * FROM Playlists LIMIT :limit")
@@ -181,13 +183,21 @@ def get_all_playlists_query(limit, research, owner):
         conditions.append("LOWER(playlist_name) LIKE :research")
     if owner:
         conditions.append("LOWER(owner) = LOWER(:owner)")
+    if private == 0:
+        conditions.append("private = 0")
 
     where_clause = " AND ".join(conditions)
 
-    if int(limit) == -1:
-        return text(f"{base_query} {where_clause}")
+    if not conditions:
+        query = "SELECT * FROM Playlists"
+    else:
+        query = f"{base_query} {where_clause}"
 
-    return text(f"{base_query} {where_clause} LIMIT :limit")
+    if int(limit) != -1:
+        query += " LIMIT :limit"
+
+    return text(query)
+
 
 
 def insert_playlist_query():
@@ -240,17 +250,22 @@ def delete_song_from_playlist_query():
     """)
 
 
-def get_liked_artists_query(username):
-    return text(f"""
+def get_liked_artists_query(research):
+    base_query = """
     SELECT *
     FROM Artists A
     INNER JOIN LikedArtists L ON A.artist_id = L.artist_id
-    WHERE L.user_id = '{username}';
-    """)
+    WHERE L.user_id = :username
+    """
 
-def add_artist_to_likes(username, artist_id):
+    if research:
+        base_query += " AND LOWER(A.artist_name) LIKE :research"
+
+    return text(base_query)
+
+def add_artist_to_likes():
     return text(f"""
-    INSERT INTO LikedArtists (artist_id, user_id) VALUES ({artist_id},'{username}');
+    INSERT INTO LikedArtists (artist_id, user_id) VALUES (':artist_id', :username);
     """)
 def unlike_artist(username, artist_id):
     return text(f"""
@@ -258,13 +273,20 @@ def unlike_artist(username, artist_id):
     WHERE artist_id = {artist_id} AND user_id = '{username}';
     """)
 
-def get_liked_playlists_query(user_id):
-    return text(f"""
+from sqlalchemy.sql import text
+
+def get_liked_playlists_query(research=False):
+    base_query = """
         SELECT *
         FROM Playlists P
-        JOIN LikedPlaylists L ON P.playlist_id = L.playlist_id  -- This is just an example, update if you have a real playlist-like table
-        WHERE L.user_id = '{user_id}';
-    """)
+        JOIN LikedPlaylists L ON P.playlist_id = L.playlist_id
+        WHERE L.user_id = :user_id
+    """
+
+    if research:
+        base_query += " AND LOWER(P.playlist_name) LIKE :research"
+
+    return text(base_query)
 
 def unlike_playlist_query(user_id, playlist_id):
     return text(f"""

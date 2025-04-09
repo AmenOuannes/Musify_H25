@@ -16,13 +16,14 @@ class PlaylistRepository():
     def __init__(self):
         self.playlists = []
 
-    def getPlaylists(self, limit, research, owner):
+    def getPlaylists(self, limit, research, owner, private):
         self.playlists = []
-        query = get_all_playlists_query(limit, research, owner)
+        query = get_all_playlists_query(limit, research, owner, private)
         result = db.session.execute(query, {
             'limit': limit,
             'research': f'%{research.lower()}%' if research else None,
-            'owner': owner.lower() if owner else None
+            'owner': owner.lower() if owner else None,
+            'private': private if private else 1,
         })
 
         for row in result:
