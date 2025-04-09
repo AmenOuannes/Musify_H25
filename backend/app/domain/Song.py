@@ -4,7 +4,7 @@ import random
 
 class Song:
     def __init__(self):
-        self.a=""
+        self.init = None
 
     def fromRequest(self,song_name, genre, artist_name, release_date, url):
         self.song_name = song_name

@@ -23,7 +23,7 @@ class AlbumService:
         else:
             raise Exception(f"album not found:{album_name}")
 
-    def createAlbum(self, album_name, genre, artist_name, release_date, image):
+    def create_album(self, album_name, genre, artist_name, release_date, image):
         try:
             artist = artist_repository.getArtistByName(artist_name)
             date = datetime.strptime(release_date, "%Y-%m-%d")
@@ -34,12 +34,12 @@ class AlbumService:
         except Exception as e:
             raise e
 
-    def getSongsFromAlbum(self, album_name):
+    def get_songs_from_album(self, album_name):
         songs = self.album_repository.get_album_songs(album_name)
         return [song.to_dict() for song in songs] if songs else []
 
-    def addSongToAlbum(self, album_name, song_name):
+    def add_song_to_album(self, album_name, song_name):
         self.album_repository.addSongToAlbum(album_name, song_name)
 
-    def deleteSongFromAlbum(self, album_name, song_name):
+    def delete_song_from_album(self, album_name, song_name):
         self.album_repository.deleteSongFromAlbum(album_name, song_name)

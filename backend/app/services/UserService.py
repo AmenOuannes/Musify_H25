@@ -30,42 +30,42 @@ class UserService:
             raise Exception('User not found')
         return user.to_dict()
 
-    def updateUser(self,current_username, user_name, first_name, last_name, email, password, birth_date):
+    def update_user_info(self, current_username, user_name, first_name, last_name, email, password, birth_date):
         self.repository.updateUser(current_username,user_name, first_name, last_name, email, password, birth_date)
 
-    def getLikedArtists(self, current_user, research):
+    def get_liked_artists(self, current_user, research):
         try:
             artists = self.repository.getLikedArtists(current_user, research)
             return [artist.to_dict() for artist in artists]
         except (Exception) as e:
             raise e
 
-    def addArtistTolikes(self, current_user, artist_name):
+    def like_artist(self, current_user, artist_name):
         try:
             self.repository.addLikedArtist(current_user, artist_name)
         except (Exception) as e:
             raise e
 
-    def unlikeArtist(self, current_user, artist_name):
+    def unlike_artist(self, current_user, artist_name):
         try:
             self.repository.unlikeArtist(current_user, artist_name)
         except (Exception) as e:
             raise e
 
-    def getLikedPlaylists(self, current_user, research):
+    def get_liked_playlists(self, current_user, research):
         try:
             playlists = self.repository.getLikedPlaylists(current_user, research)
             return [playlist.to_dict() for playlist in playlists]
         except (Exception) as e:
             raise e
 
-    def unlikePlaylist(self, current_user, playlist_name):
+    def unlike_playlist(self, current_user, playlist_name):
         try:
             self.repository.unlikePlaylist(current_user, playlist_name)
         except (Exception) as e:
             raise e
 
-    def likePlaylist(self, current_user, playlist_name):
+    def like_playlist(self, current_user, playlist_name):
         try:
             self.repository.likePlaylist(current_user, playlist_name)
         except (Exception) as e:

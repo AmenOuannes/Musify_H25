@@ -1,9 +1,8 @@
 from backend.__init__ import db
 
 from backend.app.domain.Song import Song
-from backend.app.infrastructure.Queries import get_all_songs_query, get_song_by_name_query, insert_song_query, \
-    insert_sings, get_singer_query, get_artist_by_name_query
-from backend.app.infrastructure.songSQL import SongSQL
+from backend.app.infrastructure.Queries.SongQueries import *
+from backend.app.infrastructure.SQL.songSQL import SongSQL
 
 
 class SongRepository:

@@ -2,17 +2,15 @@ from backend.app.domain.Artist import Artist
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.User import User
 from backend.__init__ import db
+from backend.app.infrastructure.Queries.ArtistQueries import get_artist_by_name_query
+from backend.app.infrastructure.Queries.PlaylistQueries import get_liked_artists_query, get_playlist_by_name_query
+from backend.app.infrastructure.Queries.UserQueries import *
 
-from backend.app.infrastructure.ArtistSQL import ArtistSQL
-from backend.app.infrastructure.PlaylistSQL import PlaylistSQL
-from backend.app.infrastructure.Queries import (
-    get_all_users_query, find_similar_users_query, insert_user_query,
-    get_user_with_username_query, update_user_query, get_liked_artists_query,
-    get_artist_by_name_query, add_artist_to_likes, unlike_artist,
-    get_liked_playlists_query, get_playlist_by_name_query,
-    unlike_playlist_query, like_playlist_query, get_liked_playlist_count_query
-)
-from backend.app.infrastructure.UserSQL import UserSQL
+
+from backend.app.infrastructure.SQL.ArtistSQL import ArtistSQL
+from backend.app.infrastructure.SQL.PlaylistSQL import PlaylistSQL
+
+from backend.app.infrastructure.SQL.UserSQL import UserSQL
 
 
 class UserRepository:

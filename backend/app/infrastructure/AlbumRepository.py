@@ -4,12 +4,10 @@ from backend.__init__ import db
 
 from backend.app.domain.Album import Album
 from backend.app.domain.Song import Song
-from backend.app.infrastructure.AlbumSQL import AlbumSQL
-from backend.app.infrastructure.Queries import get_all_albums_query, get_singer_query, get_album_owner_query, \
-    get_album_by_name_query, insert_album_query, insert_creates, get_album_id_query, get_songs_of_album, \
-    insert_song_into_album_query, get_song_by_name_query, delete_song_from_album_query
-from backend.app.infrastructure.songSQL import SongSQL
-from backend.app.routes.ArtistRoute import add_artist
+from backend.app.infrastructure.Queries.SongQueries import get_song_by_name_query
+from backend.app.infrastructure.SQL.AlbumSQL import AlbumSQL
+from backend.app.infrastructure.Queries.AlbumQueries import *
+from backend.app.infrastructure.SQL.songSQL import SongSQL
 
 
 class AlbumRepository:
