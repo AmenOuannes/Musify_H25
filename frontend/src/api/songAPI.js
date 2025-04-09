@@ -5,9 +5,9 @@ import { URL } from "./api";
 export async function postSong(song_name, genre, artist_name, release_date, url, token) {
     try {
         const response = await axios.post(URL + "/songs", {
-            song_name: encodeURIComponent(song_name.toLowerCase()),
-            genre: encodeURIComponent(genre.toLowerCase()),
-            artist_name: encodeURIComponent(artist_name.toLowerCase()),
+            song_name: encodeURIComponent(song_name),
+            genre: encodeURIComponent(genre),
+            artist_name: encodeURIComponent(artist_name),
             release_date,
             url: encodeURIComponent(url),
         }, {
@@ -26,7 +26,7 @@ export async function postSong(song_name, genre, artist_name, release_date, url,
 export async function getSongs(limit = 10, research = '') {
     try {
         const params = { limit }
-        if (research) params.research = encodeURIComponent(research.toLowerCase());
+        if (research) params.research = encodeURIComponent(research);
         const response = await axios.get(`${URL}/songs`, { params })
         return response.data
     } catch (error) {
@@ -37,7 +37,7 @@ export async function getSongs(limit = 10, research = '') {
 
 export async function getSongByName(song_name) {
     try {
-        song_name = encodeURIComponent(song_name.toLowerCase());
+        song_name = encodeURIComponent(song_name);
         const response = await axios.get(`${URL}/songs/${song_name}`)
         return response.data
     } catch (error) {

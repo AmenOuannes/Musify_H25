@@ -1,34 +1,31 @@
 <template>
-  <div class="song-search">
+  <div class="playlist-search">
     <div class="search-container">
       <div class="search-bar">
         <input
             type="text"
             v-model="searchQuery"
-            placeholder="Search for a song..."
-            @input="handleInput"
-            @blur="hideDropdown"
+            placeholder="Search for a playlist..."
         />
       </div>
-      <div class="add-song">
-        <button @click="showAddModal = true">Add Song</button>
+      <div class="add-playlist">
+        <button @click="showAddModal = true">Add Playlist</button>
       </div>
     </div>
 
-    <div class="song-list">
-      <SongDisplay
-          v-for="song in songs"
-          :key="song.song_name"
-          :song="song"
-          @click="goToSong(song.song_name)"
+    <div class="playlist-list">
+      <PlaylistDisplay
+          v-for="playlist in playlists"
+          :key="playlist.playlist_name"
+          :playlist="playlist"
+          @click="goToPlaylist(playlist.playlist_name)"
       />
     </div>
 
-    <!-- MODAL -->
     <teleport to="body">
       <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
         <div class="modal-content">
-          <AddSong @close="handleModalClose" />
+          <AddPlaylist @close="handleModalClose" />
         </div>
       </div>
     </teleport>
@@ -36,56 +33,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getSongs } from '@/api/songAPI'
-import AddSong from '@/Songs/AddSongs.vue'
-import SongDisplay from '@/Songs/SongDisplay.vue'
+import { getPlaylists } from '@/api/playlistAPI'
+import AddPlaylist from '@/MyPlaylists/AddPlaylists.vue'
+import PlaylistDisplay from '@/Playlists/PlaylistDisplay.vue'
+import {useStore} from "vuex";
 
 const router = useRouter()
-const songs = ref([])
+const playlists = ref([])
 const searchQuery = ref('')
 const showAddModal = ref(false)
-const showDropdown = ref(false)
+const store = useStore()
 
-const fetchSongs = async () => {
+const name = store.getters.currentUser.username
+
+const fetchPlaylists = async () => {
   try {
-    const data = await getSongs(25, searchQuery.value)
-    songs.value = data.songs || []
+    const data = await getPlaylists(50, searchQuery.value, name)
+    playlists.value = data.playlists || []
   } catch (err) {
-    console.error('Error fetching songs:', err)
-    songs.value = []
+    console.error('Error fetching playlists:', err)
+    playlists.value = []
   }
 }
 
-const handleInput = () => {
-  showDropdown.value = searchQuery.value.length > 0
-  fetchSongs()
-}
-
-const hideDropdown = () => {
-  setTimeout(() => {
-    showDropdown.value = false
-  }, 200)
-}
-
-const goToSong = (name) => {
+const goToPlaylist = (name) => {
   const formatted = name.toLowerCase().replace(/\s+/g, '_')
-  router.push({ name: 'SongDetail', params: { name: formatted } })
+  router.push({ name: 'PlaylistDetail', params: { name: formatted } })
 }
 
 const handleModalClose = () => {
   showAddModal.value = false
-  fetchSongs()
+  fetchPlaylists()
 }
 
-onMounted(() => {
-  fetchSongs()
-})
+watch(searchQuery, fetchPlaylists)
+onMounted(fetchPlaylists)
 </script>
 
 <style scoped>
-.song-search {
+.playlist-search {
   padding: 2rem;
   color: white;
   background-color: #111;
@@ -109,7 +97,7 @@ onMounted(() => {
   color: white;
 }
 
-.add-song button {
+.add-playlist button {
   padding: 10px 15px;
   border-radius: 20px;
   background-color: #2a9d8f;
@@ -119,7 +107,7 @@ onMounted(() => {
   cursor: pointer;
 }
 
-.song-list {
+.playlist-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;

@@ -3,7 +3,7 @@ export const URL = "/api";
 
 export async function likePlaylist(playlist_name, token) {
     try {
-        const response = await axios.post(`${URL}/users/likes/playlists/${encodeURIComponent(playlist_name.toLowerCase())}`, {}, {
+        const response = await axios.post(`${URL}/users/likes/playlists/${encodeURIComponent(playlist_name)}`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;
@@ -15,7 +15,7 @@ export async function likePlaylist(playlist_name, token) {
 
 export async function unlikePlaylist(playlist_name, token) {
     try {
-        const response = await axios.delete(`${URL}/users/likes/playlists/${encodeURIComponent(playlist_name.toLowerCase())}`, {
+        const response = await axios.delete(`${URL}/users/likes/playlists/${encodeURIComponent(playlist_name)}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;
@@ -40,8 +40,8 @@ export async function getLikedPlaylists(token) {
 export async function getPlaylists(limit = 10, research = "", owner = "") {
     try {
         const params = { limit };
-        if (research) params.research = encodeURIComponent(research.toLowerCase());
-        if (owner) params.owner = encodeURIComponent(owner.toLowerCase());
+        if (research) params.research = encodeURIComponent(research);
+        if (owner) params.owner = encodeURIComponent(owner);
 
         const response = await axios.get(`${URL}/playlists`, { params });
         return response.data;
@@ -53,8 +53,7 @@ export async function getPlaylists(limit = 10, research = "", owner = "") {
 
 export async function getPlaylistByName(playlist_name) {
     try {
-        playlist_name = playlist_name.toLowerCase();
-        const response = await axios.get(`${URL}/playlists/${encodeURIComponent(playlist_name.toLowerCase())}`, {});
+        const response = await axios.get(`${URL}/playlists/${encodeURIComponent(playlist_name)}`, {});
         return response.data;
     } catch (error) {
         console.error(error);
@@ -65,7 +64,7 @@ export async function getPlaylistByName(playlist_name) {
 export async function postPlaylist(playlist_name, isPrivate, token) {
     try {
         const response = await axios.post(`${URL}/playlists`, {
-            playlist_name: encodeURIComponent(playlist_name.toLowerCase()),
+            playlist_name: encodeURIComponent(playlist_name),
             private: isPrivate ? 1 : 0
         }, {
             headers: { Authorization: `Bearer ${token}` }
@@ -79,7 +78,7 @@ export async function postPlaylist(playlist_name, isPrivate, token) {
 
 export async function deletePlaylist(playlist_name, token) {
     try {
-        playlist_name = encodeURIComponent(playlist_name.toLowerCase());
+        playlist_name = encodeURIComponent(playlist_name);
         const response = await axios.delete(`${URL}/playlists/${playlist_name}`, {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -92,8 +91,8 @@ export async function deletePlaylist(playlist_name, token) {
 
 export async function getPlaylistSongs(playlist_name, owner ) {
     try {
-        playlist_name = encodeURIComponent(playlist_name.toLowerCase());
-        owner = owner.toLowerCase();
+        playlist_name = encodeURIComponent(playlist_name);
+        owner = encodeURIComponent(owner);
         const params = {owner};
 
         const response = await axios.get(`${URL}/playlists/${playlist_name}/songs`, { params });
@@ -106,8 +105,8 @@ export async function getPlaylistSongs(playlist_name, owner ) {
 
 export async function getSongFromPlaylist(playlist_name, song_name) {
     try {
-        playlist_name = encodeURIComponent(playlist_name.toLowerCase());
-        song_name = encodeURIComponent(song_name.toLowerCase());
+        playlist_name = encodeURIComponent(playlist_name);
+        song_name = encodeURIComponent(song_name);
         const response = await axios.get(`${URL}/playlists/${playlist_name}/songs/${song_name}`);
         return response.data;
     } catch (error) {
@@ -118,8 +117,8 @@ export async function getSongFromPlaylist(playlist_name, song_name) {
 
 export async function postSongToPlaylist(playlist_name, song_name, token) {
     try {
-        playlist_name = encodeURIComponent(playlist_name.toLowerCase());
-        song_name = encodeURIComponent(song_name.toLowerCase());
+        playlist_name = encodeURIComponent(playlist_name);
+        song_name = encodeURIComponent(song_name);
         const response = await axios.post(`${URL}/playlists/${playlist_name}/songs/${song_name}`, {}, {
             headers: { Authorization: `Bearer ${token}` }
         });
@@ -132,8 +131,8 @@ export async function postSongToPlaylist(playlist_name, song_name, token) {
 
 export async function deleteSongFromPlaylist(playlist_name, song_name, token) {
     try {
-        playlist_name = encodeURIComponent(playlist_name.toLowerCase());
-        song_name = encodeURIComponent(song_name.toLowerCase());
+        playlist_name = encodeURIComponent(playlist_name);
+        song_name = encodeURIComponent(song_name);
         const response = await axios.delete(`${URL}/playlists/${playlist_name}/songs/${song_name}`, {
             headers: { Authorization: `Bearer ${token}` }
         });

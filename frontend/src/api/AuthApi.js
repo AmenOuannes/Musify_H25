@@ -5,8 +5,8 @@ export async function login(username, password) {
     try {
         username = username.toLowerCase();
         const response = await axios.post(URL + "/users/login", {
-            username,
-            password
+            username: encodeURIComponent(username),
+            password: encodeURIComponent(password)
         });
         return response.data;
     } catch (error) {
@@ -51,11 +51,11 @@ export async function postUser({ username, first_name, last_name, email, passwor
     try {
         const response = await axios.post(`${URL}/users`, {
             username: encodeURIComponent(username.toLowerCase()),
-            first_name: encodeURIComponent(first_name.toLowerCase()),
-            last_name: encodeURIComponent(last_name.toLowerCase()),
-            email: encodeURIComponent(email.toLowerCase()),
-            password,
-            birth_date
+            first_name: encodeURIComponent(first_name),
+            last_name: encodeURIComponent(last_name),
+            email: encodeURIComponent(email),
+            password: encodeURIComponent(password),
+            birth_date: encodeURIComponent(birth_date)
         })
         return response.data
     } catch (error) {
@@ -68,12 +68,12 @@ export async function putUser({ username, first_name, last_name, email, password
     try {
         username = encodeURIComponent(username.toLowerCase())
         const response = await axios.put(`${URL}/users`, {
-            username: username,
-            first_name: encodeURIComponent(first_name.toLowerCase()),
-            last_name: encodeURIComponent(last_name.toLowerCase()),
-            email: encodeURIComponent(email.toLowerCase()),
-            password,
-            birth_date
+            username: encodeURIComponent(username.toLowerCase()),
+            first_name: encodeURIComponent(first_name),
+            last_name: encodeURIComponent(last_name),
+            email: encodeURIComponent(email),
+            password: encodeURIComponent(password),
+            birth_date: encodeURIComponent(birth_date)
         }, {
             headers: {
                 Authorization: `Bearer ${currentToken}`

@@ -17,7 +17,7 @@
 
     <div class="album-list">
       <AlbumDisplay
-          v-for="album in displayedAlbums"
+          v-for="album in albums"
           :key="album.album_name"
           :album="album"
           @click="goToAlbum(album.album_name)"
@@ -35,11 +35,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAlbums } from '@/api/albumAPI'
 import AddAlbum from '@/Albums/AddAlbums.vue'
-import AlbumDisplay from '@/Albums/AlbumDisplay.vue' // ✅ imported new component
+import AlbumDisplay from '@/Albums/AlbumDisplay.vue'
 
 const router = useRouter()
 const albums = ref([])
@@ -47,17 +47,9 @@ const searchQuery = ref('')
 const showAddModal = ref(false)
 const showDropdown = ref(false)
 
-const displayedAlbums = computed(() => {
-  if (!searchQuery.value) return albums.value
-  return albums.value.filter(album =>
-      album.album_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      album.artist_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
-
 const fetchAlbums = async () => {
   try {
-    const data = await getAlbums(50)
+    const data = await getAlbums(25, searchQuery.value)
     albums.value = data.albums || []
   } catch (err) {
     console.error('Error fetching albums:', err)
@@ -67,6 +59,7 @@ const fetchAlbums = async () => {
 
 const handleInput = () => {
   showDropdown.value = searchQuery.value.length > 0
+  fetchAlbums()
 }
 
 const hideDropdown = () => {

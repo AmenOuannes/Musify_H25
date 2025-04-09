@@ -66,7 +66,7 @@ const goToArtist = (name) => {
 
 const fetchArtists = async () => {
   try {
-    const data = await getArtists(20, searchQuery.value)
+    const data = await getArtists(25, searchQuery.value)
     artists.value = data.artists || []
   } catch (err) {
     console.error('Error fetching artists:', err)

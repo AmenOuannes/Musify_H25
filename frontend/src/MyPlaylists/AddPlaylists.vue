@@ -21,7 +21,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import { postPlaylist } from '@/api/playlistAPI'
+import { postPlaylist } from '@/api/playlistAPI.js'
 import { useStore } from 'vuex'
 
 const playlist_name = ref('')

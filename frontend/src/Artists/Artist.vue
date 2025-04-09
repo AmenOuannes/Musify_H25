@@ -44,7 +44,7 @@
     <teleport to="body">
       <div v-if="showAddSongModal" class="modal-overlay" @click.self="showAddSongModal = false">
         <div class="modal-content">
-          <AddSongs :prefilledArtist="artist.artist_name" @close="showAddSongModal = false" />
+          <AddSongs :prefilledArtist="artist.artist_name" @close="handleAddSongClose" />
         </div>
       </div>
     </teleport>
@@ -94,6 +94,11 @@ const goToAlbum = (name) => {
 
 const handleAddAlbumClose = () => {
   showAddAlbumModal.value = false
+  loadData()
+}
+
+const handleAddSongClose = () => {
+  showAddSongModal.value = false
   loadData()
 }
 

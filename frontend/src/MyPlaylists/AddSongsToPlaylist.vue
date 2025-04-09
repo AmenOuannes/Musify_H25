@@ -32,8 +32,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { postSongToPlaylist } from '@/api/playlistAPI'
-import { getSongs } from '@/api/songAPI'
+import { postSongToPlaylist } from '@/api/playlistAPI.js'
+import { getSongs } from '@/api/songAPI.js'
 import { useStore } from 'vuex'
 
 const props = defineProps({

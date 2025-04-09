@@ -7,8 +7,9 @@
         <li><router-link to="/albums">Albums</router-link></li>
         <li><router-link to="/songs">Songs</router-link></li>
         <li><router-link to="/playlists">Playlists</router-link></li>
-        <li><router-link to="/favorites">Favorites</router-link></li>
         <li><router-link to="/myplaylists">My Playlists</router-link></li>
+        <li><router-link to="/favoritesartists">My Favorites artist</router-link></li>
+        <li><router-link to="/favoritesplaylist">My Favorites Playlists</router-link></li>
       </ul>
     </nav>
   </aside>

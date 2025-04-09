@@ -3,7 +3,11 @@
     <div class="playlist-header">
       <h1>{{ playlist.playlist_name }}</h1>
       <p class="meta">By {{ playlist.owner }} <span v-if="playlist.private">• Private</span></p>
-      <button @click="showAddSongModal = true" class="add-song-btn">
+      <button
+          v-if="playlist.owner === username"
+          @click="showAddSongModal = true"
+          class="add-song-btn"
+      >
         Add Song to Playlist
       </button>
     </div>
@@ -15,7 +19,7 @@
           :key="song.song_name"
           :song="song"
           @click="goToSong(song.song_name)"
-          :onRemove="() => confirmRemove(song.song_name)"
+          v-bind="playlist.owner === username ? { onRemove: () => confirmRemove(song.song_name) } : {}"
       />
     </div>
 
@@ -24,7 +28,11 @@
     </div>
 
     <teleport to="body">
-      <div v-if="showAddSongModal" class="modal-overlay" @click.self="showAddSongModal = false">
+      <div
+          v-if="showAddSongModal && playlist.owner === username"
+          class="modal-overlay"
+          @click.self="showAddSongModal = false"
+      >
         <div class="modal-content">
           <AddSongToPlaylist
               :playlistName="playlist.playlist_name"
@@ -57,21 +65,20 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getPlaylistByName, getPlaylistSongs, deleteSongFromPlaylist } from '@/api/playlistAPI'
 import SongDisplay from '@/Songs/SongDisplay.vue'
-import AddSongToPlaylist from '@/Playlists/AddSongsToPlaylist.vue'
+import AddSongToPlaylist from '@/MyPlaylists/AddSongsToPlaylist.vue'
 import { useStore } from 'vuex'
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
 const token = store.getters.currentToken
+const username = store.getters.currentUser.username
 
 const playlist = ref(null)
 const songs = ref([])
 const showAddSongModal = ref(false)
 const confirmPopup = ref(false)
 const songToRemove = ref(null)
-
-const formatDate = (date) => new Date(date).toLocaleDateString()
 
 const goToSong = (name) => {
   const formatted = name.toLowerCase().replace(/\s+/g, '_')
