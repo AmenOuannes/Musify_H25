@@ -92,10 +92,11 @@ class UserRepository:
         })
         db.session.commit()
 
-    def getLikedArtists(self, current_user):
+    def getLikedArtists(self, current_user, research):
         self.artists = []
-        query = get_liked_artists_query()
-        result = db.session.execute(query, {"username": current_user})
+        query = get_liked_artists_query(research)
+        result = db.session.execute(query, {"username": current_user
+            , "research": f'%{research.lower()}%' if research else None})
         for row in result:
             row_data = row._mapping
 
@@ -133,10 +134,11 @@ class UserRepository:
         })
         db.session.commit()
 
-    def getLikedPlaylists(self, current_user):
+    def getLikedPlaylists(self, current_user, research):
         self.playlists = []
-        query = get_liked_playlists_query()
-        result = db.session.execute(query, {"user_id": current_user})
+        query = get_liked_playlists_query(research)
+        result = db.session.execute(query, {"user_id": current_user,
+                                            "research": f'%{research.lower()}%' if research else None})
 
         for row in result:
             row_data = row._mapping

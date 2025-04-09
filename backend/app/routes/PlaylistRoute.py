@@ -12,7 +12,8 @@ def get_playlists():
     limit = request.args.get('limit', type=int) if 'limit' in request.args else -1
     research = unquote(request.args.get('research', type=str)) if 'research' in request.args else ""
     owner = unquote(request.args.get('owner', type=str)) if 'owner' in request.args else ""
-    playlists = playlistService.getPlaylists(limit, research, owner)
+    private = request.args.get('private', type=int) if 'private' in request.args else 0
+    playlists = playlistService.getPlaylists(limit, research, owner, private)
     return responseFormat({"playlists":playlists}), 200
 
 @playlist_bp.route('/playlists/<playlist_name>', methods=['GET'])

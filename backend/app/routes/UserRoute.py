@@ -83,7 +83,8 @@ def likeArtist(artist_name):
 def likedArtists():
     try:
         current_user = get_jwt_identity()
-        artists = userService.getLikedArtists(current_user)
+        research = unquote(request.args.get('research', type=str)) if 'research' in request.args else None
+        artists = userService.getLikedArtists(current_user, research)
         return jsonify({"artists":artists}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -102,10 +103,11 @@ def unlikeArtist(artist_name):
 
 @user_bp.route('/users/likes/playlists', methods=['GET'])
 @jwt_required()
-def likePlaylists():
+def getLikedPlaylists():
     try:
         current_user = get_jwt_identity()
-        playlists = userService.getLikedPlaylists(current_user)
+        research = unquote(request.args.get('research', type=str)) if 'research' in request.args else None
+        playlists = userService.getLikedPlaylists(current_user, research)
         return jsonify({"playlists":playlists}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
