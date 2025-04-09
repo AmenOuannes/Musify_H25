@@ -1,50 +1,53 @@
 from sqlalchemy import text
 
 def get_all_users_query(limit):
-    return "SELECT * FROM Users;" if limit == -1 else f"SELECT * FROM Users LIMIT {limit};"
+    return text("SELECT * FROM Users") if limit == -1 else text("SELECT * FROM Users LIMIT :limit")
 
-def insert_user_query(username, last_name, first_name, email, password_hash, birth_date):
-    return f"INSERT INTO Users (username, last_name, first_name, email, password_hash, birth_date) VALUES ('{username}', '{last_name}', '{first_name}', '{email}', '{password_hash}', '{birth_date}');"
+def insert_user_query():
+    return text("""
+        INSERT INTO Users (username, last_name, first_name, email, password_hash, birth_date)
+        VALUES (:username, :last_name, :first_name, :email, :password_hash, :birth_date)
+    """)
 
-def find_similar_users_query(username):
-    return f"SELECT COUNT(*) AS count FROM Users WHERE username = '{username}';"
+def find_similar_users_query():
+    return text("SELECT COUNT(*) AS count FROM Users WHERE username = :username")
 
-def get_user_with_username_query(username):
-    return f"SELECT * FROM Users WHERE username = '{username}';"
+def get_user_with_username_query():
+    return text("SELECT * FROM Users WHERE username = :username")
 
 def get_all_artists_query(limit, research):
     if research == "":
-        return "SELECT * FROM Artists;" if limit == -1 else f"SELECT * FROM Artists LIMIT {limit};"
-    safe_research = research.replace("'", "''")
-    base_query = f"SELECT * FROM Artists WHERE artist_name LIKE '{safe_research}%'"
-    return f"{base_query};" if limit == -1 else f"{base_query} LIMIT {limit};"
+        return text("SELECT * FROM Artists") if limit == -1 else text("SELECT * FROM Artists LIMIT :limit")
 
+    return text("SELECT * FROM Artists WHERE artist_name LIKE :research") if limit == -1 else text("SELECT * FROM Artists WHERE artist_name LIKE :research LIMIT :limit")
 
-def get_artist_by_name_query(artist_name):
-    return f"SELECT artist_id, artist_name, genre, followers, celebrity, profile_url, image FROM Artists WHERE artist_name='{artist_name}';"
+def get_artist_by_name_query():
+    return text("""
+        SELECT artist_id, artist_name, genre, followers, celebrity, profile_url, image 
+        FROM Artists 
+        WHERE artist_name = :artist_name
+    """)
 
-def find_similar_artists_query(artist_name):
-    return f"SELECT COUNT(*) AS count FROM Artists WHERE artist_name = '{artist_name}';"
+def find_similar_artists_query():
+    return text("SELECT COUNT(*) AS count FROM Artists WHERE artist_name = :artist_name")
 
-def insert_artist_query(artist_name, genre, followers, profile_url, image):
-
-    return f"""
+def insert_artist_query():
+    return text("""
         INSERT INTO Artists (artist_name, genre, followers, profile_url, image)
-        VALUES ('{artist_name}', '{genre}', {followers}, '{profile_url}', '{image}');
-    """
+        VALUES (:artist_name, :genre, :followers, :profile_url, :image)
+    """)
 
-def update_user_query(current_username, username, first_name, last_name, email, password_hash, birth_date):
-    return f"""
+def update_user_query():
+    return text("""
         UPDATE Users
-        SET username = '{username}',
-            first_name = '{first_name}',
-            last_name = '{last_name}',
-            email = '{email}',
-            password_hash = '{password_hash}',
-            birth_date = '{birth_date}'
-
-        WHERE username = '{current_username}';
-        """
+        SET username = :username,
+            first_name = :first_name,
+            last_name = :last_name,
+            email = :email,
+            password_hash = :password_hash,
+            birth_date = :birth_date
+        WHERE username = :current_username
+    """)
 
 
 def get_all_songs_query(limit, research):
@@ -74,12 +77,15 @@ def get_song_by_name_query():
 
 def insert_song_query():
     return text("""
-        INSERT INTO Songs (song_name, genre, release_date, url)
-        VALUES (:name, :genre, :date, :url)
+        INSERT INTO Songs (song_name, genre, release_date, url, artist_id)
+        VALUES (:name, :genre, :date, :url, :artist_id)
     """)
 
-def insert_sings(song_id, artist_id):
-    return text(f"INSERT INTO Sings (song_id, artist_id) VALUES ('{song_id}', '{artist_id}');")
+def insert_sings():
+    return text("""
+        INSERT INTO Sings (song_id, artist_id)
+        VALUES (:song_id, :artist_id)
+    """)
 
 def get_singer_query():
     return text("""
@@ -97,8 +103,9 @@ def get_all_albums_query(limit, research):
         return text("SELECT * FROM Albums LIMIT :limit")
 
     if int(limit) == -1:
-        return text("SELECT * FROM Albums WHERE LOWER(album_name) LIKE LOWER(:research)")
-    return text("SELECT * FROM Albums WHERE LOWER(album_name) LIKE LOWER(:research) LIMIT :limit")
+        return text("SELECT * FROM Albums WHERE LOWER(album_name) LIKE :research")
+
+    return text("SELECT * FROM Albums WHERE LOWER(album_name) LIKE :research LIMIT :limit")
 
 def get_album_owner_query():
     return text("""
@@ -140,95 +147,98 @@ def get_songs_of_album():
         )
     """)
 
-def insert_song_into_album_query(song_id, album_id):
-    return text(f"""
+def insert_song_into_album_query():
+    return text("""
         INSERT INTO Has (song_id, album_id)
-        VALUES ({song_id}, {album_id});
+        VALUES (:song_id, :album_id)
     """)
 
-def delete_song_from_album_query(song_id, album_id):
-    return text(f"""
+def delete_song_from_album_query():
+    return text("""
         DELETE FROM Has
-        WHERE song_id = {song_id} AND album_id = {album_id};
+        WHERE song_id = :song_id AND album_id = :album_id
     """)
 
-def get_playlist_by_name_query(playlist_name):
-    return text(f"""
+def get_playlist_by_name_query():
+    return text("""
         SELECT playlist_id, playlist_name, owner, private
         FROM Playlists
-        WHERE playlist_name = '{playlist_name}';
+        WHERE LOWER(playlist_name) = LOWER(:playlist_name)
+        LIMIT 1
     """)
 
+
 def get_all_playlists_query(limit, research, owner):
+    if not research and not owner:
+        if int(limit) == -1:
+            return text("SELECT * FROM Playlists")
+        return text("SELECT * FROM Playlists LIMIT :limit")
+
+    base_query = "SELECT * FROM Playlists WHERE"
     conditions = []
 
     if research:
-        safe_research = research.replace("'", "''")
-        conditions.append(f"playlist_name LIKE '{safe_research}%'")
-
+        conditions.append("LOWER(playlist_name) LIKE :research")
     if owner:
-        safe_owner = owner.replace("'", "''")
-        conditions.append(f"owner = '{safe_owner}'")
+        conditions.append("LOWER(owner) = LOWER(:owner)")
 
-    where_clause = " WHERE " + " AND ".join(conditions) if conditions else ""
-    limit_clause = f" LIMIT {limit}" if limit != -1 else ""
+    where_clause = " AND ".join(conditions)
 
-    return text(f"SELECT * FROM Playlists{where_clause}{limit_clause};")
+    if int(limit) == -1:
+        return text(f"{base_query} {where_clause}")
 
-def insert_playlist_query(playlist_name, owner, private):
-    return text(f"""
+    return text(f"{base_query} {where_clause} LIMIT :limit")
+
+
+def insert_playlist_query():
+    return text("""
         INSERT INTO Playlists (playlist_name, owner, private)
-        VALUES ('{playlist_name}', '{owner}', {private});
+        VALUES (:playlist_name, :owner, :private)
     """)
 
-def delete_playlist_query(playlist_name):
-    safe_name = playlist_name.replace("'", "''")
-    return text(f"""
-            DELETE FROM Playlists
-            WHERE playlist_name = '{safe_name}';
-        """)
 
-def get_song_count_from_playlist_query(playlist_name, song_name):
-    safe_playlist_name = playlist_name.replace("'", "''")
-    safe_song_name = song_name.replace("'", "''")
+def delete_playlist_query():
+    return text("""
+        DELETE FROM Playlists
+        WHERE LOWER(playlist_name) = LOWER(:playlist_name)
+    """)
 
-    return text(f"""
+
+def get_song_count_from_playlist_query():
+    return text("""
         SELECT COUNT(*) 
         FROM Playlists P
         JOIN ConsistsOf C ON P.playlist_id = C.playlist_id
         JOIN Songs S ON C.song_id = S.song_id
-        WHERE P.playlist_name = '{safe_playlist_name}'
-          AND S.song_name = '{safe_song_name}';
+        WHERE LOWER(P.playlist_name) = LOWER(:playlist_name)
+          AND LOWER(S.song_name) = LOWER(:song_name)
     """)
 
-def get_songs_from_playlist_query(playlist_name, owner):
-    safe_name = playlist_name.replace("'", "''")
 
-    query = f"""
+def get_songs_from_playlist_query():
+    return text("""
         SELECT S.song_id, S.song_name, S.genre, S.release_date, S.url
         FROM Playlists P
         JOIN ConsistsOf C ON P.playlist_id = C.playlist_id
         JOIN Songs S ON C.song_id = S.song_id
-        WHERE P.playlist_name = '{safe_name}'
-    """
+        WHERE LOWER(P.playlist_name) = LOWER(:playlist_name)
+          AND LOWER(P.owner) = LOWER(:owner)
+    """)
 
-    if owner:
-        safe_owner = owner.replace("'", "''")
-        query += f" AND P.owner = '{safe_owner}'"
 
-    return query + ";"
-
-def insert_song_into_playlist_query(playlist_id, song_id):
-    return text(f"""
+def insert_song_into_playlist_query():
+    return text("""
         INSERT INTO ConsistsOf (playlist_id, song_id)
-        VALUES ({playlist_id}, {song_id});
+        VALUES (:playlist_id, :song_id)
     """)
 
-def delete_song_from_playlist_query(playlist_id, song_id):
-    return text(f"""
+
+def delete_song_from_playlist_query():
+    return text("""
         DELETE FROM ConsistsOf
-        WHERE playlist_id = {playlist_id} AND song_id = {song_id};
+        WHERE playlist_id = :playlist_id AND song_id = :song_id
     """)
+
 
 def get_liked_artists_query(username):
     return text(f"""

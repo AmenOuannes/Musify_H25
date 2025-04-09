@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from backend.app.routes.ResponseFormat import responseFormat
 from backend.app.services.UserService import UserService
-
+from urllib.parse import unquote
 
 user_bp = Blueprint('user_bp', __name__)
 userService = UserService()
@@ -17,12 +17,12 @@ def get_users():
 
 @user_bp.route('/users', methods=['POST'])
 def signUp():
-    user_name = request.json.get('username')
-    first_name = request.json.get('first_name')
-    last_name = request.json.get('last_name')
-    email = request.json.get('email')
-    password = request.json.get('password')
-    birth_date = request.json.get('birth_date')
+    user_name = unquote(request.json.get('username'))
+    first_name = unquote(request.json.get('first_name'))
+    last_name = unquote(request.json.get('last_name'))
+    email = unquote(request.json.get('email'))
+    password = unquote(request.json.get('password'))
+    birth_date = unquote(request.json.get('birth_date'))
 
     try:
         userService.createUser(user_name, first_name, last_name, email, password, birth_date)
@@ -33,8 +33,8 @@ def signUp():
 
 @user_bp.route('/users/login', methods=['POST'])
 def login():
-    username = request.json.get('username')
-    password = request.json.get('password')
+    username = unquote(request.json.get('username'))
+    password = unquote(request.json.get('password'))
 
     try:
         userService.login(username, password)
@@ -55,12 +55,12 @@ def userProfile():
 @jwt_required()
 def changeUser():
     current_user = get_jwt_identity()
-    user_name = request.json.get('username')
-    first_name = request.json.get('first_name')
-    last_name = request.json.get('last_name')
-    email = request.json.get('email')
-    password = request.json.get('password')
-    birth_date = request.json.get('birth_date')
+    user_name = unquote(request.json.get('username'))
+    first_name = unquote(request.json.get('first_name'))
+    last_name = unquote(request.json.get('last_name'))
+    email = unquote(request.json.get('email'))
+    password = unquote(request.json.get('password'))
+    birth_date = unquote(request.json.get('birth_date'))
     try:
         userService.updateUser(current_user,user_name, first_name, last_name, email, password, birth_date)
         return responseFormat({"user_name":user_name, "password":password}), 200
@@ -72,7 +72,7 @@ def changeUser():
 def likeArtist(artist_name):
     try:
         current_user = get_jwt_identity()
-        userService.addArtistTolikes(current_user, artist_name)
+        userService.addArtistTolikes(current_user, unquote(artist_name))
         return jsonify({"message": "Artist liked"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -94,7 +94,7 @@ def likedArtists():
 def unlikeArtist(artist_name):
     try:
         current_user = get_jwt_identity()
-        userService.unlikeArtist(current_user, artist_name)
+        userService.unlikeArtist(current_user, unquote(artist_name))
         return jsonify({"message": "Artist unliked"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -115,7 +115,7 @@ def likePlaylists():
 def unlikePlaylists(playlist_name):
     try:
         current_user = get_jwt_identity()
-        userService.unlikePlaylist(current_user, playlist_name)
+        userService.unlikePlaylist(current_user, unquote(playlist_name))
         return jsonify({"message": "Playlist unliked"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -125,7 +125,7 @@ def unlikePlaylists(playlist_name):
 def likeAPlaylist(playlist_name):
     try:
         current_user = get_jwt_identity()
-        userService.likePlaylist(current_user, playlist_name)
+        userService.likePlaylist(current_user, unquote(playlist_name))
         return jsonify({"message": "Playlist liked"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400

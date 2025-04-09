@@ -47,9 +47,11 @@ class PlaylistService:
 
     def addSongToPlaylist(self, playlist_name, song_name):
         try:
+            print(playlist_name, song_name)
             self.playlistRepository.addSongToPlaylist(playlist_name, song_name)
 
         except Exception as e:
+            print("exception addSongToPlaylist")
             raise e
 
     def deleteSongFromPlaylist(self, playlist_name, song_name):

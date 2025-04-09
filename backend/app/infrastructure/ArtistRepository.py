@@ -1,5 +1,3 @@
-from sqlalchemy import text
-
 from backend.app.domain.Artist import Artist
 from backend.app.infrastructure.ArtistSQL import ArtistSQL
 from backend.app.infrastructure.Queries import get_all_artists_query, get_artist_by_name_query, insert_artist_query
@@ -11,24 +9,33 @@ class ArtistRepository():
         self.artists = []
 
     def addArtist(self, artist):
-        artist_exists = get_artist_by_name_query(artist.artist_name)
-        result = db.session.execute(text(artist_exists))
+        query = get_artist_by_name_query()
+        result = db.session.execute(query, {"artist_name": artist.artist_name})
         count = result.scalar() or 0
 
-        if count>0:
+        if count > 0:
             raise Exception("Artist already exists")
         else:
-
-            query = insert_artist_query(artist.artist_name, artist.genre, artist.followers, artist.profile_url, artist.image)
-            db.session.execute(text(query))
+            insert_query = insert_artist_query()
+            db.session.execute(insert_query, {
+                "artist_name": artist.artist_name,
+                "genre": artist.genre,
+                "followers": artist.followers,
+                "profile_url": artist.profile_url,
+                "image": artist.image
+            })
             db.session.commit()
 
+    def getAllArtists(self, limit, research):
+        self.artists = []
+        query = get_all_artists_query(limit, research)
+        params = {}
+        if research:
+            params["research"] = f"{research}%"
+        if int(limit) != -1:
+            params["limit"] = int(limit)
 
-    def getAllArtists(self, limit,research):
-        self.artists=[]
-        query = get_all_artists_query(limit,research)
-
-        result = db.session.execute(text(query))
+        result = db.session.execute(query, params)
         for row in result:
             row_data = row._mapping
 
@@ -46,13 +53,11 @@ class ArtistRepository():
 
         return self.artists
 
-
     def getArtistByName(self, artist_name):
-        query = get_artist_by_name_query(artist_name)
-        result = db.session.execute(text(query))
+        query = get_artist_by_name_query()
+        result = db.session.execute(query, {"artist_name": artist_name})
         row = result.fetchone()
         if row:
-
             row_data = row._mapping
 
             artistSQL = ArtistSQL(
@@ -68,5 +73,3 @@ class ArtistRepository():
             return Artist().fromArtistSQL(artistSQL)
         else:
             return None
-
-

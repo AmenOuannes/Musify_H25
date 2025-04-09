@@ -10,15 +10,14 @@ songService = SongService()
 @song_bp.route('/songs', methods=['GET'])
 def get_songs():
     limit = request.args.get('limit') if 'limit' in request.args else -1
-    research = request.args.get('research') if 'research' in request.args else ""
+    research = unquote(request.args.get('research')) if 'research' in request.args else ""
     songs = songService.getAllSongs(limit, research)
     return responseFormat({"songs": songs}), 200
 
 @song_bp.route('/songs/<song_name>', methods=['GET'])
 def get_song(song_name):
     try:
-        decoded_name = unquote(song_name)
-        song = songService.getSong(decoded_name)
+        song = songService.getSong(unquote(song_name))
         return responseFormat(song),200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
