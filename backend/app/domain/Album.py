@@ -3,7 +3,7 @@ from collections import OrderedDict
 
 class Album:
     def __init__(self):
-        self.a=""
+        self.init = None
 
     def fromRequest(self, album_name,genre, release_date,cover_image, artist_name):
         self.album_name = album_name

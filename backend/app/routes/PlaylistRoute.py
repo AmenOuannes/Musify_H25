@@ -2,24 +2,27 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from urllib.parse import unquote
 
+from backend.app.routes.RequestFormat import get_limit_argument, get_research_argument, get_owner_argument, \
+    get_private_argument
 from backend.app.routes.ResponseFormat import responseFormat
 from backend.app.services.PlaylistService import PlaylistService
 
 playlist_bp = Blueprint('playlist_bp', __name__)
 playlistService = PlaylistService()
+
 @playlist_bp.route('/playlists', methods=['GET'])
 def get_playlists():
-    limit = request.args.get('limit', type=int) if 'limit' in request.args else -1
-    research = unquote(request.args.get('research', type=str)) if 'research' in request.args else ""
-    owner = unquote(request.args.get('owner', type=str)) if 'owner' in request.args else ""
-    private = request.args.get('private', type=int) if 'private' in request.args else 0
-    playlists = playlistService.getPlaylists(limit, research, owner, private)
+    limit = get_limit_argument()
+    research = get_research_argument()
+    owner = get_owner_argument()
+    private = get_private_argument()
+    playlists = playlistService.get_playlists(limit, research, owner, private)
     return responseFormat({"playlists":playlists}), 200
 
 @playlist_bp.route('/playlists/<playlist_name>', methods=['GET'])
 def get_playlist(playlist_name):
     try:
-        playlist = playlistService.getPlaylist(playlist_name)
+        playlist = playlistService.get_playlist(playlist_name)
         return responseFormat(playlist), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -32,7 +35,7 @@ def create_playlist():
         playlist_name = unquote(request.json.get('playlist_name'))
         private = request.json.get('private', 0)
 
-        playlistService.createPlaylist(playlist_name, current_user, private)
+        playlistService.create_playlist(playlist_name, current_user, private)
         return jsonify({"message": "Playlist created"}), 201
 
     except Exception as e:
@@ -43,7 +46,7 @@ def create_playlist():
 @jwt_required()
 def delete_playlist(playlist_name):
     try:
-        playlistService.deletePlaylist(playlist_name)
+        playlistService.delete_playlist(playlist_name)
         return jsonify({"message": "Playlist deleted"}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -51,7 +54,7 @@ def delete_playlist(playlist_name):
 @playlist_bp.route('/playlists/<playlist_name>/songs/<song_name>', methods=['GET'])
 def get_song(playlist_name, song_name):
     try:
-        song = playlistService.getSongFromPlaylist(playlist_name, song_name)
+        song = playlistService.get_song_from_playlist(playlist_name, song_name)
         return responseFormat({"song":song}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -61,7 +64,7 @@ def get_song(playlist_name, song_name):
 def get_songs(playlist_name):
     try:
         owner = unquote(request.args.get('owner', type=str)) if 'owner' in request.args else ""
-        songs = playlistService.getAllSongsFromPlaylist(unquote(playlist_name), owner)
+        songs = playlistService.get_all_songs_from_playlist(unquote(playlist_name), owner)
         return responseFormat({"songs":songs}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -72,7 +75,7 @@ def get_songs(playlist_name):
 def create_song(playlist_name, song_name):
     try:
         current_user = get_jwt_identity()
-        playlistService.addSongToPlaylist(unquote(playlist_name), unquote(song_name))
+        playlistService.add_song_to_playlist(unquote(playlist_name), unquote(song_name))
         return jsonify({"message": "Song added"}), 201
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -82,7 +85,7 @@ def create_song(playlist_name, song_name):
 def delete_song(playlist_name, song_name):
     try:
         current_user = get_jwt_identity()
-        playlistService.deleteSongFromPlaylist(unquote(playlist_name), unquote(song_name))
+        playlistService.delete_song_from_playlist(unquote(playlist_name), unquote(song_name))
         return jsonify({"message": "Song deleted"}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404

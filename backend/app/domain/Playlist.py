@@ -4,7 +4,7 @@ from collections import OrderedDict
 class Playlist:
 
     def __init__(self):
-        self.a=""
+        self.init = None
 
     def fromRequest(self, playlist_name, owner):
         self.playlist_name = playlist_name

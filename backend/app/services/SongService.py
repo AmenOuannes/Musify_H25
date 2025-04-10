@@ -13,7 +13,7 @@ class SongService:
         self.songRepository = SongRepository()
 
 
-    def createSong(self, song_name, genre, artist_name, release_date, url):
+    def create_song(self, song_name, genre, artist_name, release_date, url):
         try:
             artist = artist_repository.getArtistByName(artist_name)
             date = datetime.strptime(release_date, "%Y-%m-%d")
@@ -25,14 +25,14 @@ class SongService:
             raise e
 
 
-    def getSong(self, song_name):
+    def get_song(self, song_name):
         song = self.songRepository.getSong(song_name)
         if song:
            return song.to_dict()
         else:
             raise NotFound(song_name)
 
-    def getAllSongs(self, limit=-1, research=""):
+    def get_all_songs(self, limit=-1, research=""):
         return [song.to_dict() for song in self.songRepository.getAllSongs(limit,research)]
 
 

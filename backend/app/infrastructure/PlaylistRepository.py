@@ -1,18 +1,13 @@
-from sqlalchemy import text
 from backend.__init__ import db
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.Song import Song
-from backend.app.infrastructure.PlaylistSQL import PlaylistSQL
-from backend.app.infrastructure.Queries import (
-    get_playlist_by_name_query, get_all_playlists_query, insert_playlist_query,
-    delete_playlist_query, get_song_count_from_playlist_query,
-    get_songs_from_playlist_query, get_singer_query, get_song_by_name_query,
-    insert_song_into_playlist_query, delete_song_from_playlist_query
-)
+from backend.app.infrastructure.Queries.SongQueries import get_singer_query, get_song_by_name_query
+from backend.app.infrastructure.SQL.PlaylistSQL import PlaylistSQL
+from backend.app.infrastructure.Queries.PlaylistQueries import *
 from backend.app.infrastructure.SongRepository import SongRepository
-from backend.app.infrastructure.songSQL import SongSQL
+from backend.app.infrastructure.SQL.songSQL import SongSQL
 
-class PlaylistRepository():
+class PlaylistRepository:
     def __init__(self):
         self.playlists = []
 

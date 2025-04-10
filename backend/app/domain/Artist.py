@@ -1,11 +1,10 @@
-import uuid
 from collections import OrderedDict
-import random
 
 
 class Artist:
     def __init__(self):
-        self.a=''
+        self.init = None
+
     def fromRequest(self, artist_name, genre, profile_url, image, followers):
         self.artist_name = artist_name
         self.genre = genre
