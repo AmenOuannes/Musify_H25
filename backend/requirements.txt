@@ -6,4 +6,5 @@ python-dotenv
 pymysql
 flask_jwt_extended
 cryptography
+pytest
 
