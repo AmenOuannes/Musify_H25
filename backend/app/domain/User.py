@@ -1,4 +1,7 @@
+import hashlib
 from collections import OrderedDict
+
+from backend.app.domain.encryption import encrypt_password, KEY, decrypt_password
 
 
 class User:
@@ -15,7 +18,7 @@ class User:
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.password = password
+        self.password = encrypt_password(password, KEY)
         self.birth_date = birth_date
         return self
 
@@ -24,7 +27,7 @@ class User:
         self.first_name = userSQL.first_name
         self.last_name = userSQL.last_name
         self.email = userSQL.email
-        self.password = userSQL.password_hash ##unhash
+        self.password = decrypt_password(userSQL.password_hash,KEY)
         self.birth_date = userSQL.birth_date
         return self
 
@@ -38,3 +41,6 @@ class User:
             ("birth_date", self.birth_date.isoformat()),
             ("password", self.password)
         ])
+
+
+

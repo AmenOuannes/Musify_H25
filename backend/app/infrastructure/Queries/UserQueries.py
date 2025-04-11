@@ -33,10 +33,10 @@ def add_artist_to_likes():
     INSERT INTO LikedArtists (artist_id, user_id) VALUES (':artist_id', :username);
     """)
 
-def unlike_artist(username, artist_id):
+def unlike_artist():
     return text(f"""
     DELETE FROM LikedArtists 
-    WHERE artist_id = {artist_id} AND user_id = '{username}';
+    WHERE artist_id = :artist_id AND user_id = :username;
     """)
 
 def get_liked_playlists_query(research=False):
@@ -52,19 +52,19 @@ def get_liked_playlists_query(research=False):
 
     return text(base_query)
 
-def unlike_playlist_query(user_id, playlist_id):
+def unlike_playlist_query():
     return text(f"""
         DELETE FROM LikedPlaylists
-        WHERE user_id = '{user_id}' AND playlist_id = {playlist_id};
+        WHERE user_id = :user_id AND playlist_id = :playlist_id;
     """)
-def like_playlist_query(user_id, playlist_id):
+def like_playlist_query():
     return text(f"""
         INSERT INTO LikedPlaylists (user_id, playlist_id)
-        VALUES ('{user_id}', {playlist_id});
+        VALUES (:user_id, :playlist_id);
     """)
-def get_liked_playlist_count_query(user_id, playlist_id):
+def get_liked_playlist_count_query():
     return text(f"""
         SELECT COUNT(*) 
         FROM LikedPlaylists
-        WHERE user_id = '{user_id}' AND playlist_id = {playlist_id};
+        WHERE user_id = :user_id AND playlist_id = :playlist_id;
     """)

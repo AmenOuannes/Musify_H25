@@ -4,16 +4,11 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 from backend.app.routes.RequestFormat import get_user_credentials, get_limit_argument
-from backend.app.routes.ResponseFormat import responseFormat
+from backend.app.routes.ResponseFormat import responseFormat, usernames_response
 from backend.app.services.UserService import UserService
 
 user_bp = Blueprint('user_bp', __name__)
 userService = UserService()
-
-
-def usernames_response(all_users):
-    return [{'username':user['username']} for user in all_users]
-
 
 @user_bp.route('/users', methods=['GET'])
 def get_users():

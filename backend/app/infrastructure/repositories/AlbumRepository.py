@@ -126,8 +126,8 @@ class AlbumRepository:
         return self.songs
 
     def addSongToAlbum(self, album_name, song_name):
-        song_query = get_song_by_name_query(song_name)
-        song_result = db.session.execute(text(song_query)).fetchone()
+        song_query = get_song_by_name_query()
+        song_result = db.session.execute(song_query, {"name":song_name}).fetchone()
         song_id = song_result._mapping["song_id"]
 
         album_id_query = get_album_id_query()
@@ -142,12 +142,16 @@ class AlbumRepository:
         db.session.commit()
 
     def deleteSongFromAlbum(self, album_name, song_name):
-        song_query = get_song_by_name_query(song_name)
-        song_result = db.session.execute(text(song_query)).fetchone()
+        song_query = get_song_by_name_query()
+        song_result = db.session.execute(  song_query, {"name":song_name}).fetchone()
+        if not song_result:
+            raise Exception("Song not found in album")
         song_id = song_result._mapping["song_id"]
 
         album_id_query = get_album_id_query()
         album_result = db.session.execute(album_id_query, {"name": album_name}).fetchone()
+        if not album_result:
+            raise Exception("album not found")
         album_id = album_result._mapping["album_id"]
 
         delete_query = delete_song_from_album_query()

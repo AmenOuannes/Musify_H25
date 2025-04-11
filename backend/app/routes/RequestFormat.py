@@ -46,7 +46,7 @@ def get_research_argument():
     return unquote(request.args.get('research')) if 'research' in request.args else ""
 
 def get_owner_argument():
-    unquote(request.args.get('owner', type=str)) if 'owner' in request.args else ""
+     return unquote(request.args.get('owner', type=str)) if 'owner' in request.args else ""
 
 def get_private_argument():
-    request.args.get('private', type=int) if 'private' in request.args else 0
+    return request.args.get('private', type=int) if 'private' in request.args else 0

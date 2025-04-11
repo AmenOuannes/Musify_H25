@@ -2,6 +2,7 @@ from backend.app.domain.Artist import Artist
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.User import User
 from backend.__init__ import db
+from backend.app.domain.encryption import encrypt_password, KEY
 from backend.app.infrastructure.Queries.ArtistQueries import get_artist_by_name_query
 from backend.app.infrastructure.Queries.PlaylistQueries import get_liked_artists_query, get_playlist_by_name_query
 from backend.app.infrastructure.Queries.UserQueries import *
@@ -17,7 +18,7 @@ class UserRepository:
     def __init__(self):
         self.users = []
 
-    def addUser(self, user):
+    def add_user(self, user):
         user_exists = find_similar_users_query()
         count = db.session.execute(user_exists, {"username": user.username})
         if count.scalar() > 0:
@@ -34,7 +35,7 @@ class UserRepository:
         })
         db.session.commit()
 
-    def getUser(self, username):
+    def get_user(self, username):
         self.users = []
         user_exists = find_similar_users_query()
         count = db.session.execute(user_exists, {"username": username})
@@ -57,7 +58,7 @@ class UserRepository:
         else:
             return None
 
-    def getAllUsers(self, limit):
+    def get_all_users(self, limit):
         self.users = []
         query = get_all_users_query(limit)
         params = {} if limit == -1 else {"limit": limit}
@@ -77,7 +78,7 @@ class UserRepository:
 
         return self.users
 
-    def updateUser(self, current_username, user_name, first_name, last_name, email, password, birth_date):
+    def update_user(self, current_username, user_name, first_name, last_name, email, password, birth_date):
         query = update_user_query()
         db.session.execute(query, {
             "current_username": current_username,
@@ -85,12 +86,12 @@ class UserRepository:
             "first_name": first_name,
             "last_name": last_name,
             "email": email,
-            "password_hash": password,
+            "password_hash": encrypt_password(password, KEY),
             "birth_date": birth_date
         })
         db.session.commit()
 
-    def getLikedArtists(self, current_user, research):
+    def get_liked_artists(self, current_user, research):
         self.artists = []
         query = get_liked_artists_query(research)
         result = db.session.execute(query, {"username": current_user
@@ -112,7 +113,7 @@ class UserRepository:
 
         return self.artists
 
-    def addLikedArtist(self, current_user, artist_name):
+    def add_liked_artist(self, current_user, artist_name):
         query = get_artist_by_name_query()
         artist_id = db.session.execute(query, {"artist_name": artist_name}).fetchone()._mapping["artist_id"]
         insert_query = add_artist_to_likes()
@@ -122,7 +123,7 @@ class UserRepository:
         })
         db.session.commit()
 
-    def unlikeArtist(self, current_user, artist_name):
+    def unlike_artist(self, current_user, artist_name):
         query = get_artist_by_name_query()
         artist_id = db.session.execute(query, {"artist_name": artist_name}).fetchone()._mapping["artist_id"]
         unlike_query = unlike_artist()
@@ -132,7 +133,7 @@ class UserRepository:
         })
         db.session.commit()
 
-    def getLikedPlaylists(self, current_user, research):
+    def get_liked_playlists(self, current_user, research):
         self.playlists = []
         query = get_liked_playlists_query(research)
         result = db.session.execute(query, {"user_id": current_user,
@@ -152,7 +153,7 @@ class UserRepository:
 
         return self.playlists
 
-    def unlikePlaylist(self, current_user, playlist_name):
+    def unlike_playlist(self, current_user, playlist_name):
         query = get_playlist_by_name_query()
         playlist_result = db.session.execute(query, {"playlist_name": playlist_name}).fetchone()
         if not playlist_result:
@@ -167,7 +168,7 @@ class UserRepository:
         })
         db.session.commit()
 
-    def likePlaylist(self, current_user, playlist_name):
+    def like_playlist(self, current_user, playlist_name):
         query = get_playlist_by_name_query()
         playlist_result = db.session.execute(query, {"playlist_name": playlist_name}).fetchone()
         if not playlist_result:

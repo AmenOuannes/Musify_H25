@@ -1,3 +1,5 @@
+from importlib.metadata import pass_none
+
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from urllib.parse import unquote
@@ -16,8 +18,8 @@ def get_playlists():
     research = get_research_argument()
     owner = get_owner_argument()
     private = get_private_argument()
-    playlists = playlistService.get_playlists(limit, research, owner, private)
-    return responseFormat({"playlists":playlists}), 200
+    playlists = playlistService.get_playlists(private, limit, research, owner)
+    return responseFormat({"playlists": playlists}), 200
 
 @playlist_bp.route('/playlists/<playlist_name>', methods=['GET'])
 def get_playlist(playlist_name):
@@ -72,7 +74,7 @@ def get_songs(playlist_name):
 
 @playlist_bp.route('/playlists/<playlist_name>/songs/<song_name>', methods=['POST'])
 @jwt_required()
-def create_song(playlist_name, song_name):
+def add_song(playlist_name, song_name):
     try:
         current_user = get_jwt_identity()
         playlistService.add_song_to_playlist(unquote(playlist_name), unquote(song_name))

@@ -1,29 +1,25 @@
-from os import add_dll_directory
-
-from backend.app.infrastructure.PlaylistRepository import PlaylistRepository
+from backend.app.infrastructure.repositories.PlaylistRepository import PlaylistRepository
 
 
 class PlaylistService:
     def __init__(self):
         self.playlistRepository = PlaylistRepository()
 
-    def get_playlists(self, limit=-1, research="", owner="", private=0):
-        return [playlist.to_dict() for playlist in self.playlistRepository.getPlaylists(limit,research,owner,private)]
+    def get_playlists(self, private, limit=-1, research="", owner=""):
+        return [playlist.to_dict() for playlist in self.playlistRepository.get_playlists(limit, research, owner, private)]
 
     def get_playlist(self, playlist_name):
         try:
-            return self.playlistRepository.getPlaylist(playlist_name).to_dict()
+            return self.playlistRepository.get_playlist(playlist_name).to_dict()
         except Exception as e:
             raise e
 
     def create_playlist(self, playlist_name, current_user, private):
 
         try:
-            playlist = self.playlistRepository.getPlaylist(playlist_name)
-            if playlist:
-                raise Exception('Duplicate playlist')
-        except:
-            self.playlistRepository.createPlaylist(playlist_name, current_user, private)
+            self.playlistRepository.create_playlist(playlist_name, current_user, private)
+        except Exception as e:
+            raise e
 
     def delete_playlist(self, playlist_name):
         try:
@@ -40,7 +36,7 @@ class PlaylistService:
 
     def get_all_songs_from_playlist(self, playlist_name, owner):
         try:
-            songs = self.playlistRepository.getAllSongsFromPlaylist(playlist_name, owner)
+            songs = self.playlistRepository.get_all_songs_from_playlist(playlist_name, owner)
             return [song.to_dict() for song in songs]
         except Exception as e:
             raise e
@@ -48,7 +44,7 @@ class PlaylistService:
     def add_song_to_playlist(self, playlist_name, song_name):
         try:
             print(playlist_name, song_name)
-            self.playlistRepository.addSongToPlaylist(playlist_name, song_name)
+            self.playlistRepository.add_song_to_playlist(playlist_name, song_name)
 
         except Exception as e:
             print("exception addSongToPlaylist")

@@ -10,33 +10,27 @@ def get_playlist_by_name_query():
 
 
 def get_all_playlists_query(limit, research, owner, private):
-    if not research and not owner and private != 0:
-        if int(limit) == -1:
-            return text("SELECT * FROM Playlists")
-        return text("SELECT * FROM Playlists LIMIT :limit")
-
-    base_query = "SELECT * FROM Playlists WHERE"
     conditions = []
 
-    if research:
-        conditions.append("LOWER(playlist_name) LIKE :research")
-    if owner:
-        conditions.append("LOWER(owner) = LOWER(:owner)")
     if private == 0:
         conditions.append("private = 0")
 
-    where_clause = " AND ".join(conditions)
+    if research:
+        conditions.append("LOWER(playlist_name) LIKE :research")
 
-    if not conditions:
-        query = "SELECT * FROM Playlists"
-    else:
-        query = f"{base_query} {where_clause}"
+    if owner:
+        conditions.append("LOWER(owner) = LOWER(:owner)")
+
+    query = "SELECT * FROM Playlists"
+
+    if conditions:
+        where_clause = " AND ".join(conditions)
+        query += f" WHERE {where_clause}"
 
     if int(limit) != -1:
         query += " LIMIT :limit"
 
     return text(query)
-
 
 
 def insert_playlist_query():

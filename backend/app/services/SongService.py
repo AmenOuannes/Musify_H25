@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from werkzeug.exceptions import NotFound
-from backend.app.infrastructure.ArtistRepository import ArtistRepository
-from backend.app.infrastructure.SongRepository import SongRepository
+from backend.app.infrastructure.repositories.ArtistRepository import ArtistRepository
+from backend.app.infrastructure.repositories.SongRepository import SongRepository
 from backend.app.domain.Song import Song
 from backend.app.services.ArtistService import ArtistService
 
