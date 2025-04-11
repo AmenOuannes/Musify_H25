@@ -1,5 +1,5 @@
 import axios from "axios";
-import { URL } from "./api";
+import {URL} from "./api";
 
 
 export async function postArtists(artist_name, genre, profile_url, image, followers, token) {
@@ -11,7 +11,7 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
             profile_url: encodeURIComponent(profile_url),
             image: encodeURIComponent(image),
             followers
-        },  {
+        }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -26,10 +26,10 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
 
 export async function getArtists(limit = 5, research = "") {
     try {
-        const params = { limit };
+        const params = {limit};
         if (research) params.research = encodeURIComponent(research);
 
-        const response = await axios.get(URL + "/artists", { params });
+        const response = await axios.get(URL + "/artists", {params});
 
         return response.data;
     } catch (error) {
@@ -51,20 +51,31 @@ export async function getArtistByName(artist_name) {
 
 export async function likeArtist(artist_name, token) {
     try {
-        const response = await axios.post(`${URL}/users/likes/artists/${encodeURIComponent(artist_name)}`, {}, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
-        return response.data;
+        const payload = { artist_name: String(artist_name) }
+        console.log("Sending artist to like:", payload)
+
+        const response = await axios.post(
+            `${URL}/users/likes/artists`,
+            payload,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        )
+
+        return response.data
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.message || 'Unexpected error');
+        console.error("❌ likeArtist error:", error.response?.data?.message || error.message)
+        throw new Error(error.response?.data?.message || 'Unexpected error')
     }
 }
 
 export async function unlikeArtist(artist_name, token) {
     try {
         const response = await axios.delete(`${URL}/users/likes/artists/${encodeURIComponent(artist_name)}`, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: {Authorization: `Bearer ${token}`}
         });
         return response.data;
     } catch (error) {
@@ -73,10 +84,13 @@ export async function unlikeArtist(artist_name, token) {
     }
 }
 
-export async function getLikedArtists(token) {
+export async function getLikedArtists(research, token) {
     try {
+        const params = {};
+        if (research) params.research = encodeURIComponent(research);
         const response = await axios.get(`${URL}/users/likes/artists`, {
-            headers: { Authorization: `Bearer ${token}` }
+            params,
+            headers: {Authorization: `Bearer ${token}`}
         });
         return response.data;
     } catch (error) {

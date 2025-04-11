@@ -25,9 +25,12 @@ export async function unlikePlaylist(playlist_name, token) {
     }
 }
 
-export async function getLikedPlaylists(token) {
+export async function getLikedPlaylists(research ,token) {
     try {
+        const params = {};
+        if (research) params.research = encodeURIComponent(research);
         const response = await axios.get(`${URL}/users/likes/playlists`, {
+            params,
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;

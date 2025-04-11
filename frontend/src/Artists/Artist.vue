@@ -12,6 +12,9 @@
     <div class="action-buttons">
       <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
       <button class="add-album-btn" @click="showAddAlbumModal = true">➕ Add Album</button>
+      <button class="like-btn" @click="toggleLike">
+        {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
+      </button>
     </div>
 
     <div class="media-lists">
@@ -66,7 +69,13 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getArtistByName } from '@/api/artistsAPI'
+import { useStore } from 'vuex'
+import {
+  getArtistByName,
+  getLikedArtists,
+  likeArtist,
+  unlikeArtist
+} from '@/api/artistsAPI'
 import { getSongs } from '@/api/songAPI'
 import { getAlbums } from '@/api/albumAPI'
 import AddSongs from '@/Songs/AddSongs.vue'
@@ -76,9 +85,13 @@ import AlbumDisplay from '@/Albums/AlbumDisplay.vue'
 
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
+const token = store.getters.currentToken
+
 const artist = ref(null)
 const songs = ref([])
 const albums = ref([])
+const isLiked = ref(false)
 const showAddSongModal = ref(false)
 const showAddAlbumModal = ref(false)
 
@@ -102,20 +115,51 @@ const handleAddSongClose = () => {
   loadData()
 }
 
+const checkIfLiked = async (artistName) => {
+  try {
+    const response = await getLikedArtists(artistName, token)
+    const data = response.artists // ⬅️ This is what you're after
+    if (Array.isArray(data) && data.length > 0) {
+      isLiked.value = true
+    } else {
+      isLiked.value = false
+    }
+  } catch (err) {
+    console.error('Error checking if artist is liked:', err)
+  }
+}
+
+const toggleLike = async () => {
+  try {
+    if (!artist.value || !artist.value.artist_name) return
+
+    if (isLiked.value) {
+      await unlikeArtist(artist.value.artist_name, token)
+    } else {
+      await likeArtist(artist.value.artist_name, token)
+    }
+    isLiked.value = !isLiked.value
+  } catch (err) {
+    console.error('Error toggling like:', err)
+  }
+}
+
 const loadData = async () => {
   try {
     const cleanedName = route.params.name.replace(/_/g, ' ').toLowerCase()
     const artistData = await getArtistByName(cleanedName)
     artist.value = artistData
 
+    await checkIfLiked(artistData.artist_name)
+
     const allSongs = await getSongs(100)
     songs.value = allSongs.songs.filter(song =>
-        song.artist_name.toLowerCase() === artist.value.artist_name.toLowerCase()
+        song.artist_name.toLowerCase() === artistData.artist_name.toLowerCase()
     )
 
     const allAlbums = await getAlbums(100)
     albums.value = allAlbums.albums.filter(album =>
-        album.artist_name.toLowerCase() === artist.value.artist_name.toLowerCase()
+        album.artist_name.toLowerCase() === artistData.artist_name.toLowerCase()
     )
   } catch (err) {
     console.error('Error loading artist data:', err)
@@ -170,6 +214,16 @@ p {
   cursor: pointer;
 }
 
+.like-btn {
+  background-color: #e76f51;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .media-lists {
   display: flex;
   flex-wrap: wrap;
@@ -190,7 +244,7 @@ p {
   color: #2a9d8f;
 }
 
-.songs-section > *,
+.songs-section > * ,
 .albums-section > * {
   margin-bottom: 1rem;
 }
