@@ -3,7 +3,7 @@ from urllib.parse import unquote
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 
-from backend.app.routes.RequestFormat import get_album_credentials
+from backend.app.routes.RequestFormat import get_album_credentials, get_limit_argument, get_research_argument
 from backend.app.routes.ResponseFormat import responseFormat
 from backend.app.services.AlbumService import AlbumService
 
@@ -12,15 +12,15 @@ albumService = AlbumService()
 
 @album_bp.route('/albums', methods=['GET'])
 def get_albums():
-    limit = request.args.get('limit', type=int) if 'limit' in request.args else -1
-    research = unquote(request.args.get('research', type=str)) if 'research' in request.args else ""
-    albums = albumService.getAlbums(limit,research)
+    limit = get_limit_argument()
+    research = get_research_argument()
+    albums = albumService.get_albums(limit, research)
     return responseFormat({"albums": albums}), 200
 
 @album_bp.route('/albums/<album_name>', methods=['GET'])
 def get_album(album_name):
     try:
-        song = albumService.getAlbum(unquote(album_name))
+        song = albumService.get_album(unquote(album_name))
         return responseFormat(song),200
     except Exception as e:
         return jsonify({'error': str(e)}), 404

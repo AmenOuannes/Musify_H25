@@ -13,10 +13,10 @@ class AlbumService:
     def __init__(self):
         self.album_repository = AlbumRepository()
 
-    def getAlbums(self, limit, research):
+    def get_albums(self, limit, research):
         return [album.to_dict() for album in self.album_repository.getAlbums(limit, research)]
 
-    def getAlbum(self, album_name):
+    def get_album(self, album_name):
         album = self.album_repository.get_album(album_name)
         if album:
            return album.to_dict()
