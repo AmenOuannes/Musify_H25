@@ -11,7 +11,7 @@ class User:
         self.email = ""
         self.firstName = ""
         self.lastName = ""
-        self.birth_date= ""
+        self.birth_date = ""
 
     def fromRequest(self, username, first_name, last_name, email, password, birth_date):
         self.username = username
@@ -27,10 +27,9 @@ class User:
         self.first_name = userSQL.first_name
         self.last_name = userSQL.last_name
         self.email = userSQL.email
-        self.password = decrypt_password(userSQL.password_hash,KEY)
+        self.password = decrypt_password(userSQL.password_hash, KEY)
         self.birth_date = userSQL.birth_date
         return self
-
 
     def to_dict(self):
         return OrderedDict([
@@ -41,6 +40,3 @@ class User:
             ("birth_date", self.birth_date.isoformat()),
             ("password", self.password)
         ])
-
-
-

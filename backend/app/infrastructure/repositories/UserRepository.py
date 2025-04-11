@@ -94,8 +94,8 @@ class UserRepository:
     def get_liked_artists(self, current_user, research):
         self.artists = []
         query = get_liked_artists_query(research)
-        result = db.session.execute(query, {"username": current_user
-            , "research": f'%{research.lower()}%' if research else None})
+        result = db.session.execute(query, {
+                                    "username": current_user, "research": f'%{research.lower()}%' if research else None})
         for row in result:
             row_data = row._mapping
 
@@ -115,7 +115,8 @@ class UserRepository:
 
     def add_liked_artist(self, current_user, artist_name):
         query = get_artist_by_name_query()
-        artist_id = db.session.execute(query, {"artist_name": artist_name}).fetchone()._mapping["artist_id"]
+        artist_id = db.session.execute(
+            query, {"artist_name": artist_name}).fetchone()._mapping["artist_id"]
         insert_query = add_artist_to_likes()
         db.session.execute(insert_query, {
             "username": current_user,
@@ -125,7 +126,8 @@ class UserRepository:
 
     def unlike_artist(self, current_user, artist_name):
         query = get_artist_by_name_query()
-        artist_id = db.session.execute(query, {"artist_name": artist_name}).fetchone()._mapping["artist_id"]
+        artist_id = db.session.execute(
+            query, {"artist_name": artist_name}).fetchone()._mapping["artist_id"]
         unlike_query = unlike_artist()
         db.session.execute(unlike_query, {
             "username": current_user,
@@ -155,7 +157,8 @@ class UserRepository:
 
     def unlike_playlist(self, current_user, playlist_name):
         query = get_playlist_by_name_query()
-        playlist_result = db.session.execute(query, {"playlist_name": playlist_name}).fetchone()
+        playlist_result = db.session.execute(
+            query, {"playlist_name": playlist_name}).fetchone()
         if not playlist_result:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
@@ -170,7 +173,8 @@ class UserRepository:
 
     def like_playlist(self, current_user, playlist_name):
         query = get_playlist_by_name_query()
-        playlist_result = db.session.execute(query, {"playlist_name": playlist_name}).fetchone()
+        playlist_result = db.session.execute(
+            query, {"playlist_name": playlist_name}).fetchone()
         if not playlist_result:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
@@ -183,7 +187,8 @@ class UserRepository:
         }).fetchone()
         count = exists_result[0] if exists_result else 0
         if count > 0:
-            raise Exception(f"Playlist '{playlist_name}' is already liked by '{current_user}'")
+            raise Exception(
+                f"Playlist '{playlist_name}' is already liked by '{current_user}'")
 
         insert_query = like_playlist_query()
         db.session.execute(insert_query, {

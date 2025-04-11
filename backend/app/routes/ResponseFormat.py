@@ -8,5 +8,6 @@ def responseFormat(element):
         mimetype='application/json'
     )
 
+
 def usernames_response(all_users):
-    return [{'username':user['username']} for user in all_users]
+    return [{'username': user['username']} for user in all_users]

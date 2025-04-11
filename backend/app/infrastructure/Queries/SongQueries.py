@@ -26,17 +26,20 @@ def get_song_by_name_query():
         WHERE LOWER(song_name) = LOWER(:name)
     """)
 
+
 def insert_song_query():
     return text("""
         INSERT INTO Songs (song_name, genre, release_date, url, artist_id)
         VALUES (:name, :genre, :date, :url, :artist_id)
     """)
 
+
 def insert_sings():
     return text("""
         INSERT INTO Sings (song_id, artist_id)
         VALUES (:song_id, :artist_id)
     """)
+
 
 def get_singer_query():
     return text("""

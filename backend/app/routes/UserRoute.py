@@ -10,18 +10,21 @@ from backend.app.services.UserService import UserService
 user_bp = Blueprint('user_bp', __name__)
 userService = UserService()
 
+
 @user_bp.route('/users', methods=['GET'])
 def get_users():
     limit = get_limit_argument()
     all_users = userService.getUsers(limit)
     usernames = usernames_response(all_users)
-    return {'users':usernames}, 200
+    return {'users': usernames}, 200
+
 
 @user_bp.route('/users', methods=['POST'])
 def sign_up():
     try:
         user_name, first_name, last_name, email, password, birth_date = get_user_credentials()
-        userService.createUser(user_name, first_name, last_name, email, password, birth_date)
+        userService.createUser(user_name, first_name,
+                               last_name, email, password, birth_date)
         return jsonify({"message": "User created"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -34,7 +37,7 @@ def login():
     try:
         userService.login(username, password)
         access_token = create_access_token(identity=username)
-        return responseFormat({"token":access_token}), 200
+        return responseFormat({"token": access_token}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
@@ -49,16 +52,19 @@ def get_user_profile():
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
+
 @user_bp.route('/users', methods=['PUT'])
 @jwt_required()
 def update_user_info():
     try:
         user_name, first_name, last_name, email, password, birth_date = get_user_credentials()
         current_user = get_jwt_identity()
-        userService.update_user_info(current_user, user_name, first_name, last_name, email, password, birth_date)
-        return responseFormat({"user_name":user_name, "password":password}), 200
+        userService.update_user_info(
+            current_user, user_name, first_name, last_name, email, password, birth_date)
+        return responseFormat({"user_name": user_name, "password": password}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+
 
 @user_bp.route('/users/likes/artists/<artist_name>', methods=['POST'])
 @jwt_required()
@@ -76,9 +82,10 @@ def like_artist(artist_name):
 def get_liked_artists():
     try:
         current_user = get_jwt_identity()
-        research = unquote(request.args.get('research', type=str)) if 'research' in request.args else None
+        research = unquote(request.args.get('research', type=str)
+                           ) if 'research' in request.args else None
         artists = userService.get_liked_artists(current_user, research)
-        return jsonify({"artists":artists}), 200
+        return jsonify({"artists": artists}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
 
@@ -99,11 +106,13 @@ def unlike_artist(artist_name):
 def get_liked_playlists():
     try:
         current_user = get_jwt_identity()
-        research = unquote(request.args.get('research', type=str)) if 'research' in request.args else None
+        research = unquote(request.args.get('research', type=str)
+                           ) if 'research' in request.args else None
         playlists = userService.get_liked_playlists(current_user, research)
-        return jsonify({"playlists":playlists}), 200
+        return jsonify({"playlists": playlists}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+
 
 @user_bp.route('/users/likes/playlists/<playlist_name>', methods=['DELETE'])
 @jwt_required()
@@ -114,6 +123,7 @@ def unlike_playlists(playlist_name):
         return jsonify({"message": "Playlist unliked"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+
 
 @user_bp.route('/users/likes/playlists/<playlist_name>', methods=['POST'])
 @jwt_required()

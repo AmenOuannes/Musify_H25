@@ -11,7 +11,7 @@ class Artist:
         self.profile_url = profile_url
         self.followers = followers
         self.celebrity = False
-        self.image=image
+        self.image = image
         return self
 
     def fromArtistSQL(self, artistSQL):

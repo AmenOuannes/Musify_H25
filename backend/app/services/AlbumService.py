@@ -7,6 +7,7 @@ from backend.app.services.SongService import artist_repository
 
 artist_repository = ArtistRepository()
 
+
 class AlbumService:
     def __init__(self):
         self.album_repository = AlbumRepository()
@@ -17,7 +18,7 @@ class AlbumService:
     def get_album(self, album_name):
         album = self.album_repository.get_album(album_name)
         if album:
-           return album.to_dict()
+            return album.to_dict()
         else:
             raise Exception(f"album not found:{album_name}")
 
@@ -25,8 +26,9 @@ class AlbumService:
         try:
             artist = artist_repository.getArtistByName(artist_name)
             date = datetime.strptime(release_date, "%Y-%m-%d")
-            if artist is  not None:
-                self.album_repository.addAlbum(Album().fromRequest(album_name, genre, release_date, image, artist_name), artist)
+            if artist is not None:
+                self.album_repository.addAlbum(Album().fromRequest(
+                    album_name, genre, release_date, image, artist_name), artist)
             else:
                 raise Exception("Artist not found")
         except Exception as e:

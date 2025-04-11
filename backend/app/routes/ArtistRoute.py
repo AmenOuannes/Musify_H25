@@ -10,6 +10,7 @@ from backend.app.services.ArtistService import ArtistService
 artist_bp = Blueprint('artist_bp', __name__)
 artistService = ArtistService()
 
+
 @artist_bp.route('/artists', methods=['GET'])
 def get_artists():
     limit = get_limit_argument()
@@ -17,16 +18,19 @@ def get_artists():
     artists = artistService.get_artists(limit, research)
     return responseFormat({"artists": artists}), 200
 
+
 @artist_bp.route('/artists', methods=['POST'])
 @jwt_required()
 def add_artist():
     try:
         current_user = get_jwt_identity()
         artist_name, genre, profile_url, followers, image = get_artist_credentials()
-        artistService.add_artist(artist_name, genre, profile_url, image, followers)
+        artistService.add_artist(
+            artist_name, genre, profile_url, image, followers)
         return jsonify({"message": "artist created"}), 201
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+
 
 @artist_bp.route('/artists/<artist_name>', methods=['GET'])
 def get_artist_by_name(artist_name):
@@ -35,6 +39,3 @@ def get_artist_by_name(artist_name):
         return responseFormat(artist_json), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
-
-
-

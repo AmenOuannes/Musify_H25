@@ -11,7 +11,8 @@ class UserService:
 
     def createUser(self, username, first_name, last_name, email, password, birth_date):
         try:
-            user = User().fromRequest(username, first_name, last_name, email, password, birth_date)
+            user = User().fromRequest(username, first_name,
+                                      last_name, email, password, birth_date)
             self.repository.add_user(user)
         except (Exception) as e:
             raise e
@@ -32,7 +33,8 @@ class UserService:
         return user.to_dict()
 
     def update_user_info(self, current_username, user_name, first_name, last_name, email, password, birth_date):
-        self.repository.update_user(current_username, user_name, first_name, last_name, email, password, birth_date)
+        self.repository.update_user(
+            current_username, user_name, first_name, last_name, email, password, birth_date)
 
     def get_liked_artists(self, current_user, research):
         try:
@@ -55,7 +57,8 @@ class UserService:
 
     def get_liked_playlists(self, current_user, research):
         try:
-            playlists = self.repository.get_liked_playlists(current_user, research)
+            playlists = self.repository.get_liked_playlists(
+                current_user, research)
             return [playlist.to_dict() for playlist in playlists]
         except (Exception) as e:
             raise e
@@ -71,4 +74,3 @@ class UserService:
             self.repository.like_playlist(current_user, playlist_name)
         except (Exception) as e:
             raise e
-

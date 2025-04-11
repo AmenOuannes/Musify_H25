@@ -26,7 +26,8 @@ class SongRepository:
                 "artist_id": artist.artist_id,
             })
             db.session.commit()
-            song_id = db.session.execute(get_song_by_name_query(), {"name": song.song_name}).fetchone()._mapping["song_id"]
+            song_id = db.session.execute(get_song_by_name_query(
+            ), {"name": song.song_name}).fetchone()._mapping["song_id"]
             sings_query = insert_sings()
             db.session.execute(sings_query, {
                 "song_id": song_id,
@@ -40,7 +41,8 @@ class SongRepository:
 
         result = db.session.execute(query, {"name": song_name})
         row = result.fetchone()
-        singer = db.session.execute(singer_query, {"name": song_name}).fetchone()
+        singer = db.session.execute(
+            singer_query, {"name": song_name}).fetchone()
 
         if row:
             row_data = row._mapping
@@ -71,7 +73,8 @@ class SongRepository:
         for row in result:
             row_data = row._mapping
             sing_query = get_singer_query()
-            singer = db.session.execute(sing_query, {"name": row_data["song_name"]}).fetchone()
+            singer = db.session.execute(
+                sing_query, {"name": row_data["song_name"]}).fetchone()
             songSQL = SongSQL(
                 song_id=row_data["song_id"],
                 song_name=row_data["song_name"],

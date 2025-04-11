@@ -30,7 +30,8 @@ class AlbumRepository:
             row_data = row._mapping
 
             owner_query = get_album_owner_query()
-            owner_result = db.session.execute(owner_query, {"name": row_data["album_name"]}).fetchone()
+            owner_result = db.session.execute(
+                owner_query, {"name": row_data["album_name"]}).fetchone()
             artist_name = owner_result._mapping["artist_name"] if owner_result else "Unknown"
 
             albumSQL = AlbumSQL(
@@ -54,7 +55,8 @@ class AlbumRepository:
             row_data = result._mapping
 
             owner_query = get_album_owner_query()
-            owner = db.session.execute(owner_query, {"name": row_data["album_name"]}).fetchone()._mapping
+            owner = db.session.execute(
+                owner_query, {"name": row_data["album_name"]}).fetchone()._mapping
 
             albumSQL = AlbumSQL(
                 album_id=row_data["album_id"],
@@ -70,7 +72,8 @@ class AlbumRepository:
 
     def addAlbum(self, album, artist):
         exists_query = get_album_by_name_query()
-        result = db.session.execute(exists_query, {"name": album.album_name}).fetchone()
+        result = db.session.execute(
+            exists_query, {"name": album.album_name}).fetchone()
         if result:
             raise Exception("Album already exists")
 
@@ -84,7 +87,8 @@ class AlbumRepository:
         db.session.commit()
 
         id_query = get_album_id_query()
-        id_result = db.session.execute(id_query, {"name": album.album_name}).fetchone()
+        id_result = db.session.execute(
+            id_query, {"name": album.album_name}).fetchone()
         album_id = id_result._mapping["album_id"]
 
         creates_query = insert_creates()
@@ -98,14 +102,16 @@ class AlbumRepository:
         self.songs = []
 
         album_id_query = get_album_id_query()
-        album_id_result = db.session.execute(album_id_query, {"name": album_name}).fetchone()
+        album_id_result = db.session.execute(
+            album_id_query, {"name": album_name}).fetchone()
         if not album_id_result:
             return []
 
         album_id = album_id_result._mapping["album_id"]
 
         owner_query = get_album_owner_query()
-        owner_result = db.session.execute(owner_query, {"name": album_name}).fetchone()
+        owner_result = db.session.execute(
+            owner_query, {"name": album_name}).fetchone()
         artist_name = owner_result._mapping["artist_name"] if owner_result else "Unknown"
 
         songs_query = get_songs_of_album()
@@ -127,11 +133,13 @@ class AlbumRepository:
 
     def addSongToAlbum(self, album_name, song_name):
         song_query = get_song_by_name_query()
-        song_result = db.session.execute(song_query, {"name":song_name}).fetchone()
+        song_result = db.session.execute(
+            song_query, {"name": song_name}).fetchone()
         song_id = song_result._mapping["song_id"]
 
         album_id_query = get_album_id_query()
-        album_result = db.session.execute(album_id_query, {"name": album_name}).fetchone()
+        album_result = db.session.execute(
+            album_id_query, {"name": album_name}).fetchone()
         album_id = album_result._mapping["album_id"]
 
         insert_query = insert_song_into_album_query()
@@ -143,13 +151,15 @@ class AlbumRepository:
 
     def deleteSongFromAlbum(self, album_name, song_name):
         song_query = get_song_by_name_query()
-        song_result = db.session.execute(  song_query, {"name":song_name}).fetchone()
+        song_result = db.session.execute(
+            song_query, {"name": song_name}).fetchone()
         if not song_result:
             raise Exception("Song not found in album")
         song_id = song_result._mapping["song_id"]
 
         album_id_query = get_album_id_query()
-        album_result = db.session.execute(album_id_query, {"name": album_name}).fetchone()
+        album_result = db.session.execute(
+            album_id_query, {"name": album_name}).fetchone()
         if not album_result:
             raise Exception("album not found")
         album_id = album_result._mapping["album_id"]

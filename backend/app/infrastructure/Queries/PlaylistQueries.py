@@ -1,5 +1,6 @@
 from sqlalchemy.sql import text
 
+
 def get_playlist_by_name_query():
     return text("""
         SELECT playlist_id, playlist_name, owner, private
@@ -95,4 +96,3 @@ def get_liked_artists_query(research):
         base_query += " AND LOWER(A.artist_name) LIKE :research"
 
     return text(base_query)
-
