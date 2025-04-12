@@ -21,4 +21,5 @@ def decrypt_password(token: bytes, key: bytes) -> str:
 
 
 key_password = os.getenv("KEY_PASSWORD")
-KEY = generate_key(key_password)
+if key_password is  not None:
+    KEY = generate_key(key_password)

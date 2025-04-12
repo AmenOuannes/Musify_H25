@@ -1,3 +1,5 @@
+from sqlalchemy.exc import DBAPIError
+
 from backend.app.domain.Artist import Artist
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.User import User
@@ -24,16 +26,24 @@ class UserRepository:
         if count.scalar() > 0:
             raise Exception('User already exists')
 
-        query = insert_user_query()
-        db.session.execute(query, {
-            "username": user.username,
-            "last_name": user.last_name,
-            "first_name": user.first_name,
-            "email": user.email,
-            "password_hash": user.password,
-            "birth_date": user.birth_date
-        })
-        db.session.commit()
+        try:
+            query = insert_user_query()
+            db.session.execute(query, {
+                "username": user.username,
+                "last_name": user.last_name,
+                "first_name": user.first_name,
+                "email": user.email,
+                "password_hash": user.password,
+                "birth_date": user.birth_date
+            })
+            db.session.commit()
+        except DBAPIError as e:
+            db.session.rollback()
+            # Extract and raise SQL trigger's custom error message
+            if e.orig:
+                raise Exception(f"Database error: {str(e.orig)}")
+            else:
+                raise Exception("An unknown database error occurred.")
 
     def get_user(self, username):
         self.users = []
@@ -80,16 +90,23 @@ class UserRepository:
 
     def update_user(self, current_username, user_name, first_name, last_name, email, password, birth_date):
         query = update_user_query()
-        db.session.execute(query, {
-            "current_username": current_username,
-            "username": user_name,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "password_hash": encrypt_password(password, KEY),
-            "birth_date": birth_date
-        })
-        db.session.commit()
+        try:
+            db.session.execute(query, {
+                "current_username": current_username,
+                "username": user_name,
+                "first_name": first_name,
+                "last_name": last_name,
+                "email": email,
+                "password_hash": encrypt_password(password, KEY),
+                "birth_date": birth_date
+            })
+            db.session.commit()
+        except DBAPIError as e:
+            db.session.rollback()
+            if e.orig:
+                raise Exception(f"Database error: {str(e.orig)}")
+            else:
+                raise Exception("An unknown database error occurred.")
 
     def get_liked_artists(self, current_user, research):
         self.artists = []
