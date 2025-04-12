@@ -17,7 +17,7 @@ INSERT INTO Artists (artist_id, artist_name, genre, followers, profile_url, imag
 VALUES (6, 'Pitbull', 'Pop', 680000, 'https://www.youtube.com/channel/UCv8nzwVPQDRjkPCkEsOdEwA', 'https://yt3.googleusercontent.com/uKJ5scOEXVj-dCSC98H4jYWT60NxNt07gqs1wzqTePixIidtwKlBDinAW3P9dUVffM4AQLqjLHg=s160-c-k-c0x00ffffff-no-rj');
 
 INSERT INTO Artists (artist_id, artist_name, genre, followers, profile_url, image)
-VALUES (7, 'Selena Gomez', 'Pop', 790000, 'https://www.youtube.com/channel/UCPNxhDvTcytIdvwXWAm43cA', https://yt3.googleusercontent.com/SdHhEkdZ78QM2SNYjgSRnJX_F-ulIdb-B001bxuTfzLX7rbfuEeO_GXaynLc2zp-LZQizNEB=s160-c-k-c0x00ffffff-no-rj');
+VALUES (7, 'Selena Gomez', 'Pop', 790000, 'https://www.youtube.com/channel/UCPNxhDvTcytIdvwXWAm43cA', 'https://yt3.googleusercontent.com/SdHhEkdZ78QM2SNYjgSRnJX_F-ulIdb-B001bxuTfzLX7rbfuEeO_GXaynLc2zp-LZQizNEB=s160-c-k-c0x00ffffff-no-rj');
 
 INSERT INTO Artists (artist_id, artist_name, genre, followers, profile_url, image)
 VALUES (8, 'Justin Bieber', 'Pop', 1000000, 'https://www.youtube.com/channel/UCHkj014U2CQ2Nv0UZeYpE_A', 'https://yt3.googleusercontent.com/ytc/AIdro_nI4TVFXBd57OiewF_oI8NCqBcpYmbkvbl1HjtYrqNPokc=s160-c-k-c0x00ffffff-no-rj');
