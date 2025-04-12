@@ -7,4 +7,8 @@ pymysql
 flask_jwt_extended
 cryptography
 pytest
+sentence-transformers
+torch
+hf_xet
+
 

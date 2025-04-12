@@ -68,10 +68,7 @@ def unlike_playlist_query():
 
 
 def like_playlist_query():
-    return text(f"""
-        INSERT INTO LikedPlaylists (user_id, playlist_id)
-        VALUES (:user_id, :playlist_id);
-    """)
+    return text("CALL InsertIntoLikedPlaylists(:user_id, :playlist_id)")
 
 
 def get_liked_playlist_count_query():
@@ -80,3 +77,6 @@ def get_liked_playlist_count_query():
         FROM LikedPlaylists
         WHERE user_id = :user_id AND playlist_id = :playlist_id;
     """)
+
+def user_exists_query():
+    return text("SELECT DoesUserExist(:username) AS exists_flag")

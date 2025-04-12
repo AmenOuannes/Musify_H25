@@ -56,6 +56,7 @@ export async function getPlaylists(limit = 10, research = "", isprivate=1,owner 
 
 export async function getPlaylistByName(playlist_name) {
     try {
+        console.log("hello")
         const response = await axios.get(`${URL}/playlists/${encodeURIComponent(playlist_name)}`, {});
         return response.data;
     } catch (error) {

@@ -25,3 +25,6 @@ def insert_artist_query():
         INSERT INTO Artists (artist_name, genre, followers, profile_url, image)
         VALUES (:artist_name, :genre, :followers, :profile_url, :image)
     """)
+
+def artist_exists_query():
+    return text("SELECT DoesArtistExist(:artist_name) AS exists_flag")

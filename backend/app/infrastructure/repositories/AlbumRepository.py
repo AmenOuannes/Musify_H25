@@ -1,14 +1,11 @@
-from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 
 from backend.__init__ import db
-
-
 from backend.app.domain.Album import Album
 from backend.app.domain.Song import Song
+from backend.app.infrastructure.Queries.AlbumQueries import *
 from backend.app.infrastructure.Queries.SongQueries import get_song_by_name_query
 from backend.app.infrastructure.SQL.AlbumSQL import AlbumSQL
-from backend.app.infrastructure.Queries.AlbumQueries import *
 from backend.app.infrastructure.SQL.songSQL import SongSQL
 
 
@@ -73,10 +70,11 @@ class AlbumRepository:
         return None
 
     def addAlbum(self, album, artist):
-        exists_query = get_album_by_name_query()
-        result = db.session.execute(
-            exists_query, {"name": album.album_name}).fetchone()
-        if result:
+        query = album_exists_query()
+        result = db.session.execute(query, {"name": album.album_name})
+        row = result.fetchone()
+
+        if row._mapping["exists_flag"]:
             raise Exception("Album already exists")
         try:
             insert_query = insert_album_query()
@@ -93,11 +91,11 @@ class AlbumRepository:
                 id_query, {"name": album.album_name}).fetchone()
             album_id = id_result._mapping["album_id"]
 
-            creates_query = insert_creates()
-            db.session.execute(creates_query, {
+            db.session.execute(insert_creates(), {
                 "album_id": album_id,
                 "artist_id": artist.artist_id
             })
+            db.session.commit()
             db.session.commit()
         except DBAPIError as e:
             db.session.rollback()

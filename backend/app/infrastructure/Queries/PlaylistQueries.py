@@ -9,6 +9,9 @@ def get_playlist_by_name_query():
         LIMIT 1
     """)
 
+def playlist_exists():
+    return text("SELECT DoesPlaylistExist(:playlist_name) AS exists_flag")
+
 
 def get_all_playlists_query(limit, research, owner, private):
     conditions = []

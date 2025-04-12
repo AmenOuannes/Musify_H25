@@ -3,7 +3,6 @@ DROP TRIGGER IF EXISTS validate_user_before_insert;
 DROP TRIGGER IF EXISTS validate_user_before_update;
 
 
-DELIMITER //
 CREATE TRIGGER validate_user_before_insert
 BEFORE INSERT ON Users
 FOR EACH ROW
@@ -26,10 +25,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Birth date cannot be in the future.';
     END IF;
 END;
-//
-DELIMITER ;
 
-DELIMITER //
 CREATE TRIGGER validate_user_before_update
 BEFORE UPDATE ON Users
 FOR EACH ROW
@@ -52,5 +48,18 @@ BEGIN
         SET MESSAGE_TEXT = 'Birth date cannot be in the future.';
     END IF;
 END;
-//
-DELIMITER ;
+
+DROP FUNCTION IF EXISTS DoesUserExist;
+CREATE FUNCTION DoesUserExist(username_input VARCHAR(255)) RETURNS BOOLEAN
+    DETERMINISTIC
+BEGIN
+    DECLARE _exists BOOLEAN DEFAULT FALSE;
+
+    SELECT EXISTS(
+        SELECT 1
+        FROM Users
+        WHERE LOWER(username) = LOWER(username_input)
+    ) INTO _exists;
+
+    RETURN _exists;
+END ;

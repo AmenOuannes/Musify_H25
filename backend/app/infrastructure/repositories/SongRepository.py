@@ -12,12 +12,12 @@ class SongRepository:
         self.songs = []
 
     def addSong(self, song, artist):
-        song_exists = get_song_by_name_query()
-        result = db.session.execute(song_exists, {"name": song.song_name})
+        query = song_exists_query()
+        result = db.session.execute(query, {"song_name": song.song_name})
         row = result.fetchone()
 
-        if row:
-            raise Exception("Song already exists")
+        if row._mapping["exists_flag"]==1:
+            raise Exception(f"Song '{song.song_name}' already exists in the database.")
         else:
             try:
                 song_query = insert_song_query()
@@ -30,8 +30,7 @@ class SongRepository:
                 db.session.commit()
                 song_id = db.session.execute(get_song_by_name_query(),
                                              {"name": song.song_name}).fetchone()._mapping["song_id"]
-                sings_query = insert_sings()
-                db.session.execute(sings_query, {
+                db.session.execute(insert_sings_query(), {
                     "song_id": song_id,
                     "artist_id": artist.artist_id
                 })
@@ -68,10 +67,10 @@ class SongRepository:
         else:
             return None
 
-    def getAllSongs(self, limit, research):
+    def getAllSongs(self, limit, research=""):
         query = get_all_songs_query(limit, research)
         params = {}
-        if research:
+        if research!="":
             params["research"] = f"{research.lower()}%"
         if int(limit) != -1:
             params["limit"] = int(limit)

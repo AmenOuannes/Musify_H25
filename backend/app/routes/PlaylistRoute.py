@@ -24,7 +24,8 @@ def get_playlists():
 @playlist_bp.route('/playlists/<playlist_name>', methods=['GET'])
 def get_playlist(playlist_name):
     try:
-        playlist = playlistService.get_playlist(playlist_name)
+        print(playlist_name)
+        playlist = playlistService.get_playlist(unquote(playlist_name))
         return responseFormat(playlist), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
@@ -97,5 +98,16 @@ def delete_song(playlist_name, song_name):
         playlistService.delete_song_from_playlist(
             unquote(playlist_name), unquote(song_name))
         return jsonify({"message": "Song deleted"}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 404
+
+
+@playlist_bp.route('/playlists/<playlist_name>/recommended', methods=['GET'])
+@jwt_required()
+def get_recommended(playlist_name):
+    try:
+        current_user = get_jwt_identity()
+        songs = playlistService.get_recommended_songs(playlist_name, current_user)
+        return responseFormat({"songs": songs}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404
