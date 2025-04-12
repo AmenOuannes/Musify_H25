@@ -16,20 +16,12 @@
     </div>
 
     <div class="song-list">
-      <!-- Display filtered songs when searching, otherwise all songs -->
-      <div
-          class="song-card"
-          v-for="song in displayedSongs"
+      <SongDisplay
+          v-for="song in songs"
           :key="song.song_name"
+          :song="song"
           @click="goToSong(song.song_name)"
-      >
-        <div class="song-info">
-          <h3 class="song-name">{{ song.song_name }}</h3>
-          <p class="song-genre">{{ song.genre }}</p>
-          <p class="song-artist">🎤 {{ song.artist_name }}</p>
-          <p class="song-date">📅 {{ song.release_date }}</p>
-        </div>
-      </div>
+      />
     </div>
 
     <!-- MODAL -->
@@ -44,30 +36,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getSongs } from '@/api/songAPI'
 import AddSong from '@/Songs/AddSongs.vue'
+import SongDisplay from '@/Songs/SongDisplay.vue'
 
 const router = useRouter()
-const songs = ref([]) // All songs
+const songs = ref([])
 const searchQuery = ref('')
 const showAddModal = ref(false)
 const showDropdown = ref(false)
 
-// Computed property that returns either filtered or all songs
-const displayedSongs = computed(() => {
-  if (!searchQuery.value) return songs.value
-
-  return songs.value.filter(song =>
-      song.song_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      song.artist_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
-
 const fetchSongs = async () => {
   try {
-    const data = await getSongs(50) // Get all songs initially
+    const data = await getSongs(25, searchQuery.value)
     songs.value = data.songs || []
   } catch (err) {
     console.error('Error fetching songs:', err)
@@ -77,7 +60,7 @@ const fetchSongs = async () => {
 
 const handleInput = () => {
   showDropdown.value = searchQuery.value.length > 0
-  // No need to fetch on each input since we're filtering client-side
+  fetchSongs()
 }
 
 const hideDropdown = () => {
@@ -93,7 +76,7 @@ const goToSong = (name) => {
 
 const handleModalClose = () => {
   showAddModal.value = false
-  fetchSongs() // Refresh the song list after adding
+  fetchSongs()
 }
 
 onMounted(() => {
@@ -102,7 +85,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Your existing styles remain exactly the same */
 .song-search {
   padding: 2rem;
   color: white;
@@ -139,40 +121,8 @@ onMounted(() => {
 
 .song-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: flex-start;
-}
-
-.song-card {
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 1rem;
-  width: 220px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.song-card:hover {
-  transform: scale(1.05);
-}
-
-.song-info {
-  text-align: center;
-}
-
-.song-name {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #2a9d8f;
-}
-
-.song-genre,
-.song-artist,
-.song-date {
-  font-size: 0.9rem;
-  color: #ccc;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .modal-overlay {

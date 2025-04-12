@@ -5,17 +5,13 @@ export async function login(username, password) {
     try {
         username = username.toLowerCase();
         const response = await axios.post(URL + "/users/login", {
-            username,
-            password
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            username: encodeURIComponent(username),
+            password: encodeURIComponent(password)
         });
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -25,15 +21,15 @@ export async function getUsers(limit = 10, research = "") {
             limit,
         }
 
-        if (research) params.research = research.toLowerCase();
+        if (research) params.research = encodeURIComponent(research.toLowerCase());
 
         const response = await axios.get(URL + "/users", {
             params: params
         });
         return response.data;
-    }catch(err) {
-        console.error(err);
-        throw new Error(err.message);
+    }catch(error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
@@ -45,39 +41,39 @@ export async function getUser(token) {
             }
         });
         return response.data;
-    } catch (err) {
-        console.error(err);
-        throw new Error(err.message);
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
 export async function postUser({ username, first_name, last_name, email, password, birth_date }) {
     try {
         const response = await axios.post(`${URL}/users`, {
-            username: username.toLowerCase(),
-            first_name: first_name.toLowerCase(),
-            last_name: last_name.toLowerCase(),
-            email,
-            password,
-            birth_date
+            username: encodeURIComponent(username.toLowerCase()),
+            first_name: encodeURIComponent(first_name),
+            last_name: encodeURIComponent(last_name),
+            email: encodeURIComponent(email),
+            password: encodeURIComponent(password),
+            birth_date: encodeURIComponent(birth_date)
         })
         return response.data
-    } catch (err) {
-        console.error(err)
-        throw new Error(err.response?.data?.message || err.message)
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }
 
 export async function putUser({ username, first_name, last_name, email, password, birth_date }, currentToken) {
     try {
-        username = username.toLowerCase()
+        username = encodeURIComponent(username.toLowerCase())
         const response = await axios.put(`${URL}/users`, {
-            username: username,
-            first_name: first_name.toLowerCase(),
-            last_name: last_name.toLowerCase(),
-            email,
-            password,
-            birth_date
+            username: encodeURIComponent(username.toLowerCase()),
+            first_name: encodeURIComponent(first_name),
+            last_name: encodeURIComponent(last_name),
+            email: encodeURIComponent(email),
+            password: encodeURIComponent(password),
+            birth_date: encodeURIComponent(birth_date)
         }, {
             headers: {
                 Authorization: `Bearer ${currentToken}`
@@ -85,8 +81,8 @@ export async function putUser({ username, first_name, last_name, email, password
         })
 
         return { username, password }
-    } catch (err) {
-        console.error(err)
-        throw new Error(err.response?.data?.message || err.message)
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || 'Unexpected error');
     }
 }

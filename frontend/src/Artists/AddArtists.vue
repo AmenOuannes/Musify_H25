@@ -99,7 +99,7 @@ const submitArtist = async () => {
     success.value = true
 
     setTimeout(() => {
-      emit('close') // Close modal and trigger parent refresh
+      emit('close')
     }, 1000)
   } catch (err) {
     error.value = 'Failed to add artist.'

@@ -37,17 +37,20 @@
           <button type="button" class="toggle-password" @click="togglePasswordVisibility">
             {{ showPassword ? '🔒' : '👁️' }}
           </button>
+          <p v-if="passwordInvalid" class="error-message" style="margin-top: 5px;">
+            Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.
+          </p>
         </div>
       </div>
 
-      <button class="save-btn" @click="saveAll">Modifier</button>
+      <button class="save-btn" @click="saveAll" :disabled="passwordInvalid">Modifier</button>
       <div class="success-message" v-if="successMessage">{{ successMessage }}</div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { putUser, login, getUser } from '@/api/AuthApi'
@@ -60,7 +63,6 @@ export default {
 
     const user = ref(store.getters.currentUser)
     const token = ref(store.getters.currentToken)
-    console.log(user.value)
 
     const editableUserData = reactive({
       username: user.value?.username || '',
@@ -82,6 +84,15 @@ export default {
       return date.toISOString().split('T')[0]
     }
 
+    const isPasswordValid = (password) => {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
+      return regex.test(password)
+    }
+
+    const passwordInvalid = computed(() => {
+      return editableUserData.password && !isPasswordValid(editableUserData.password)
+    })
+
     const loadUserData = async () => {
       try {
         const currentUser = store.getters.currentUser
@@ -101,7 +112,7 @@ export default {
     onMounted(() => {
       if (!store.getters.isLoggedIn) {
         error.value = 'Vous devez être connecté pour accéder à cette page'
-        setTimeout(() => router.push('/login'), 2000)
+        setTimeout(() => router.push('/signin'), 2000)
       } else {
         loadUserData()
       }
@@ -112,8 +123,13 @@ export default {
       error.value = null
       successMessage.value = null
 
+      if (editableUserData.password && passwordInvalid.value) {
+        error.value = 'Le mot de passe ne respecte pas les critères de sécurité.'
+        loading.value = false
+        return
+      }
+
       try {
-        // 1. Prepare payload
         const payload = {
           username: editableUserData.username,
           first_name: editableUserData.first_name,
@@ -123,28 +139,22 @@ export default {
           ...(editableUserData.birth_date && { birth_date: editableUserData.birth_date })
         }
 
-        // 2. Update server data
         await putUser(payload, token.value)
 
-        // 3. Re-login if credentials changed
         const { token: newToken } = await login(
             payload.username,
             editableUserData.password || payload.password
         )
 
-        // 4. Get fresh user data
         const updatedUser = await getUser(newToken)
 
-        // 5. Update store
         await store.dispatch('login', {
           user: updatedUser,
           token: newToken
         })
 
-        // 6. Force reload of Settings page
         successMessage.value = 'Profile updated successfully!'
-        router.replace('/home') // This will trigger a fresh load
-
+        router.replace('/home')
       } catch (err) {
         error.value = 'Error: ' + (err.response?.data?.message || err.message)
         console.error('Update error:', err)
@@ -165,6 +175,7 @@ export default {
       successMessage,
       saveAll,
       togglePasswordVisibility,
+      passwordInvalid,
       fieldLabels: {
         username: "Nom d'utilisateur",
         first_name: 'Prénom',

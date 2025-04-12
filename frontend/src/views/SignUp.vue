@@ -57,6 +57,12 @@ const handleSignUp = async () => {
     return
   }
 
+  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
+  if (!strongPasswordRegex.test(password.value)) {
+    error.value = "Password must be 8+ chars with a number, special char, upper & lowercase."
+    return
+  }
+
   loading.value = true
   try {
     await postUser({

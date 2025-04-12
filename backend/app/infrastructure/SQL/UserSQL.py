@@ -6,7 +6,3 @@ class UserSQL:
         self.email = email
         self.password_hash = password_hash
         self.birth_date = birth_date
-
-
-
-

@@ -4,7 +4,6 @@
       <input type="text" placeholder="Search..." />
     </div>
     <div class="auth-buttons">
-      <!-- Logged In State -->
       <div v-if="isLoggedIn" class="profile-button">
         <button @click.stop="toggleDropdown">Profile</button>
         <div v-if="isDropdownVisible" class="dropdown-menu" ref="dropdown">
@@ -14,7 +13,6 @@
           </ul>
         </div>
       </div>
-      <!-- Logged Out State -->
       <router-link v-else to="/signin" class="login-button">Login</router-link>
     </div>
   </div>
@@ -58,7 +56,6 @@ export default {
 </script>
 
 <style scoped>
-/* unchanged styling — all preserved */
 .top-bar {
   display: flex;
   justify-content: space-between;

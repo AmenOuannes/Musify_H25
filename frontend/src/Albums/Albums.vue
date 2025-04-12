@@ -16,20 +16,12 @@
     </div>
 
     <div class="album-list">
-      <div
-          class="album-card"
-          v-for="album in displayedAlbums"
+      <AlbumDisplay
+          v-for="album in albums"
           :key="album.album_name"
+          :album="album"
           @click="goToAlbum(album.album_name)"
-      >
-        <img :src="album.image" alt="Album cover" class="album-image" />
-        <div class="album-info">
-          <h3 class="album-name">{{ album.album_name }}</h3>
-          <p class="album-artist">🎤 {{ album.artist_name }}</p>
-          <p class="album-genre">{{ album.genre }}</p>
-          <p class="album-date">📅 {{ album.release_date }}</p>
-        </div>
-      </div>
+      />
     </div>
 
     <teleport to="body">
@@ -43,10 +35,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getAlbums } from '@/api/albumAPI'
 import AddAlbum from '@/Albums/AddAlbums.vue'
+import AlbumDisplay from '@/Albums/AlbumDisplay.vue'
 
 const router = useRouter()
 const albums = ref([])
@@ -54,20 +47,9 @@ const searchQuery = ref('')
 const showAddModal = ref(false)
 const showDropdown = ref(false)
 
-const displayedAlbums = computed(() => {
-  if (!searchQuery.value) return albums.value
-
-  return albums.value.filter(album => {
-    return (
-        album.album_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        album.artist_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-    )
-  })
-})
-
 const fetchAlbums = async () => {
   try {
-    const data = await getAlbums(50)
+    const data = await getAlbums(25, searchQuery.value)
     albums.value = data.albums || []
   } catch (err) {
     console.error('Error fetching albums:', err)
@@ -77,6 +59,7 @@ const fetchAlbums = async () => {
 
 const handleInput = () => {
   showDropdown.value = searchQuery.value.length > 0
+  fetchAlbums()
 }
 
 const hideDropdown = () => {
@@ -140,45 +123,6 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 1.5rem;
   justify-content: flex-start;
-}
-
-.album-card {
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 1rem;
-  width: 220px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.album-card:hover {
-  transform: scale(1.05);
-}
-
-.album-image {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
-
-.album-info {
-  text-align: center;
-}
-
-.album-name {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #2a9d8f;
-}
-
-.album-genre,
-.album-artist,
-.album-date {
-  font-size: 0.9rem;
-  color: #ccc;
 }
 
 .modal-overlay {

@@ -4,12 +4,23 @@
     <form @submit.prevent="submitAlbum">
       <input type="text" v-model="album_name" placeholder="Album Name" required />
       <input type="text" v-model="genre" placeholder="Genre" required />
-      <input v-if="!prefilledArtist" type="text" v-model="artist_name" placeholder="Artist Name" required />
+
+      <!-- ✅ Affiche le champ seulement si on n’a pas de prefilledArtist -->
+      <input
+          v-if="!prefilledArtist"
+          type="text"
+          v-model="artist_name"
+          placeholder="Artist Name"
+          required
+      />
+
       <input type="date" v-model="release_date" required />
       <input type="text" v-model="image" placeholder="Image URL" required />
+
       <button type="submit" :disabled="loading">
         {{ loading ? 'Adding...' : 'Add Album' }}
       </button>
+
       <p v-if="success">✅ Album added successfully!</p>
       <p v-if="error">❌ {{ error }}</p>
     </form>
@@ -17,7 +28,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, watchEffect } from 'vue'
 import { postAlbum } from '@/api/albumAPI'
 import { useStore } from 'vuex'
 
@@ -31,12 +42,19 @@ const emit = defineEmits(['close'])
 
 const album_name = ref('')
 const genre = ref('')
-const artist_name = ref(props.prefilledArtist || '')
+const artist_name = ref('')
 const release_date = ref('')
 const image = ref('')
 const loading = ref(false)
 const success = ref(false)
 const error = ref(null)
+
+// Si prefilledArtist est fourni, on le met dans artist_name automatiquement
+watchEffect(() => {
+  if (props.prefilledArtist) {
+    artist_name.value = props.prefilledArtist
+  }
+})
 
 const submitAlbum = async () => {
   loading.value = true
