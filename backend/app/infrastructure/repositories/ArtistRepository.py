@@ -1,6 +1,6 @@
 from backend.app.domain.Artist import Artist
-from backend.app.infrastructure.ArtistSQL import ArtistSQL
-from backend.app.infrastructure.Queries import get_all_artists_query, get_artist_by_name_query, insert_artist_query
+from backend.app.infrastructure.SQL.ArtistSQL import ArtistSQL
+from backend.app.infrastructure.Queries.ArtistQueries import *
 from backend.__init__ import db
 
 

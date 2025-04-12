@@ -42,7 +42,4 @@ def create_app():
     def main():
         return "musify_h25 API"
 
-
     return app
-
-

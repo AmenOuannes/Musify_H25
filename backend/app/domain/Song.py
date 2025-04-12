@@ -4,15 +4,16 @@ import random
 
 class Song:
     def __init__(self):
-        self.a=""
+        self.init = None
 
-    def fromRequest(self,song_name, genre, artist_name, release_date, url):
+    def fromRequest(self, song_name, genre, artist_name, release_date, url):
         self.song_name = song_name
         self.genre = genre
         self.artist_name = artist_name
         self.release_date = release_date
         self.url = url
         return self
+
     def fromSQL(self, songSQL):
         self.song_id = songSQL.song_id
         self.song_name = songSQL.song_name
