@@ -147,3 +147,16 @@ export async function deleteSongFromPlaylist(playlist_name, song_name, token) {
         throw new Error(error.response?.data?.error || "Unexpected error");
     }
 }
+
+export async function getSongsRecommendation(playlist_name, token) {
+    try {
+        playlist_name = encodeURIComponent(playlist_name);
+        const response = await axios.get(`${URL}/playlists/${playlist_name}/recommendations`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || "Unexpected error");
+    }
+}

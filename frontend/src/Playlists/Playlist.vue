@@ -3,7 +3,7 @@
     <div class="playlist-header">
       <h1>{{ playlist.playlist_name }}</h1>
       <p class="meta">By {{ playlist.owner }} <span v-if="playlist.private">• Private</span></p>
-      <div class="action-buttons">
+      <div class="action-buttons" v-if="playlist.owner===username">
         <button
             v-if="playlist.owner === username"
             @click="showAddSongModal = true"

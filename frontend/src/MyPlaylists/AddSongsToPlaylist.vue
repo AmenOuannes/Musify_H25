@@ -27,12 +27,25 @@
       <p v-if="success">✅ Song added successfully!</p>
       <p v-if="error">❌ {{ error }}</p>
     </form>
+
+    <div v-if="recommendations.length > 0" class="recommendations-section">
+      <h3>🎵 Recommended Songs</h3>
+      <ul class="recommendation-list">
+        <li
+            v-for="song in recommendations"
+            :key="song.song_name"
+            @click="selectSong(song.song_name)"
+        >
+          {{ song.song_name }} — {{ song.artist_name }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { postSongToPlaylist } from '@/api/playlistAPI.js'
+import { postSongToPlaylist, getSongsRecommendation } from '@/api/playlistAPI.js'
 import { getSongs } from '@/api/songAPI.js'
 import { useStore } from 'vuex'
 
@@ -51,6 +64,7 @@ const selectedSong = ref('')
 const loading = ref(false)
 const success = ref(false)
 const error = ref(null)
+const recommendations = ref([])
 
 const displayedSongs = computed(() => {
   return allSongs.value.filter(song =>
@@ -65,6 +79,15 @@ const fetchSongs = async () => {
     allSongs.value = result.songs || []
   } catch (err) {
     console.error('Error fetching songs for dropdown:', err)
+  }
+}
+
+const fetchRecommendations = async () => {
+  try {
+    const result = await getSongsRecommendation(props.playlistName, token)
+    recommendations.value = result.songs || []
+  } catch (err) {
+    console.error('Error fetching recommendations:', err)
   }
 }
 
@@ -101,7 +124,10 @@ const submit = async () => {
   }
 }
 
-onMounted(fetchSongs)
+onMounted(async () => {
+  await fetchSongs()
+  await fetchRecommendations()
+})
 </script>
 
 <style scoped>
@@ -148,6 +174,33 @@ button {
 }
 
 .dropdown-list li:hover {
+  background-color: #2a9d8f55;
+}
+
+.recommendations-section {
+  margin-top: 2rem;
+}
+
+.recommendations-section h3 {
+  margin-bottom: 0.5rem;
+  color: #2a9d8f;
+}
+
+.recommendation-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #333;
+  border-radius: 10px;
+  border: 1px solid #444;
+}
+
+.recommendation-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.recommendation-list li:hover {
   background-color: #2a9d8f55;
 }
 </style>
