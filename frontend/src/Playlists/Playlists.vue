@@ -33,7 +33,7 @@ const searchQuery = ref('')
 
 const fetchPlaylists = async () => {
   try {
-    const data = await getPlaylists(50, searchQuery.value)
+    const data = await getPlaylists(50, searchQuery.value, 0)
     playlists.value = data.playlists || []
   } catch (err) {
     console.error('Error fetching playlists:', err)
