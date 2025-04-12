@@ -1,5 +1,8 @@
+from backend.app.domain.AiModel import recommend_entities
 from backend.app.domain.User import User
+from backend.app.infrastructure.repositories.ArtistRepository import ArtistRepository
 from backend.app.infrastructure.repositories.UserRepository import UserRepository
+
 
 
 class UserService:
@@ -72,5 +75,16 @@ class UserService:
     def like_playlist(self, current_user, playlist_name):
         try:
             self.repository.like_playlist(current_user, playlist_name)
+        except (Exception) as e:
+            raise e
+
+    def get_recommended_artists(self, current_user):
+        try:
+            liked_artists = self.repository.get_liked_artists(current_user, '')
+            all_artists = ArtistRepository().get_all_artists(-1,"")
+            liked_artists_ids = [artist.artist_id for artist in liked_artists]
+            all_except_liked = [artist for artist in all_artists if artist.artist_id not in liked_artists_ids]
+            recommended_artists = recommend_entities(liked_artists, all_except_liked)
+            return [artist.to_dict() for artist in recommended_artists]
         except (Exception) as e:
             raise e
