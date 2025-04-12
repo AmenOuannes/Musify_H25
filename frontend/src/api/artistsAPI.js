@@ -54,10 +54,11 @@ export async function likeArtist(artist_name, token) {
         console.log("Sending artist to like:", token)
 
         const response = await axios.post(
-            `${URL}/users/likes/artists/${encodeURIComponent(artist_name)}`,
+            `${URL}/users/likes/artists/${encodeURIComponent(artist_name)}`,{},
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
                 }
             });
 
