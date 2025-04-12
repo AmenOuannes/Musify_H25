@@ -114,7 +114,7 @@ class UserRepository:
         self.artists = []
         query = get_liked_artists_query(research)
         result = db.session.execute(query, {
-                                    "username": current_user, "research": f'%{research.lower()}%' if research else None})
+                                    "username": current_user, "research": f'%{research.lower()}%' if research!='' else None})
         for row in result:
             row_data = row._mapping
 
@@ -158,7 +158,7 @@ class UserRepository:
         self.playlists = []
         query = get_liked_playlists_query(research)
         result = db.session.execute(query, {"user_id": current_user,
-                                            "research": f'%{research.lower()}%' if research else None})
+                                            "research": f'%{research.lower()}%' if research!="" else None})
 
         for row in result:
             row_data = row._mapping

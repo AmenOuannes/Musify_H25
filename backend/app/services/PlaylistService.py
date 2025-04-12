@@ -1,4 +1,4 @@
-from backend.app.domain.AiModel import recommend_songs
+from backend.app.domain.AiModel import recommend_entities
 from backend.app.infrastructure.repositories.PlaylistRepository import PlaylistRepository
 from backend.app.infrastructure.repositories.SongRepository import SongRepository
 
@@ -70,7 +70,7 @@ class PlaylistService:
             all_songs = SongRepository().getAllSongs(limit=-1)
             existing_ids = [song.song_id for song in existing_songs]
             all_except_playlist = [song for song in all_songs if song.song_id not in existing_ids]
-            recommended_songs = recommend_songs(existing_songs, all_except_playlist)
+            recommended_songs = recommend_entities(existing_songs, all_except_playlist)
             return [song.to_dict() for song in recommended_songs]
 
         except Exception as e:
