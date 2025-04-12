@@ -3,7 +3,7 @@ from urllib.parse import unquote
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
-from backend.app.routes.RequestFormat import get_user_credentials, get_limit_argument
+from backend.app.routes.RequestFormat import get_user_credentials, get_limit_argument, get_research_argument
 from backend.app.routes.ResponseFormat import responseFormat, usernames_response
 from backend.app.services.UserService import UserService
 
@@ -83,8 +83,7 @@ def like_artist(artist_name):
 def get_liked_artists():
     try:
         current_user = get_jwt_identity()
-        research = unquote(request.args.get('research', type=str)
-                           ) if 'research' in request.args else None
+        research = get_research_argument()
         artists = userService.get_liked_artists(current_user, research)
         return jsonify({"artists": artists}), 200
     except Exception as e:
@@ -107,8 +106,7 @@ def unlike_artist(artist_name):
 def get_liked_playlists():
     try:
         current_user = get_jwt_identity()
-        research = unquote(request.args.get('research', type=str)
-                           ) if 'research' in request.args else None
+        research = get_research_argument()
         playlists = userService.get_liked_playlists(current_user, research)
         return jsonify({"playlists": playlists}), 200
     except Exception as e:
@@ -133,5 +131,15 @@ def like_a_playlist(playlist_name):
         current_user = get_jwt_identity()
         userService.like_playlist(current_user, unquote(playlist_name))
         return jsonify({"message": "Playlist liked"}), 200
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+
+@user_bp.route('/users/likes/artists/recommended', methods=['GET'])
+@jwt_required()
+def recommend_artists():
+    try:
+        current_user = get_jwt_identity()
+        artists = userService.get_recommended_artists(current_user)
+        return jsonify({"artists": artists}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400

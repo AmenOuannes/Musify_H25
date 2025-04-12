@@ -46,7 +46,7 @@ def unlike_artist():
     """)
 
 
-def get_liked_playlists_query(research=False):
+def get_liked_playlists_query(research):
     base_query = """
         SELECT *
         FROM Playlists P
@@ -54,7 +54,7 @@ def get_liked_playlists_query(research=False):
         WHERE L.user_id = :user_id
     """
 
-    if research:
+    if research!="":
         base_query += " AND LOWER(P.playlist_name) LIKE :research"
 
     return text(base_query)

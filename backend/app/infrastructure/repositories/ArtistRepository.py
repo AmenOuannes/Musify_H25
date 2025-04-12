@@ -35,11 +35,11 @@ class ArtistRepository:
                 else:
                     raise Exception("An unknown database error occurred.")
 
-    def getAllArtists(self, limit, research):
+    def get_all_artists(self, limit, research):
         self.artists = []
         query = get_all_artists_query(limit, research)
         params = {}
-        if research:
+        if research!="":
             params["research"] = f"{research}%"
         if int(limit) != -1:
             params["limit"] = int(limit)

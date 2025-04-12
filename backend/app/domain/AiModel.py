@@ -1,5 +1,5 @@
-from sentence_transformers import SentenceTransformer, util
 import torch
+from sentence_transformers import SentenceTransformer, util
 
 # Load the model
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -26,15 +26,13 @@ def is_target_genre_similar_to_group(input_genres, target_genre, threshold=0.75)
 
     return is_similar
 
-def recommend_songs(existing_songs, recommendation_targets):
+def recommend_entities(existing_entities, recommendation_targets):
     recommendations = []
 
     i = 0
     while len(recommendations) <= 10:
-        is_similar = is_target_genre_similar_to_group([song.genre for song in existing_songs], recommendation_targets[i].genre)
+        is_similar = is_target_genre_similar_to_group([entity.genre for entity in existing_entities], recommendation_targets[i].genre)
         if is_similar:
             recommendations.append(recommendation_targets[i])
         i += 1
     return recommendations
-
-# print(is_target_genre_similar_to_group(['pop', 'rap', 'pop', 'pop','pop', 'pop', 'pop', 'country'], ['rap']))
