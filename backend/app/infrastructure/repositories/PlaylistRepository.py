@@ -2,6 +2,7 @@ from backend.__init__ import db
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.Song import Song
 from backend.app.infrastructure.Queries.SongQueries import get_singer_query, get_song_by_name_query
+from backend.app.infrastructure.Queries.UserQueries import like_playlist_query
 from backend.app.infrastructure.SQL.PlaylistSQL import PlaylistSQL
 from backend.app.infrastructure.Queries.PlaylistQueries import *
 from backend.app.infrastructure.repositories.SongRepository import SongRepository
@@ -56,10 +57,10 @@ class PlaylistRepository:
         return Playlist().fromSQL(playlistSQL)
 
     def create_playlist(self, playlist_name, current_user, private):
-        query = get_playlist_by_name_query()
-        result = db.session.execute(
-            query, {'playlist_name': playlist_name}).fetchone()
-        if result:
+        query = playlist_exists()
+        result = db.session.execute(query, {"playlist_name": playlist_name})
+        row = result.fetchone()
+        if row._mapping["exists_flag"]:
             raise Exception(f"Playlist {playlist_name} already exists")
         query = insert_playlist_query()
         db.session.execute(query, {
@@ -69,16 +70,26 @@ class PlaylistRepository:
         })
         db.session.commit()
 
+        playlist_id = db.session.execute(
+            get_playlist_by_name_query(),
+            {"playlist_name": playlist_name}).fetchone()._mapping["playlist_id"]
+
+        db.session.execute(like_playlist_query(), {
+            "user_id": current_user,
+            "playlist_id": playlist_id
+        })
+        db.session.commit()
+
     def deletePlaylist(self, playlist_name):
         query = delete_playlist_query()
         db.session.execute(query, {'playlist_name': playlist_name})
         db.session.commit()
 
     def getSongFromPlaylist(self, playlist_name, song_name):
-        # Validate playlist exists
-        result = db.session.execute(get_playlist_by_name_query(), {
-                                    'playlist_name': playlist_name}).fetchone()
-        if not result:
+
+        result = db.session.execute(playlist_exists(), {
+                                    'playlist_name': playlist_name})
+        if result.fetchone()._mapping["exists_flag"]:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
         # Check if song exists in playlist
@@ -94,9 +105,9 @@ class PlaylistRepository:
         return SongRepository().getSong(song_name)
 
     def get_all_songs_from_playlist(self, playlist_name, owner):
-        result = db.session.execute(get_playlist_by_name_query(), {
+        result = db.session.execute(playlist_exists(), {
                                     'playlist_name': playlist_name}).fetchone()
-        if not result:
+        if result.fetchone()._mapping["exists_flag"]:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
         print(playlist_name, owner)

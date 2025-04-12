@@ -40,10 +40,7 @@ def insert_album_query():
 
 
 def insert_creates():
-    return text("""
-        INSERT INTO Creates (album_id, artist_id)
-        VALUES (:album_id, :artist_id)
-    """)
+    return text("CALL InsertIntoCreates(:album_id, :artist_id)")
 
 
 def get_album_id_query():
@@ -71,3 +68,6 @@ def delete_song_from_album_query():
         DELETE FROM Has
         WHERE song_id = :song_id AND album_id = :album_id
     """)
+
+def album_exists_query():
+    return text("SELECT DoesAlbumExist(:name) AS exists_flag")

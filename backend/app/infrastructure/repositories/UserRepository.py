@@ -21,9 +21,11 @@ class UserRepository:
         self.users = []
 
     def add_user(self, user):
-        user_exists = find_similar_users_query()
-        count = db.session.execute(user_exists, {"username": user.username})
-        if count.scalar() > 0:
+        query = user_exists_query()
+        result = db.session.execute(query, {"username": user.username})
+        row = result.fetchone()
+
+        if row._mapping["exists_flag"]:
             raise Exception('User already exists')
 
         try:

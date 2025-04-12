@@ -2,7 +2,7 @@ Use Musify;
 DROP TRIGGER IF EXISTS validate_song_before_insert;
 DROP TRIGGER IF EXISTS validate_song_before_update;
 
-DELIMITER //
+
 CREATE TRIGGER validate_song_before_insert
 BEFORE INSERT ON Songs
 FOR EACH ROW
@@ -19,10 +19,7 @@ BEGIN
         SET MESSAGE_TEXT = 'Release date cannot be in the future.';
     END IF;
 END;
-//
-DELIMITER ;
 
-DELIMITER //
 CREATE TRIGGER validate_song_before_update
 BEFORE UPDATE ON Songs
 FOR EACH ROW
@@ -39,6 +36,26 @@ BEGIN
         SET MESSAGE_TEXT = 'Release date cannot be in the future.';
     END IF;
 END;
-//
-DELIMITER ;
+
+DROP FUNCTION IF EXISTS DoesSongExist;
+CREATE FUNCTION DoesSongExist(song_name_input VARCHAR(255)) RETURNS BOOLEAN
+    DETERMINISTIC
+BEGIN
+    DECLARE _exists BOOLEAN DEFAULT FALSE;
+
+    SELECT EXISTS(
+        SELECT 1
+        FROM Songs
+        WHERE LOWER(song_name) = LOWER(song_name_input)
+    ) INTO _exists;
+
+    RETURN _exists;
+END ;
+
+DROP PROCEDURE IF EXISTS InsertIntoSings;
+CREATE PROCEDURE InsertIntoSings(IN in_song_id INT, IN in_artist_id INT)
+BEGIN
+    INSERT INTO Sings (song_id, artist_id)
+    VALUES (in_song_id, in_artist_id);
+END ;
 

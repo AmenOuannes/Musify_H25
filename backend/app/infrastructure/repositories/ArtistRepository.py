@@ -11,11 +11,11 @@ class ArtistRepository:
         self.artists = []
 
     def addArtist(self, artist):
-        query = get_artist_by_name_query()
+        query = artist_exists_query()
         result = db.session.execute(query, {"artist_name": artist.artist_name})
-        count = result.scalar() or 0
+        row = result.fetchone()
 
-        if count > 0:
+        if row._mapping['exists_flag'] == 1:
             raise Exception("Artist already exists")
         else:
             try:

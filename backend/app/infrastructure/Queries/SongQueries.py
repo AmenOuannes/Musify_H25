@@ -49,3 +49,9 @@ def get_singer_query():
         JOIN Songs S ON R.song_id = S.song_id
         WHERE LOWER(S.song_name) = LOWER(:name)
     """)
+
+def song_exists_query():
+    return text("SELECT DoesSongExist(:song_name) AS exists_flag")
+
+def insert_sings_query():
+    return text("CALL InsertIntoSings(:song_id, :artist_id)")
