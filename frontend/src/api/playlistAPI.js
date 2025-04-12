@@ -25,9 +25,12 @@ export async function unlikePlaylist(playlist_name, token) {
     }
 }
 
-export async function getLikedPlaylists(token) {
+export async function getLikedPlaylists(research ,token) {
     try {
+        const params = {};
+        if (research) params.research = encodeURIComponent(research);
         const response = await axios.get(`${URL}/users/likes/playlists`, {
+            params,
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;
@@ -37,9 +40,9 @@ export async function getLikedPlaylists(token) {
     }
 }
 
-export async function getPlaylists(limit = 10, research = "", owner = "") {
+export async function getPlaylists(limit = 10, research = "", isprivate=1,owner = "") {
     try {
-        const params = { limit };
+        const params = { limit: limit, private: isprivate };
         if (research) params.research = encodeURIComponent(research);
         if (owner) params.owner = encodeURIComponent(owner);
 
@@ -94,6 +97,7 @@ export async function getPlaylistSongs(playlist_name, owner ) {
         playlist_name = encodeURIComponent(playlist_name);
         owner = encodeURIComponent(owner);
         const params = {owner};
+        console.log(params)
 
         const response = await axios.get(`${URL}/playlists/${playlist_name}/songs`, { params });
         return response.data;

@@ -24,7 +24,11 @@ const goToPlaylist = () => {
 
 const playPlaylist = () => {
   const formatted = props.playlist.playlist_name.toLowerCase().replace(/\s+/g, '_')
-  router.push({ name: 'PlaylistPlayer', params: { name: formatted } })
+  router.push({
+    name: 'PlaylistPlayer',
+    params: { name: formatted },
+    query: { owner: props.playlist.owner.toLowerCase() }
+  })
 }
 </script>
 

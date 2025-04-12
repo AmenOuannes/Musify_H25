@@ -70,6 +70,7 @@ def update_user_info():
 @jwt_required()
 def like_artist(artist_name):
     try:
+        print("like")
         current_user = get_jwt_identity()
         userService.like_artist(current_user, unquote(artist_name))
         return jsonify({"message": "Artist liked"}), 200

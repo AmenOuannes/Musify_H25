@@ -1,13 +1,12 @@
 <template>
   <div class="playlist-search">
     <div class="search-container">
-      <div class="search-bar">
-        <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Search for a playlist..."
-        />
-      </div>
+      <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search your favorite playlists..."
+          class="search-input"
+      />
     </div>
 
     <div class="playlist-list">
@@ -15,7 +14,7 @@
           v-for="playlist in playlists"
           :key="playlist.playlist_name"
           :playlist="playlist"
-          @click="goToPlaylist(playlist.playlist_name)"
+          @click="goToPlaylist(playlist.playlist_name, playlist.owner)"
       />
     </div>
   </div>
@@ -24,30 +23,34 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getPlaylists } from '@/api/playlistAPI'
+import { useStore } from 'vuex'
 import PlaylistDisplay from '@/Playlists/PlaylistDisplay.vue'
+import { getLikedPlaylists } from '@/api/playlistAPI.js'
 
 const router = useRouter()
+const store = useStore()
+
 const playlists = ref([])
 const searchQuery = ref('')
+const token = store.getters.currentToken
 
-const fetchPlaylists = async () => {
+const fetchLikedPlaylists = async () => {
   try {
-    const data = await getPlaylists(50, searchQuery.value, 0)
-    playlists.value = data.playlists || []
+    const data = await getLikedPlaylists(searchQuery.value, token)
+    playlists.value = Array.isArray(data) ? data : data?.playlists || []
   } catch (err) {
-    console.error('Error fetching playlists:', err)
+    console.error('Error fetching liked playlists:', err)
     playlists.value = []
   }
 }
 
-const goToPlaylist = (name) => {
-  const formatted = name.toLowerCase().replace(/\s+/g, '_')
-  router.push({ name: 'PlaylistDetail', params: { name: formatted } })
+const goToPlaylist = (name, owner) => {
+  const formattedName = name.toLowerCase().replace(/\s+/g, '_')
+  router.push({ name: 'Playlist', params: { name: formattedName, owner } })
 }
 
-watch(searchQuery, fetchPlaylists)
-onMounted(fetchPlaylists)
+onMounted(fetchLikedPlaylists)
+watch(searchQuery, fetchLikedPlaylists)
 </script>
 
 <style scoped>
@@ -59,20 +62,17 @@ onMounted(fetchPlaylists)
 
 .search-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-bottom: 2rem;
 }
 
-.search-bar input {
+.search-input {
   padding: 10px 15px;
   border-radius: 20px;
   border: 1px solid #888;
-  width: 250px;
   background-color: #222;
   color: white;
+  width: 250px;
 }
 
 .playlist-list {
