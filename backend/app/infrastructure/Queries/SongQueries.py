@@ -29,8 +29,8 @@ def get_song_by_name_query():
 
 def insert_song_query():
     return text("""
-        INSERT INTO Songs (song_name, genre, release_date, url, artist_id)
-        VALUES (:name, :genre, :date, :url, :artist_id)
+        INSERT INTO Songs (song_name, genre, release_date, url)
+        VALUES (:name, :genre, :date, :url)
     """)
 
 

@@ -1,10 +1,12 @@
+from sqlalchemy.exc import DBAPIError
+
 from backend.app.domain.Artist import Artist
 from backend.app.infrastructure.SQL.ArtistSQL import ArtistSQL
 from backend.app.infrastructure.Queries.ArtistQueries import *
 from backend.__init__ import db
 
 
-class ArtistRepository():
+class ArtistRepository:
     def __init__(self):
         self.artists = []
 
@@ -16,15 +18,22 @@ class ArtistRepository():
         if count > 0:
             raise Exception("Artist already exists")
         else:
-            insert_query = insert_artist_query()
-            db.session.execute(insert_query, {
-                "artist_name": artist.artist_name,
-                "genre": artist.genre,
-                "followers": artist.followers,
-                "profile_url": artist.profile_url,
-                "image": artist.image
-            })
-            db.session.commit()
+            try:
+                insert_query = insert_artist_query()
+                db.session.execute(insert_query, {
+                    "artist_name": artist.artist_name,
+                    "genre": artist.genre,
+                    "followers": artist.followers,
+                    "profile_url": artist.profile_url,
+                    "image": artist.image
+                })
+                db.session.commit()
+            except DBAPIError as e:
+                db.session.rollback()
+                if e.orig:
+                    raise Exception(f"Database error: {str(e.orig)}")
+                else:
+                    raise Exception("An unknown database error occurred.")
 
     def getAllArtists(self, limit, research):
         self.artists = []

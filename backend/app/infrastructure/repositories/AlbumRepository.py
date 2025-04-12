@@ -1,4 +1,6 @@
 from sqlalchemy import text
+from sqlalchemy.exc import DBAPIError
+
 from backend.__init__ import db
 
 
@@ -76,27 +78,33 @@ class AlbumRepository:
             exists_query, {"name": album.album_name}).fetchone()
         if result:
             raise Exception("Album already exists")
+        try:
+            insert_query = insert_album_query()
+            db.session.execute(insert_query, {
+                "name": album.album_name,
+                "genre": album.genre,
+                "date": album.release_date,
+                "cover": album.cover_image
+            })
+            db.session.commit()
 
-        insert_query = insert_album_query()
-        db.session.execute(insert_query, {
-            "name": album.album_name,
-            "genre": album.genre,
-            "date": album.release_date,
-            "cover": album.cover_image
-        })
-        db.session.commit()
+            id_query = get_album_id_query()
+            id_result = db.session.execute(
+                id_query, {"name": album.album_name}).fetchone()
+            album_id = id_result._mapping["album_id"]
 
-        id_query = get_album_id_query()
-        id_result = db.session.execute(
-            id_query, {"name": album.album_name}).fetchone()
-        album_id = id_result._mapping["album_id"]
-
-        creates_query = insert_creates()
-        db.session.execute(creates_query, {
-            "album_id": album_id,
-            "artist_id": artist.artist_id
-        })
-        db.session.commit()
+            creates_query = insert_creates()
+            db.session.execute(creates_query, {
+                "album_id": album_id,
+                "artist_id": artist.artist_id
+            })
+            db.session.commit()
+        except DBAPIError as e:
+            db.session.rollback()
+            if e.orig:
+                raise Exception(f"Database error: {str(e.orig)}")
+            else:
+                raise Exception("An unknown database error occurred.")
 
     def get_album_songs(self, album_name):
         self.songs = []

@@ -30,7 +30,7 @@ CREATE TABLE Artists (
     genre VARCHAR(50),
     followers INT DEFAULT 0,
     celebrity BOOLEAN GENERATED ALWAYS AS (followers > 100000) STORED,
-    profile_url VARCHAR(100), -- routine to validate url
+    profile_url VARCHAR(100),
     image TEXT
 );
 
@@ -39,10 +39,9 @@ CREATE TABLE Songs (
     song_id INT AUTO_INCREMENT PRIMARY KEY,
     song_name VARCHAR(50) NOT NULL,
     genre VARCHAR(50),
-    release_date DATE, -- Routine pour valider la date
-    url TEXT NOT NULL, -- Routine pour valider le format de l'URL
-    artist_id INT,
-    FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
+    release_date DATE,
+    url TEXT NOT NULL
+
 );
 
 -- Table des albums (Album)
@@ -50,7 +49,7 @@ CREATE TABLE Albums (
     album_id INT AUTO_INCREMENT PRIMARY KEY,
     album_name VARCHAR(50) NOT NULL,
     genre VARCHAR(50),
-    release_date DATE, -- Routine pour valider la date
+    release_date DATE,
     cover_image TEXT
 );
 
@@ -58,7 +57,7 @@ CREATE TABLE Albums (
 CREATE TABLE Playlists (
     playlist_id INT AUTO_INCREMENT PRIMARY KEY,
     playlist_name VARCHAR(50) NOT NULL,
-    owner VARCHAR(50) NOT NULL, -- Clé étrangère vers User.username
+    owner VARCHAR(50) NOT NULL,
     private BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (owner) REFERENCES Users(username)
     ON UPDATE CASCADE ON DELETE CASCADE
