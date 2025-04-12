@@ -1,6 +1,6 @@
 from werkzeug.exceptions import NotFound
 
-from backend.app.infrastructure.ArtistRepository import ArtistRepository
+from backend.app.infrastructure.repositories.ArtistRepository import ArtistRepository
 from backend.app.domain.Artist import Artist
 
 
@@ -10,7 +10,8 @@ class ArtistService:
 
     def add_artist(self, artist_name, genre, profile_url, image, followers):
         try:
-            self.artistRepository.addArtist(Artist().fromRequest(artist_name,genre,profile_url,image, followers))
+            self.artistRepository.addArtist(Artist().fromRequest(
+                artist_name, genre, profile_url, image, followers))
         except Exception as e:
             raise e
 
@@ -22,4 +23,4 @@ class ArtistService:
             raise NotFound("Artist not found")
 
     def get_artists(self, limit=-1, research=""):
-        return [artist.to_dict() for artist in self.artistRepository.getAllArtists(limit,research)]
+        return [artist.to_dict() for artist in self.artistRepository.getAllArtists(limit, research)]
