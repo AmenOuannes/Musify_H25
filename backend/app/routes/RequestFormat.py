@@ -27,10 +27,10 @@ def get_artist_credentials():
     artist_name = unquote(request.json.get('artist_name'))
     genre = unquote(request.json.get('genre'))
     profile_url = unquote(request.json.get('profile_url'))
-    followers = unquote(request.json.get('followers')
-                        ) if 'followers' in request.json else 0
+    followers = request.json.get('followers') if 'followers' in request.json else 0
     image = unquote(request.json.get('image'))
 
+    print(artist_name, genre, profile_url, followers, image)
     return artist_name, genre, profile_url, followers, image
 
 

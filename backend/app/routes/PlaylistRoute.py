@@ -71,6 +71,7 @@ def get_songs(playlist_name):
     try:
         owner = unquote(request.args.get('owner', type=str)
                         ) if 'owner' in request.args else ""
+        print(owner, playlist_name)
         songs = playlistService.get_all_songs_from_playlist(
             unquote(playlist_name), owner)
         return responseFormat({"songs": songs}), 200

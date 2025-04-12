@@ -25,8 +25,8 @@ def add_artist():
     try:
         current_user = get_jwt_identity()
         artist_name, genre, profile_url, followers, image = get_artist_credentials()
-        artistService.add_artist(
-            artist_name, genre, profile_url, image, followers)
+        print(artist_name, genre, profile_url, followers, image)
+        artistService.add_artist(artist_name, genre, profile_url, image, followers)
         return jsonify({"message": "artist created"}), 201
     except Exception as e:
         return jsonify({"message": str(e)}), 400

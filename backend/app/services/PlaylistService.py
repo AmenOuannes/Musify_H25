@@ -38,6 +38,7 @@ class PlaylistService:
 
     def get_all_songs_from_playlist(self, playlist_name, owner):
         try:
+            print("service",playlist_name, owner)
             songs = self.playlistRepository.get_all_songs_from_playlist(
                 playlist_name, owner)
             return [song.to_dict() for song in songs]

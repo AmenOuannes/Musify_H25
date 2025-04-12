@@ -99,6 +99,7 @@ class PlaylistRepository:
         if not result:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
+        print(playlist_name, owner)
         result = db.session.execute(get_songs_from_playlist_query(), {
             'playlist_name': playlist_name,
             'owner': owner
