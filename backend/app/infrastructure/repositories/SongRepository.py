@@ -1,3 +1,5 @@
+from sqlalchemy.exc import DBAPIError
+
 from backend.__init__ import db
 
 from backend.app.domain.Song import Song
@@ -17,23 +19,29 @@ class SongRepository:
         if row:
             raise Exception("Song already exists")
         else:
-            song_query = insert_song_query()
-            db.session.execute(song_query, {
-                "name": song.song_name,
-                "genre": song.genre,
-                "date": song.release_date,
-                "url": song.url,
-                "artist_id": artist.artist_id,
-            })
-            db.session.commit()
-            song_id = db.session.execute(get_song_by_name_query(
-            ), {"name": song.song_name}).fetchone()._mapping["song_id"]
-            sings_query = insert_sings()
-            db.session.execute(sings_query, {
-                "song_id": song_id,
-                "artist_id": artist.artist_id
-            })
-            db.session.commit()
+            try:
+                song_query = insert_song_query()
+                db.session.execute(song_query, {
+                    "name": song.song_name,
+                    "genre": song.genre,
+                    "date": song.release_date,
+                    "url": song.url
+                })
+                db.session.commit()
+                song_id = db.session.execute(get_song_by_name_query(),
+                                             {"name": song.song_name}).fetchone()._mapping["song_id"]
+                sings_query = insert_sings()
+                db.session.execute(sings_query, {
+                    "song_id": song_id,
+                    "artist_id": artist.artist_id
+                })
+                db.session.commit()
+            except DBAPIError as e:
+                db.session.rollback()
+                if e.orig:
+                    raise Exception(f"Database error: {str(e.orig)}")
+                else:
+                    raise Exception("An unknown database error occurred.")
 
     def getSong(self, song_name):
         query = get_song_by_name_query()
