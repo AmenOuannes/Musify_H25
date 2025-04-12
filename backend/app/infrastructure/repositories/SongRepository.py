@@ -67,10 +67,10 @@ class SongRepository:
         else:
             return None
 
-    def getAllSongs(self, limit, research):
+    def getAllSongs(self, limit, research=""):
         query = get_all_songs_query(limit, research)
         params = {}
-        if research:
+        if research!="":
             params["research"] = f"{research.lower()}%"
         if int(limit) != -1:
             params["limit"] = int(limit)

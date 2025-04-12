@@ -40,9 +40,11 @@ class PlaylistRepository:
         return self.playlists
 
     def get_playlist(self, playlist_name):
+        print("repo",playlist_name)
         query = get_playlist_by_name_query()
         result = db.session.execute(
             query, {'playlist_name': playlist_name}).fetchone()
+        print(result)
         if not result:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
@@ -85,7 +87,7 @@ class PlaylistRepository:
         db.session.execute(query, {'playlist_name': playlist_name})
         db.session.commit()
 
-    def getSongFromPlaylist(self, playlist_name, song_name):
+    def get_song_from_playlist(self, playlist_name, song_name):
 
         result = db.session.execute(playlist_exists(), {
                                     'playlist_name': playlist_name})
@@ -107,14 +109,14 @@ class PlaylistRepository:
     def get_all_songs_from_playlist(self, playlist_name, owner):
         result = db.session.execute(playlist_exists(), {
                                     'playlist_name': playlist_name}).fetchone()
-        if result.fetchone()._mapping["exists_flag"]:
+        if result._mapping["exists_flag"]==0:
             raise Exception(f"No playlist found with name '{playlist_name}'")
 
-        print(playlist_name, owner)
         result = db.session.execute(get_songs_from_playlist_query(), {
             'playlist_name': playlist_name,
             'owner': owner
         })
+
 
         self.songs = []
         for row in result:

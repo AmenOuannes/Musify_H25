@@ -24,12 +24,17 @@ def is_target_genre_similar_to_group(input_genres, target_genre, threshold=0.75)
     # Binary result based on threshold
     is_similar = 1 if similarity >= threshold else 0
 
-    return {
-        'group_genres': input_genres,
-        'target_genre': target_genre,
-        'similarity_score': round(similarity, 4),
-        'is_similar': is_similar
-    }
+    return is_similar
 
+def recommend_songs(existing_songs, recommendation_targets):
+    recommendations = []
 
-print(is_target_genre_similar_to_group(['pop', 'rap', 'pop', 'pop','pop', 'pop', 'pop', 'country'], ['rap']))
+    i = 0
+    while len(recommendations) <= 10:
+        is_similar = is_target_genre_similar_to_group([song.genre for song in existing_songs], recommendation_targets[i].genre)
+        if is_similar:
+            recommendations.append(recommendation_targets[i])
+        i += 1
+    return recommendations
+
+# print(is_target_genre_similar_to_group(['pop', 'rap', 'pop', 'pop','pop', 'pop', 'pop', 'country'], ['rap']))

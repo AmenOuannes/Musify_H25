@@ -1,4 +1,6 @@
+from backend.app.domain.AiModel import recommend_songs
 from backend.app.infrastructure.repositories.PlaylistRepository import PlaylistRepository
+from backend.app.infrastructure.repositories.SongRepository import SongRepository
 
 
 class PlaylistService:
@@ -30,7 +32,7 @@ class PlaylistService:
 
     def get_song_from_playlist(self, playlist_name, song_name):
         try:
-            song = self.playlistRepository.getSongFromPlaylist(
+            song = self.playlistRepository.get_song_from_playlist(
                 playlist_name, song_name)
             return song.to_dict()
         except Exception as e:
@@ -61,3 +63,16 @@ class PlaylistService:
                 playlist_name, song_name)
         except Exception as e:
             raise e
+
+    def get_recommended_songs(self, playlist_name, owner):
+        try:
+            existing_songs = self.playlistRepository.get_all_songs_from_playlist(playlist_name, owner)
+            all_songs = SongRepository().getAllSongs(limit=-1)
+            existing_ids = [song.song_id for song in existing_songs]
+            all_except_playlist = [song for song in all_songs if song.song_id not in existing_ids]
+            recommended_songs = recommend_songs(existing_songs, all_except_playlist)
+            return [song.to_dict() for song in recommended_songs]
+
+        except Exception as e:
+            raise e
+
