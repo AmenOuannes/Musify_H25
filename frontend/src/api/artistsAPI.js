@@ -95,3 +95,16 @@ export async function getLikedArtists(research, token) {
         throw new Error(error.response?.data?.message || 'Unexpected error');
     }
 }
+
+export async function getRecommendedArtists(token) {
+    try {
+        const response = await axios.get(`${URL}/users/likes/artists/recommended`, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Unexpected error');
+    }
+}
