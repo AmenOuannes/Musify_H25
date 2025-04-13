@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import Cookies from 'js-cookie'
-import { getUser } from '@/api/authApi'
+import { getUser } from '@/api/AuthApi'
 
 export default createStore({
     state: {
