@@ -51,3 +51,7 @@ BEGIN
 
     RETURN _exists;
 END ;
+
+CREATE INDEX idx_sings_artist ON Sings(artist_id);
+CREATE INDEX idx_creates_artist ON Creates(artist_id);
+CREATE INDEX idx_artist_name ON Artists(artist_name);

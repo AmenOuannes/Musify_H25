@@ -55,3 +55,11 @@ def song_exists_query():
 
 def insert_sings_query():
     return text("CALL InsertIntoSings(:song_id, :artist_id)")
+
+def get_songs_with_artist_ids():
+    return text("""
+        SELECT s.song_id, s.song_name, s.genre, s.release_date, s.url, sg.artist_id
+        FROM Songs s
+        JOIN Sings sg ON s.song_id = sg.song_id
+        WHERE SG.artist_id = :artist_id
+    """)

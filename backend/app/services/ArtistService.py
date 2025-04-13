@@ -24,3 +24,17 @@ class ArtistService:
 
     def get_artists(self, limit=-1, research=""):
         return [artist.to_dict() for artist in self.artistRepository.get_all_artists(limit, research)]
+
+    def get_songs_of_artist(self, artist_name):
+        try:
+            songs = self.artistRepository.get_songs_of_artist(artist_name)
+            return [song.to_dict() for song in songs]
+        except Exception as e:
+            raise e
+
+    def get_albums_of_artist(self, artist_name):
+        try:
+            albums = self.artistRepository.get_albums_of_artist(artist_name)
+            return [album.to_dict() for album in albums]
+        except Exception as e:
+            raise e

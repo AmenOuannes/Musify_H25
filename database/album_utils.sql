@@ -21,7 +21,7 @@ BEGIN
 END;
 
 
-
+DROP TRIGGER IF EXISTS validate_album_before_update;
 CREATE TRIGGER validate_album_before_update
 BEFORE UPDATE ON Albums
 FOR EACH ROW
@@ -60,4 +60,7 @@ BEGIN
     INSERT INTO Creates (album_id, artist_id)
     VALUES (in_album_id, in_artist_id);
 END;
+
+CREATE INDEX idx_has_album ON Has(album_id);
+
 

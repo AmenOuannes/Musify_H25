@@ -25,3 +25,5 @@ BEGIN
     INSERT INTO LikedPlaylists (user_id, playlist_id)
     VALUES (in_user_id, in_playlist_id);
 END ;
+
+CREATE INDEX idx_consistsof_playlist ON ConsistsOf(playlist_id);

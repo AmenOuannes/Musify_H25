@@ -725,4 +725,3 @@ INSERT INTO Creates (artist_id, album_id) VALUES (18, 18);
 INSERT INTO Creates (artist_id, album_id) VALUES (19, 19);
 INSERT INTO Creates (artist_id, album_id) VALUES (20, 20);
 
-
