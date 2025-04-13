@@ -4,7 +4,6 @@ import {URL} from "./api";
 
 export async function postArtists(artist_name, genre, profile_url, image, followers, token) {
     try {
-        followers = 0
         const response = await axios.post(`${URL}/artists`, {
             artist_name: encodeURIComponent(artist_name),
             genre: encodeURIComponent(genre),
