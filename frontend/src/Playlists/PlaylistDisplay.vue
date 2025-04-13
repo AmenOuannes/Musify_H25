@@ -8,13 +8,23 @@
     <div class="actions">
       <button @click.stop="goToPlaylist">View</button>
       <button @click.stop="playPlaylist">▶ Play</button>
+      <button
+          v-if="showDelete"
+          class="delete-btn"
+          @click.stop="$emit('delete', playlist.playlist_name)"
+      >
+        🗑️
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
-const props = defineProps({ playlist: Object })
+const props = defineProps({
+  playlist: Object,
+  showDelete: Boolean
+})
 const router = useRouter()
 
 const goToPlaylist = () => {
@@ -53,6 +63,7 @@ const playPlaylist = () => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  align-items: flex-end;
 }
 
 button {
@@ -63,5 +74,9 @@ button {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.delete-btn {
+  background-color: #e76f51;
 }
 </style>

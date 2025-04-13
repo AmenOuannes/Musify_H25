@@ -5,7 +5,6 @@
       <input type="text" v-model="album_name" placeholder="Album Name" required />
       <input type="text" v-model="genre" placeholder="Genre" required />
 
-      <!-- ✅ Affiche le champ seulement si on n’a pas de prefilledArtist -->
       <input
           v-if="!prefilledArtist"
           type="text"
@@ -49,7 +48,6 @@ const loading = ref(false)
 const success = ref(false)
 const error = ref(null)
 
-// Si prefilledArtist est fourni, on le met dans artist_name automatiquement
 watchEffect(() => {
   if (props.prefilledArtist) {
     artist_name.value = props.prefilledArtist

@@ -71,13 +71,11 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import {
-  getArtistByName,
+  getArtistByName, getArtistsAlbums, getArtistsSongs,
   getLikedArtists,
   likeArtist,
   unlikeArtist
 } from '@/api/artistsAPI'
-import { getSongs } from '@/api/songAPI'
-import { getAlbums } from '@/api/albumAPI'
 import AddSongs from '@/Songs/AddSongs.vue'
 import AddAlbum from '@/Albums/AddAlbums.vue'
 import SongDisplay from '@/Songs/SongDisplay.vue'
@@ -152,15 +150,11 @@ const loadData = async () => {
 
     await checkIfLiked(artistData.artist_name)
 
-    const allSongs = await getSongs(100)
-    songs.value = allSongs.songs.filter(song =>
-        song.artist_name.toLowerCase() === artistData.artist_name.toLowerCase()
-    )
+    const allSongsRes = await getArtistsSongs(artistData.artist_name)
+    songs.value = allSongsRes.songs
 
-    const allAlbums = await getAlbums(100)
-    albums.value = allAlbums.albums.filter(album =>
-        album.artist_name.toLowerCase() === artistData.artist_name.toLowerCase()
-    )
+    const allAlbumsRes = await getArtistsAlbums(artistData.artist_name)
+    albums.value = allAlbumsRes.albums
   } catch (err) {
     console.error('Error loading artist data:', err)
   }

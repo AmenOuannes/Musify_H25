@@ -6,22 +6,33 @@
           type="text"
           placeholder="Search your favorite artists..."
           class="search-input"
+          :disabled="showingSuggestions"
       />
-      <button class="suggested-btn" @click="fetchSuggestedArtists">
-        Show Suggested Artists
+      <button class="suggested-btn" @click="toggleSuggestions">
+        {{ showingSuggestions ? 'Hide Suggested Artists' : 'Show Suggested Artists' }}
       </button>
     </div>
 
-    <div class="artist-list">
-      <h2 v-if="!showingSuggestions">🎧 Your Liked Artists</h2>
-      <h2 v-if="showingSuggestions">🤖 Suggested Artists</h2>
+    <div class="artist-columns">
+      <div class="artist-list">
+        <h2>🎧 Your Liked Artists</h2>
+        <ArtistDisplay
+            v-for="artist in likedArtists"
+            :key="artist.artist_name"
+            :artist="artist"
+            @click="goToArtist(artist.artist_name)"
+        />
+      </div>
 
-      <ArtistDisplay
-          v-for="artist in artists"
-          :key="artist.artist_name"
-          :artist="artist"
-          @click="goToArtist(artist.artist_name)"
-      />
+      <div v-if="showingSuggestions" class="artist-list">
+        <h2>🤖 Suggested Artists</h2>
+        <ArtistDisplay
+            v-for="artist in suggestedArtists"
+            :key="artist.artist_name"
+            :artist="artist"
+            @click="goToArtist(artist.artist_name)"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +47,8 @@ import { getLikedArtists, getRecommendedArtists } from '@/api/artistsAPI.js'
 const router = useRouter()
 const store = useStore()
 
-const artists = ref([])
+const likedArtists = ref([])
+const suggestedArtists = ref([])
 const searchQuery = ref('')
 const token = store.getters.currentToken
 const showingSuggestions = ref(false)
@@ -44,22 +56,29 @@ const showingSuggestions = ref(false)
 const fetchLikedArtists = async () => {
   try {
     const data = await getLikedArtists(searchQuery.value, token)
-    artists.value = Array.isArray(data) ? data : data?.artists || []
-    showingSuggestions.value = false
+    likedArtists.value = Array.isArray(data) ? data : data?.artists || []
   } catch (err) {
     console.error('Error fetching liked artists:', err)
-    artists.value = []
+    likedArtists.value = []
   }
 }
 
 const fetchSuggestedArtists = async () => {
   try {
     const data = await getRecommendedArtists(token)
-    artists.value = Array.isArray(data) ? data : data?.artists || []
-    showingSuggestions.value = true
+    suggestedArtists.value = Array.isArray(data) ? data : data?.artists || []
   } catch (err) {
     console.error('Error fetching suggested artists:', err)
-    artists.value = []
+    suggestedArtists.value = []
+  }
+}
+
+const toggleSuggestions = async () => {
+  showingSuggestions.value = !showingSuggestions.value
+  if (showingSuggestions.value && suggestedArtists.value.length === 0) {
+    await fetchSuggestedArtists()
+  } else {
+    await fetchLikedArtists()
   }
 }
 
@@ -69,7 +88,12 @@ const goToArtist = (name) => {
 }
 
 onMounted(fetchLikedArtists)
-watch(searchQuery, fetchLikedArtists)
+
+watch(searchQuery, async () => {
+  if (!showingSuggestions.value) {
+    await fetchLikedArtists()
+  }
+})
 </script>
 
 <style scoped>
@@ -105,9 +129,17 @@ watch(searchQuery, fetchLikedArtists)
   font-weight: bold;
 }
 
+.artist-columns {
+  display: flex;
+  gap: 4rem;
+  justify-content: space-between;
+}
+
 .artist-list {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 </style>
+

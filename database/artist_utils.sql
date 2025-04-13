@@ -7,9 +7,9 @@ BEFORE INSERT ON Artists
 FOR EACH ROW
 BEGIN
     -- Profile URL validation
-    IF NEW.profile_url IS NOT NULL AND NEW.profile_url NOT LIKE 'https://%' THEN
+    IF NEW.profile_url IS NOT NULL AND NEW.profile_url NOT LIKE 'https://www.youtube.com%' THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Profile URL must start with https://';
+        SET MESSAGE_TEXT = 'Profile URL must be a youtube url';
     END IF;
 
     -- Image URL validation
@@ -25,7 +25,7 @@ BEFORE UPDATE ON Artists
 FOR EACH ROW
 BEGIN
     -- Profile URL validation
-    IF NEW.profile_url IS NOT NULL AND NEW.profile_url NOT LIKE 'https://%' THEN
+    IF NEW.profile_url IS NOT NULL AND NEW.profile_url NOT LIKE 'https://www.youtube.com%' THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Profile URL must start with https://';
     END IF;

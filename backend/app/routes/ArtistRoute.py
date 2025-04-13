@@ -43,7 +43,7 @@ def get_artist_by_name(artist_name):
 @artist_bp.route('/artists/<artist_name>/songs', methods=['GET'])
 def get_artist_songs(artist_name):
     try:
-        songs = artistService.get_songs_of_artist(artist_name)
+        songs = artistService.get_songs_of_artist(unquote(artist_name))
         return responseFormat({"songs":songs}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400
@@ -51,7 +51,7 @@ def get_artist_songs(artist_name):
 @artist_bp.route('/artists/<artist_name>/albums', methods=['GET'])
 def get_artist_albums(artist_name):
     try:
-        albums = artistService.get_albums_of_artist(artist_name)
+        albums = artistService.get_albums_of_artist(unquote(artist_name))
         return responseFormat({"albums":albums}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 400

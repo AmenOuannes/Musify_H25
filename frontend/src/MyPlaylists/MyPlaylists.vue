@@ -18,14 +18,31 @@
           v-for="playlist in playlists"
           :key="playlist.playlist_name"
           :playlist="playlist"
+          :showDelete="true"
           @click="goToPlaylist(playlist.playlist_name)"
+          @delete="confirmDelete(playlist.playlist_name)"
       />
     </div>
 
+    <!-- Add Playlist Modal -->
     <teleport to="body">
       <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
         <div class="modal-content">
           <AddPlaylist @close="handleModalClose" />
+        </div>
+      </div>
+    </teleport>
+
+    <!-- Delete Confirmation Modal -->
+    <teleport to="body">
+      <div v-if="confirmPopup" class="modal-overlay" @click.self="confirmPopup = false">
+        <div class="modal-content">
+          <h3>Confirm Deletion</h3>
+          <p>Are you sure you want to delete the playlist "{{ playlistToDelete }}"?</p>
+          <div class="popup-actions">
+            <button @click="performDelete" class="confirm-btn">Yes</button>
+            <button @click="confirmPopup = false" class="cancel-btn">Cancel</button>
+          </div>
         </div>
       </div>
     </teleport>
@@ -35,22 +52,27 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { getPlaylists } from '@/api/playlistAPI'
+import { useStore } from 'vuex'
+import { getPlaylists, deletePlaylist } from '@/api/playlistAPI'
 import AddPlaylist from '@/MyPlaylists/AddPlaylists.vue'
 import PlaylistDisplay from '@/Playlists/PlaylistDisplay.vue'
-import {useStore} from "vuex";
 
 const router = useRouter()
+const store = useStore()
+
 const playlists = ref([])
 const searchQuery = ref('')
 const showAddModal = ref(false)
-const store = useStore()
 
-const name = store.getters.currentUser.username
+const confirmPopup = ref(false)
+const playlistToDelete = ref(null)
+
+const username = store.getters.currentUser.username
+const token = store.getters.currentToken
 
 const fetchPlaylists = async () => {
   try {
-    const data = await getPlaylists(50, searchQuery.value, name)
+    const data = await getPlaylists(50, searchQuery.value, username)
     playlists.value = data.playlists || []
   } catch (err) {
     console.error('Error fetching playlists:', err)
@@ -66,6 +88,22 @@ const goToPlaylist = (name) => {
 const handleModalClose = () => {
   showAddModal.value = false
   fetchPlaylists()
+}
+
+const confirmDelete = (name) => {
+  playlistToDelete.value = name
+  confirmPopup.value = true
+}
+
+const performDelete = async () => {
+  try {
+    await deletePlaylist(playlistToDelete.value, token)
+    confirmPopup.value = false
+    await fetchPlaylists()
+  } catch (err) {
+    console.error('Failed to delete playlist:', err)
+    alert('Failed to delete playlist. Try again later.')
+  }
 }
 
 watch(searchQuery, fetchPlaylists)
@@ -113,6 +151,7 @@ onMounted(fetchPlaylists)
   gap: 1rem;
 }
 
+/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -133,5 +172,33 @@ onMounted(fetchPlaylists)
   width: 90%;
   max-width: 500px;
   box-shadow: 0 0 10px black;
+  color: white;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.confirm-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 10px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.confirm-btn {
+  background-color: #e63946;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #aaa;
+  color: #111;
 }
 </style>

@@ -10,17 +10,13 @@ export async function login(username, password) {
         });
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
 export async function getUsers(limit = 10, research = "") {
     try {
-        const params = {
-            limit,
-        }
-
+        const params = {limit}
         if (research) params.research = encodeURIComponent(research.toLowerCase());
 
         const response = await axios.get(URL + "/users", {
@@ -28,8 +24,7 @@ export async function getUsers(limit = 10, research = "") {
         });
         return response.data;
     }catch(error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -42,8 +37,7 @@ export async function getUser(token) {
         });
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -59,8 +53,7 @@ export async function postUser({ username, first_name, last_name, email, passwor
         })
         return response.data
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -80,9 +73,8 @@ export async function putUser({ username, first_name, last_name, email, password
             }
         })
 
-        return { username, password }
+        return response.data
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }

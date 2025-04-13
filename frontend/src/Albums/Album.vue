@@ -90,7 +90,7 @@ const refreshSongs = async () => {
   try {
     const cleaned = route.params.name.replace(/_/g, ' ').toLowerCase()
     const songsData = await getAlbumSongs(cleaned)
-    songs.value = songsData.songs || []
+    songs.value = songsData.songs
   } catch (err) {
     console.error('Failed to refresh songs:', err)
   }
