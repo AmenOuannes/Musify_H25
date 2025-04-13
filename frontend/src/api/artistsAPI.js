@@ -18,7 +18,6 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
 
         return response.data;
     } catch (error) {
-        console.error(error);
         throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }

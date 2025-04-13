@@ -35,7 +35,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.card {
+.song-page {
   padding: 1rem;
   border: 1px solid #ccc;
   border-radius: 1rem;

@@ -24,7 +24,6 @@
       />
     </div>
 
-    <!-- MODAL -->
     <teleport to="body">
       <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
         <div class="modal-content">
@@ -40,7 +39,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getArtists } from '@/api/artistsAPI'
 import AddArtist from '@/Artists/AddArtists.vue'
-import ArtistDisplay from '@/Artists/ArtistDisplay.vue' // ✅ imported component
+import ArtistDisplay from '@/Artists/ArtistDisplay.vue'
 
 const router = useRouter()
 const artists = ref([])

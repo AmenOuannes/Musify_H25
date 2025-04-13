@@ -14,13 +14,12 @@ import TopBar from "@/components/TopBar.vue";
 </script>
 
 <style>
-/* Global styles to remove default margins and padding */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-color: #111; /* Match the background color */
-  color: white; /* Default text color */
+  background-color: #111;
+  color: white;
 }
 
 #app {
@@ -29,13 +28,13 @@ html, body {
 }
 
 .main-content {
-  margin-left: 120px; /* Matches the sidebar width + buffer */
-  margin-top: 60px; /* Matches the top bar height */
+  margin-left: 120px;
+  margin-top: 60px;
   flex-grow: 1;
   padding: 20px;
   background-color: #111;
   color: white;
   min-height: 100vh;
-  box-sizing: border-box; /* Ensures padding is included in the width */
+  box-sizing: border-box;
 }
 </style>

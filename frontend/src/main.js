@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index.js'
-import store from './Store/Store.js' // ici
+import store from './Store/Store.js'
 
 store.dispatch('initializeApp').then(() => {
     const app = createApp(App)

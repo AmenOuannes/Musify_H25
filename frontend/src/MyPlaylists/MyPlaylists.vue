@@ -24,7 +24,6 @@
       />
     </div>
 
-    <!-- Add Playlist Modal -->
     <teleport to="body">
       <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
         <div class="modal-content">
@@ -33,7 +32,6 @@
       </div>
     </teleport>
 
-    <!-- Delete Confirmation Modal -->
     <teleport to="body">
       <div v-if="confirmPopup" class="modal-overlay" @click.self="confirmPopup = false">
         <div class="modal-content">
@@ -151,7 +149,6 @@ onMounted(fetchPlaylists)
   gap: 1rem;
 }
 
-/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;

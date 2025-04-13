@@ -10,7 +10,6 @@
       <div class="field-group" v-for="(label, field) in fieldLabels" :key="field">
         <div class="field-label">{{ label }}</div>
 
-        <!-- Text fields -->
         <input
             v-if="field !== 'password' && field !== 'birth_date'"
             type="text"
@@ -18,7 +17,6 @@
             v-model="editableUserData[field]"
         />
 
-        <!-- Date picker -->
         <input
             v-else-if="field === 'birth_date'"
             type="date"
@@ -26,7 +24,6 @@
             v-model="editableUserData.birth_date"
         />
 
-        <!-- Password field -->
         <div class="password-container" v-else>
           <input
               :type="showPassword ? 'text' : 'password'"

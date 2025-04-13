@@ -32,9 +32,9 @@ const createPlayer = () => {
     width: '640',
     videoId,
     playerVars: {
-      rel: 0,          // Disable related videos
+      rel: 0,
       modestbranding: 1,
-      autoplay: 1,     // Auto play the video
+      autoplay: 1,
       controls: 1,
     },
     events: {

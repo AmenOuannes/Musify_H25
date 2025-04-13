@@ -24,7 +24,6 @@
       />
     </div>
 
-    <!-- MODAL -->
     <teleport to="body">
       <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
         <div class="modal-content">

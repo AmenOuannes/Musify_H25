@@ -20,7 +20,7 @@
 export default {
   methods: {
     goHome() {
-      this.$router.push("/"); // Navigate to the home page
+      this.$router.push("/");
     },
   },
 };
@@ -28,7 +28,7 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 100px; /* Much thinner sidebar */
+  width: 100px;
   background: #222;
   height: 100vh;
   position: fixed;
@@ -36,38 +36,38 @@ export default {
   top: 0;
   display: flex;
   flex-direction: column;
-  padding: 10px; /* Reduced padding */
+  padding: 10px;
 }
 
 .sidebar .logo {
   color: #0f0;
-  font-size: 28px; /* Increased font size */
-  text-align: left; /* Left-align the logo */
-  margin: 10px 0 20px 10px; /* Adjusted margin to align with search bar */
+  font-size: 28px;
+  text-align: left;
+  margin: 10px 0 20px 10px;
   cursor: pointer;
-  line-height: 40px; /* Adjusted line height for vertical alignment */
+  line-height: 40px;
 }
 
 .sidebar .menu {
   list-style: none;
   padding: 0;
-  width: 100%; /* Full width of the sidebar */
-  margin-top: 0; /* Move the menu up to align with the TopBar */
+  width: 100%;
+  margin-top: 0;
 }
 
 .sidebar .menu li,
 .playlist-list li {
   margin-bottom: 15px;
-  text-align: left; /* Left-align the list items */
+  text-align: left;
 }
 
 .sidebar .menu li a,
 .playlist-list li a {
   text-decoration: none;
   color: white;
-  padding: 8px; /* Reduced padding */
+  padding: 8px;
   display: block;
-  font-size: 14px; /* Smaller font size */
+  font-size: 14px;
   border-radius: 5px;
   transition: background 0.3s ease, color 0.3s;
 }
@@ -79,24 +79,24 @@ export default {
 }
 
 .sidebar-divider {
-  width: 100%; /* Full width divider */
+  width: 100%;
   height: 2px;
   background-color: #0f0;
-  margin: 15px 0; /* Spacing above and below */
+  margin: 15px 0;
   border: none;
 }
 
 .recents-title {
-  font-size: 14px; /* Smaller font size */
+  font-size: 14px;
   color: #0f0;
   margin-bottom: 10px;
   text-transform: uppercase;
-  text-align: left; /* Left-align the title */
+  text-align: left;
 }
 
 .playlist-list {
   list-style: none;
   padding: 0;
-  width: 100%; /* Full width of the sidebar */
+  width: 100%;
 }
 </style>

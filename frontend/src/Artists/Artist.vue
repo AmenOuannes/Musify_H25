@@ -43,7 +43,6 @@
       <p>No songs or albums found for this artist.</p>
     </div>
 
-    <!-- MODALS -->
     <teleport to="body">
       <div v-if="showAddSongModal" class="modal-overlay" @click.self="showAddSongModal = false">
         <div class="modal-content">
@@ -71,7 +70,9 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import {
-  getArtistByName, getArtistsAlbums, getArtistsSongs,
+  getArtistByName,
+  getArtistsAlbums,
+  getArtistsSongs,
   getLikedArtists,
   likeArtist,
   unlikeArtist
@@ -116,7 +117,7 @@ const handleAddSongClose = () => {
 const checkIfLiked = async (artistName) => {
   try {
     const response = await getLikedArtists(artistName, token)
-    const data = response.artists // ⬅️ This is what you're after
+    const data = response.artists
     if (Array.isArray(data) && data.length > 0) {
       isLiked.value = true
     } else {

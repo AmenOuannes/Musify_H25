@@ -43,7 +43,6 @@ onMounted(async () => {
   try {
     const playlistName = route.params.name.replace(/_/g, ' ').toLowerCase()
     const owner = route.query.owner?.toLowerCase()
-    console.log(owner)
     const result = await getPlaylistSongs(playlistName, owner)
     songs.value = result.songs || []
   } catch (err) {
