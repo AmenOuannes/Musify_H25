@@ -71,3 +71,11 @@ def delete_song_from_album_query():
 
 def album_exists_query():
     return text("SELECT DoesAlbumExist(:name) AS exists_flag")
+
+def get_albums_with_artist_ids():
+    return text("""
+        SELECT s.album_id, s.album_name, s.genre, s.release_date, s.cover_image
+        FROM Albums s
+        JOIN Creates sg ON s.album_id = sg.album_id
+        WHERE SG.artist_id = :artist_id
+    """)

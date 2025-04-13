@@ -26,6 +26,7 @@ BEGIN
     END IF;
 END;
 
+
 CREATE TRIGGER validate_user_before_update
 BEFORE UPDATE ON Users
 FOR EACH ROW
@@ -63,3 +64,7 @@ BEGIN
 
     RETURN _exists;
 END ;
+
+CREATE INDEX idx_likes_user ON Likes(user_id);
+CREATE INDEX idx_liked_artists_user ON LikedArtists(user_id);
+CREATE INDEX idx_liked_playlists_user ON LikedPlaylists(user_id);
