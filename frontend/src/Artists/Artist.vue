@@ -184,7 +184,7 @@ onMounted(() => {
 
 h1 {
   font-size: 2rem;
-  color: #2a9d8f;
+  color: #0f0;
   margin-bottom: 1rem;
 }
 
@@ -200,7 +200,7 @@ p {
 
 .add-song-btn,
 .add-album-btn {
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   padding: 10px 15px;
   border: none;
@@ -236,7 +236,7 @@ p {
 .albums-section h2 {
   margin-bottom: 1rem;
   font-size: 1.4rem;
-  color: #2a9d8f;
+  color: #0f0;
 }
 
 .songs-section > * ,

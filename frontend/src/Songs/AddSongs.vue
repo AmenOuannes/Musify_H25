@@ -57,69 +57,78 @@ const submitSong = async () => {
 </script>
 
 
-
 <style scoped>
-.album-search {
+.add-song-form {
+  background-color: #1a1a1a;
   padding: 2rem;
+  border-radius: 16px;
   color: white;
-  background-color: #111;
-}
-
-.search-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-}
-
-.search-bar input {
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: 1px solid #888;
-  width: 250px;
-  background-color: #222;
-  color: white;
-}
-
-.add-album button {
-  padding: 10px 15px;
-  border-radius: 20px;
-  background-color: #0f0;;
-  color: white;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.album-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: flex-start;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.modal-content {
-  background-color: #222;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 90%;
   max-width: 500px;
-  box-shadow: 0 0 10px black;
+  margin: 0 auto;
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.1);
+}
+
+h2 {
+  color: #00ff00;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+input {
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: white;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #00ff00;
+  outline: none;
+}
+
+button {
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  background-color: #00ff00;
+  color: black;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #00cc00;
+}
+
+button:disabled {
+  background-color: #006600;
+  cursor: not-allowed;
+}
+
+p {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+p.success {
+  color: #00ff00;
+}
+
+p.error {
+  color: #ff4d4d;
 }
 </style>
+
 

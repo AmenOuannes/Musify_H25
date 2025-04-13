@@ -111,7 +111,7 @@ onMounted(() => {
 .add-artist button {
   padding: 10px 15px;
   border-radius: 20px;
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   border: none;
   font-weight: bold;

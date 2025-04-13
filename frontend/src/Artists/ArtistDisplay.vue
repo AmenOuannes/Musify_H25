@@ -91,7 +91,7 @@ const likeArtistHandler = async () => {
 
 .name {
   font-weight: bold;
-  color: #2a9d8f;
+  color: #0f0;
 }
 
 .genre,

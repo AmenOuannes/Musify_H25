@@ -185,7 +185,7 @@ onMounted(async () => {
 .playlist-header h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: #2a9d8f;
+  color: #0f0f;
 }
 
 .playlist-header .meta {
@@ -201,7 +201,7 @@ onMounted(async () => {
 
 .add-song-btn {
   padding: 8px 16px;
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   border: none;
   border-radius: 20px;
@@ -211,7 +211,7 @@ onMounted(async () => {
 
 .like-btn {
   padding: 8px 16px;
-  background-color: #e76f51;
+  background-color: red;
   color: white;
   border: none;
   border-radius: 20px;
@@ -266,7 +266,7 @@ onMounted(async () => {
 }
 
 .confirm-btn {
-  background-color: #e63946;
+  background-color: red;
   color: white;
 }
 

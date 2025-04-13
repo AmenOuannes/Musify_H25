@@ -83,7 +83,7 @@ label {
 button {
   padding: 0.5rem;
   border-radius: 4px;
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   border: none;
   cursor: pointer;

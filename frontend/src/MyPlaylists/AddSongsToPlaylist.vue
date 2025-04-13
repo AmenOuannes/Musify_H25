@@ -150,7 +150,7 @@ input {
 button {
   padding: 10px 15px;
   border-radius: 20px;
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   border: none;
   font-weight: bold;
@@ -183,7 +183,7 @@ button {
 
 .recommendations-section h3 {
   margin-bottom: 0.5rem;
-  color: #2a9d8f;
+  color: #0f0;
 }
 
 .recommendation-list {

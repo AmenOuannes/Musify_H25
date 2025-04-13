@@ -119,7 +119,7 @@ button {
   padding: 1rem;
   border-radius: 10px;
   background-color: #0f0;
-  color: white; /* ✅ texte blanc */
+  color: white;
   font-weight: bold;
   border: none;
   cursor: pointer;
