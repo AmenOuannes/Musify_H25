@@ -106,8 +106,9 @@ def delete_song(playlist_name, song_name):
 @jwt_required()
 def get_recommended(playlist_name):
     try:
+        print(playlist_name)
         current_user = get_jwt_identity()
-        songs = playlistService.get_recommended_songs(playlist_name, current_user)
+        songs = playlistService.get_recommended_songs(unquote(playlist_name), current_user)
         return responseFormat({"songs": songs}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 404

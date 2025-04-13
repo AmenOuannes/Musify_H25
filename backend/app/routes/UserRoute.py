@@ -70,7 +70,6 @@ def update_user_info():
 @jwt_required()
 def like_artist(artist_name):
     try:
-        print("like")
         current_user = get_jwt_identity()
         userService.like_artist(current_user, unquote(artist_name))
         return jsonify({"message": "Artist liked"}), 200
@@ -139,6 +138,7 @@ def like_a_playlist(playlist_name):
 def recommend_artists():
     try:
         current_user = get_jwt_identity()
+        print(current_user)
         artists = userService.get_recommended_artists(current_user)
         return jsonify({"artists": artists}), 200
     except Exception as e:

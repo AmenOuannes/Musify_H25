@@ -56,7 +56,6 @@ export async function getPlaylists(limit = 10, research = "", isprivate=1,owner 
 
 export async function getPlaylistByName(playlist_name) {
     try {
-        console.log("hello")
         const response = await axios.get(`${URL}/playlists/${encodeURIComponent(playlist_name)}`, {});
         return response.data;
     } catch (error) {
@@ -98,7 +97,6 @@ export async function getPlaylistSongs(playlist_name, owner ) {
         playlist_name = encodeURIComponent(playlist_name);
         owner = encodeURIComponent(owner);
         const params = {owner};
-        console.log(params)
 
         const response = await axios.get(`${URL}/playlists/${playlist_name}/songs`, { params });
         return response.data;
@@ -139,6 +137,19 @@ export async function deleteSongFromPlaylist(playlist_name, song_name, token) {
         playlist_name = encodeURIComponent(playlist_name);
         song_name = encodeURIComponent(song_name);
         const response = await axios.delete(`${URL}/playlists/${playlist_name}/songs/${song_name}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.error || "Unexpected error");
+    }
+}
+
+export async function getSongsRecommendation(playlist_name, token) {
+    try {
+        playlist_name = encodeURIComponent(playlist_name);
+        const response = await axios.get(`${URL}/playlists/${playlist_name}/recommended`, {
             headers: { Authorization: `Bearer ${token}` }
         });
         return response.data;

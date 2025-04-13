@@ -4,7 +4,6 @@ import {URL} from "./api";
 
 export async function postArtists(artist_name, genre, profile_url, image, followers, token) {
     try {
-        followers = 0
         const response = await axios.post(`${URL}/artists`, {
             artist_name: encodeURIComponent(artist_name),
             genre: encodeURIComponent(genre),
@@ -89,6 +88,19 @@ export async function getLikedArtists(research, token) {
             params,
             headers: {Authorization: `Bearer ${token}`}
         });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error(error.response?.data?.message || 'Unexpected error');
+    }
+}
+
+export async function getRecommendedArtists(token) {
+    try {
+        const response = await axios.get(`${URL}/users/likes/artists/recommended`, {
+            headers: {Authorization: `Bearer ${token}`}
+        });
+        console.log(response);
         return response.data;
     } catch (error) {
         console.error(error);

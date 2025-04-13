@@ -1,21 +1,17 @@
 import { createStore } from 'vuex'
 import Cookies from 'js-cookie'
-import { getUser } from '@/api/authApi'
+import { getUser } from '@/api/AuthApi'
 
 export default createStore({
     state: {
         user: null,
         token: Cookies.get('ufood-token') || null,
     },
-    getters: {
-        currentToken: state => state.token,
-        currentUserData: state => state.userData,
-    },
     mutations: {
         setUser(state, user) {
             state.user = user
         },
-        updateUserData(state, newUserData) {
+        updateCurrentUserData(state, newUserData) {
             state.currentUserData = newUserData;
         },
         setToken(state, token) {
@@ -70,5 +66,6 @@ export default createStore({
         isLoggedIn: (state) => !!state.user && !!state.token,
         currentUser: (state) => state.user,
         currentToken: (state) => state.token,
+        currentUserData: (state) => state.userData,
     },
 })
