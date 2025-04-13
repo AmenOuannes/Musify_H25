@@ -78,10 +78,15 @@ const submitAlbum = async () => {
   }
 }
 </script>
-
 <style scoped>
 .add-album-form {
+  background: #1e1e1e;
   color: white;
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.05);
 }
 
 form {
@@ -91,24 +96,45 @@ form {
 }
 
 input {
-  padding: 0.5rem;
-  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
   border: 1px solid #444;
   background-color: #333;
   color: white;
+  font-size: 0.95rem;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+input::placeholder {
+  color: #aaa;
+}
+
+input:focus {
+  border-color: #0f0;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 255, 0, 0.2);
 }
 
 button {
-  padding: 0.5rem;
-  border-radius: 4px;
-  background-color: #2a9d8f;
-  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: #0f0;
+  color: white; /* ✅ texte blanc */
+  font-weight: bold;
   border: none;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 button:disabled {
   background-color: #555;
   cursor: not-allowed;
 }
+
+button:hover:enabled {
+  background-color: #00e600;
+}
+
 </style>
+

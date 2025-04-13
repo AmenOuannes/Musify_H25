@@ -20,42 +20,60 @@ defineProps({
 
 <style scoped>
 .album-button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 1rem 1.5rem;
-  color: white;
+  display: block;
   width: 100%;
-  text-align: left;
+  background-color: #1e1e1e;
+  color: white;
+  padding: 1.2rem 1.5rem;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 255, 255, 0.05);
 }
 
 .album-button:hover {
-  background-color: #2a9d8f22;
-  transform: scale(1.01);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 188, 156, 0.25);
+  border-color: #0f0;
 }
 
 .info {
   display: flex;
-  gap: 1.5rem;
   flex-wrap: wrap;
+  gap: 0.75rem;
   align-items: center;
-  width: 100%;
+  font-size: 0.95rem;
 }
 
 .name {
-  font-weight: bold;
-  color: #2a9d8f;
+  font-weight: 600;
+  color: #0f0;
+  background-color: rgba(26, 188, 156, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
 }
 
-.genre,
-.artist,
-.date {
+.genre {
   color: #ccc;
-  font-size: 0.9rem;
+  font-weight: 500;
 }
+
+.artist {
+  color: #f1f1f1;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.date {
+  font-size: 0.9rem;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
 </style>

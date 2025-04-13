@@ -57,10 +57,69 @@ const submitSong = async () => {
 </script>
 
 
+
 <style scoped>
-form {
+.album-search {
+  padding: 2rem;
+  color: white;
+  background-color: #111;
+}
+
+.search-container {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.search-bar input {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid #888;
+  width: 250px;
+  background-color: #222;
+  color: white;
+}
+
+.add-album button {
+  padding: 10px 15px;
+  border-radius: 20px;
+  background-color: #0f0;;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.album-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: flex-start;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background-color: #222;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 0 10px black;
 }
 </style>
+

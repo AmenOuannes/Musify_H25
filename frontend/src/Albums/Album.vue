@@ -126,7 +126,6 @@ onMounted(async () => {
   }
 })
 </script>
-
 <style scoped>
 .album-page {
   padding: 2rem;
@@ -151,7 +150,7 @@ onMounted(async () => {
 .album-details h1 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  color: #2a9d8f;
+  color:#0f0 ;
 }
 
 .album-details .artist {
@@ -167,7 +166,7 @@ onMounted(async () => {
 
 .add-song-btn {
   padding: 8px 16px;
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   border: none;
   border-radius: 20px;

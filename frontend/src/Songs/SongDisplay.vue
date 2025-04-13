@@ -50,7 +50,7 @@ defineProps({
   color: white;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .song-button:hover {
@@ -58,12 +58,37 @@ defineProps({
   transform: scale(1.01);
 }
 
+.song-button:active {
+  background-color: #00ff00;
+  box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00aa;
+  transform: scale(0.98);
+}
+
+/* ✅ Nouveau style du bouton 🗑 */
 .remove-btn {
-  background: none;
+  background-color: transparent;
   border: none;
-  color: #f87171;
-  font-size: 1.2rem;
+  color: #ff5f5f;
+  font-size: 1.3rem;
+  padding: 0.6rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover {
+  background-color: rgba(255, 95, 95, 0.1);
+  color: #ff4d4d;
+  transform: scale(1.2);
+  box-shadow: 0 0 8px rgba(255, 80, 80, 0.4);
+}
+
+.remove-btn:active {
+  transform: scale(0.95);
+  background-color: rgba(255, 50, 50, 0.2);
 }
 
 .info {
@@ -75,7 +100,7 @@ defineProps({
 
 .name {
   font-weight: bold;
-  color: #2a9d8f;
+  color: #0f0;
 }
 
 .genre,
