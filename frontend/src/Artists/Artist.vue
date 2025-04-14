@@ -7,14 +7,21 @@
         <p><strong>Genre:</strong> {{ artist.genre }}</p>
         <p><strong>Followers:</strong> {{ artist.followers.toLocaleString() }}</p>
         <div class="profile-link">
-          <button @click="visitProfile" :disabled="!artist?.profile_url">
+          <button class="green-btn" @click="visitProfile" :disabled="!artist?.profile_url">
             🔗 Visit Profile
           </button>
         </div>
         <div class="action-buttons">
-          <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
-          <button class="add-album-btn" @click="showAddAlbumModal = true">➕ Add Album</button>
-          <button class="like-btn" @click="toggleLike">
+          <button class="green-btn" @click="playArtist">
+            <span class="icon">▶</span> Play
+          </button>
+          <button class="green-btn" @click="showAddSongModal = true">
+            <span class="plus-icon">➕</span> Add Song
+          </button>
+          <button class="green-btn" @click="showAddAlbumModal = true">
+            <span class="plus-icon">➕</span> Add Album
+          </button>
+          <button class="red-btn" @click="toggleLike">
             {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
           </button>
         </div>
@@ -175,6 +182,11 @@ const visitProfile = () => {
   }
 }
 
+const playArtist = () => {
+  const formatted = artist.value.artist_name.toLowerCase().replace(/\s+/g, '_')
+  router.push({ name: 'ArtistPlayer', params: { name: formatted } })
+}
+
 onMounted(() => {
   loadData()
 })
@@ -190,16 +202,17 @@ onMounted(() => {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* ========== HERO ========== */
 .artist-hero {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
   align-items: center;
   margin-bottom: 3rem;
-  background: #1a1a1a;
+  background-color: #1a1a1a;
   padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .artist-hero-img {
@@ -219,7 +232,7 @@ onMounted(() => {
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 0.8rem;
-  color: #2a9d8f;
+  color: #22c55e;
 }
 
 .artist-hero-info p {
@@ -228,20 +241,51 @@ onMounted(() => {
   line-height: 1.4;
 }
 
-.profile-link button {
-  background-color: #4ecdc4;
-  border: none;
+/* ========== SHARED BUTTON STYLES ========== */
+button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.6rem 1.2rem;
-  border-radius: 8px;
+  font-size: 0.95rem;
   font-weight: bold;
+  border: none;
+  border-radius: 20px;
   cursor: pointer;
-  color: #111;
-  margin-top: 0.5rem;
-  transition: background-color 0.3s ease;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.profile-link button:hover {
-  background-color: #3fbdb7;
+/* Green buttons (play, add, visit profile) */
+.green-btn {
+  background-color: #22c55e;
+  color: #111;
+}
+.green-btn:hover {
+  background-color: #1ea347;
+}
+
+/* Red button (like/unlike) */
+.red-btn {
+  background-color: #e76f51;
+  color: white;
+}
+.red-btn:hover {
+  background-color: #d55a3c;
+}
+
+/* Icon color (for ➕) */
+.plus-icon {
+  color: #1ed760;
+  font-size: 1.2rem;
+}
+
+/* ========== BUTTON CONTAINERS ========== */
+.profile-link {
+  margin-top: 0.5rem;
+}
+.profile-link button {
+  width: fit-content;
 }
 
 .action-buttons {
@@ -251,34 +295,7 @@ onMounted(() => {
   margin-top: 1.5rem;
 }
 
-.add-song-btn,
-.add-album-btn,
-.like-btn {
-  background-color: #2a9d8f;
-  color: white;
-  padding: 0.6rem 1rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: background-color 0.3s ease;
-}
-
-.add-song-btn:hover,
-.add-album-btn:hover {
-  background-color: #1f7f72;
-}
-
-.like-btn {
-  background-color: #e76f51;
-}
-
-.like-btn:hover {
-  background-color: #d55a3c;
-}
-
-/* Side-by-side layout */
+/* ========== MEDIA SECTIONS ========== */
 .media-lists {
   display: flex;
   gap: 2rem;
@@ -312,6 +329,7 @@ onMounted(() => {
   color: #bbb;
 }
 
+/* ========== MODAL STYLES ========== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -334,6 +352,7 @@ onMounted(() => {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
 }
 
+/* ========== RESPONSIVE ========== */
 @media (max-width: 900px) {
   .media-lists {
     flex-direction: column;
@@ -348,5 +367,11 @@ onMounted(() => {
     flex-direction: column;
     text-align: center;
   }
+
+  .artist-hero-img {
+    width: 200px;
+    height: 200px;
+  }
 }
+
 </style>

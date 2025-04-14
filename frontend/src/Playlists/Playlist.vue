@@ -272,18 +272,19 @@ onMounted(async () => {
 }
 
 .like-btn {
-  background-color: #ef4444;
+  background-color: #e76f51;
   color: white;
-  border: none;
   padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
   border-radius: 20px;
-  font-weight: bold;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.3s ease;
 }
 
 .like-btn:hover {
-  background-color: #dc2626;
+  background-color: #d55a3c;
 }
 
 .playlist-hero-right {

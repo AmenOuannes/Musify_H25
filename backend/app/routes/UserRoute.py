@@ -19,19 +19,6 @@ def get_users():
     usernames = usernames_response(all_users)
     return {'users': usernames}, 200
 
-
-# @user_bp.route('/users', methods=['POST'])
-# def sign_up():
-#     try:
-#         user_name, first_name, last_name, email, password, birth_date = get_user_credentials()
-#         userService.createUser(user_name, first_name,
-#                                last_name, email, password, birth_date)
-#         send_confirmation_email(email, first_name, last_name)
-#         return jsonify({"message": "User created"}), 200
-#     except Exception as e:
-#         return jsonify({"message": str(e)}), 400
-
-
 @user_bp.route('/users/login', methods=['POST'])
 def login():
     username = unquote(request.json.get('username'))

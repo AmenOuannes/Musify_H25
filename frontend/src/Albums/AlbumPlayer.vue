@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-player" v-if="songs.length > 0">
+  <div class="album-player" v-if="songs.length > 0">
     <h2 class="now-playing">🎵 Now Playing</h2>
     <h1 class="song-title">{{ songs[currentIndex].song_name }}</h1>
 
@@ -21,14 +21,14 @@
   </div>
 
   <div v-else class="loading">
-    <p>🎧 Loading playlist...</p>
+    <p>🎧 Loading album...</p>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { getPlaylistSongs } from '@/api/playlistAPI'
+import { getAlbumSongs } from '@/api/albumAPI'
 import YoutubeEmbed from '@/components/YoutubeEmbed.vue'
 
 const route = useRoute()
@@ -45,18 +45,17 @@ const prevSong = () => {
 
 onMounted(async () => {
   try {
-    const playlistName = route.params.name.replace(/_/g, ' ').toLowerCase()
-    const owner = route.query.owner?.toLowerCase()
-    const result = await getPlaylistSongs(playlistName, owner)
+    const albumName = route.params.name.replace(/_/g, ' ').toLowerCase()
+    const result = await getAlbumSongs(albumName)
     songs.value = result.songs || []
   } catch (err) {
-    console.error('Failed to load playlist songs:', err)
+    console.error('Failed to load album songs:', err)
   }
 })
 </script>
 
 <style scoped>
-.playlist-player {
+.album-player {
   padding: 3rem 2rem;
   background-color: #121212;
   color: white;

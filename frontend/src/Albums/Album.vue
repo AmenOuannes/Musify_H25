@@ -8,7 +8,12 @@
         <p><strong>Genre:</strong> {{ album.genre }}</p>
         <p><strong>Release:</strong> {{ formatDate(album.release_date) }}</p>
         <div class="action-buttons">
-          <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
+          <button class="play-btn" @click="playAlbum">
+            ▶ Play
+          </button>
+          <button class="add-song-btn" @click="showAddSongModal = true">
+            <span class="plus-icon">➕</span> Add Song
+          </button>
         </div>
       </div>
     </div>
@@ -114,6 +119,14 @@ const handleAddSongClose = () => {
   showAddSongModal.value = false
 }
 
+const playAlbum = () => {
+  const formatted = album.value.album_name.toLowerCase().replace(/\s+/g, '_')
+  router.push({
+    name: 'AlbumPlayer',
+    params: { name: formatted }
+  })
+}
+
 onMounted(async () => {
   try {
     const cleaned = route.params.name.replace(/_/g, ' ').toLowerCase()
@@ -145,10 +158,10 @@ onMounted(async () => {
   gap: 2rem;
   align-items: center;
   margin-bottom: 3rem;
-  background: #1a1a1a;
+  background-color: #1a1a1a; /* unified with song section */
   padding: 2rem;
-  border-radius: 20px;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .album-hero-img {
@@ -168,7 +181,7 @@ onMounted(async () => {
   font-size: 2.4rem;
   font-weight: 800;
   margin-bottom: 0.8rem;
-  color: #2a9d8f;
+  color: #22c55e; /* match Songs section heading color */
 }
 
 .album-hero-info p {
@@ -185,19 +198,34 @@ onMounted(async () => {
 }
 
 .add-song-btn {
-  background-color: #2a9d8f;
-  color: white;
-  padding: 0.6rem 1rem;
+  background-color: #22c55e;
+  color: #111;
+  padding: 0.6rem 1.2rem;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 20px;
+  font-weight: bold;
   font-size: 0.95rem;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .add-song-btn:hover {
-  background-color: #1f7f72;
+  background-color: #1ea347;
+}
+
+.play-btn {
+  background-color: #22c55e;
+  color: #111;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-btn:hover {
+  background-color: #1ea347;
 }
 
 .songs-section {
@@ -293,5 +321,11 @@ onMounted(async () => {
   .songs-section {
     padding: 1.5rem;
   }
+}
+
+.plus-icon {
+  color: #1ed760; /* Spotify green pop */
+  margin-right: 0.4rem;
+  font-size: 1.2rem;
 }
 </style>

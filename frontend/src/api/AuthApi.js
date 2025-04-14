@@ -7,6 +7,10 @@ export async function login(username, password) {
         const response = await axios.post(URL + "/users/login", {
             username: encodeURIComponent(username),
             password: encodeURIComponent(password)
+        },{
+            headers: {
+                "Content-Type": "application/json",
+            }
         });
         return response.data;
     } catch (error) {
@@ -18,7 +22,8 @@ export async function getUser(token) {
     try {
         const response = await axios.get(URL + "/users/user", {
             headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
             }
         });
         return response.data;
@@ -50,7 +55,7 @@ export async function postUser({ username, first_name, last_name, email, passwor
 export async function putUser({ username, first_name, last_name, email, password, birth_date }, currentToken) {
     try {
         const response = await axios.put(`${URL}/users`, {
-            user_name: encodeURIComponent(username.toLowerCase()),
+            username: encodeURIComponent(username.toLowerCase()),
             first_name: encodeURIComponent(first_name),
             last_name: encodeURIComponent(last_name),
             email: encodeURIComponent(email),
@@ -58,7 +63,8 @@ export async function putUser({ username, first_name, last_name, email, password
             birth_date: encodeURIComponent(birth_date)
         }, {
             headers: {
-                Authorization: `Bearer ${currentToken}`
+                Authorization: `Bearer ${currentToken}`,
+                'Content-Type': 'application/json'
             }
         })
 

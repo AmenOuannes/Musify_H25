@@ -25,6 +25,12 @@ const routes = [
         component: () => import('../Artists/Artist.vue'),
         meta: { requiresAuth: true }
     },
+    {
+        path: '/artists/:name/play',
+        name: 'ArtistPlayer',
+        component: () => import('@/views/ArtistPlayer.vue'),
+        meta: { requiresAuth: true }
+    },
     { path: '/songs', component: Songs, meta: { requiresAuth: true } },
     {
         path: '/songs/:name',
@@ -39,6 +45,12 @@ const routes = [
         component: () => import('../Albums/Album.vue'),
         meta: { requiresAuth: true }
     },
+    {
+        path: '/albums/:name/play',
+        name: 'AlbumPlayer',
+        component: () => import('../Albums/AlbumPlayer.vue'),
+        meta: { requiresAuth: true }
+    },
     { path: '/playlists', component: Playlists, meta: { requiresAuth: true } },
     {path: '/favorite/playlists', component: FavoritePlaylists, meta: { requiresAuth: true } },
 
@@ -51,7 +63,7 @@ const routes = [
     {
         path: '/playlists/:name/play',
         name: 'PlaylistPlayer',
-        component: () => import('@/views/PlaylistPlayer.vue'),
+        component: () => import('@/Playlists/PlaylistPlayer.vue'),
         meta: { requiresAuth: true }
     },
     {path: '/favorite/artists', component: FavoriteArtists, meta: { requiresAuth: true } },

@@ -29,24 +29,40 @@
               v-model="editableUserData.birth_date"
           />
 
-          <div class="password-wrapper" v-else>
-            <input
-                :type="showPassword ? 'text' : 'password'"
-                class="input"
-                v-model="editableUserData.password"
-                placeholder="New password"
-            />
-            <button type="button" class="toggle" @click="togglePasswordVisibility">
-              {{ showPassword ? '🙈' : '👁️' }}
-            </button>
-            <p
-                v-if="passwordInvalid"
-                class="error-message"
-                style="margin-top: 5px"
-            >
+          <!-- Password fields -->
+          <template v-else>
+            <div class="password-wrapper">
+              <input
+                  :type="showPassword ? 'text' : 'password'"
+                  class="input"
+                  v-model="editableUserData.password"
+                  placeholder="New password"
+              />
+              <button type="button" class="toggle" @click="togglePasswordVisibility">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+
+            <div class="password-wrapper">
+              <input
+                  :type="showPassword ? 'text' : 'password'"
+                  class="input"
+                  v-model="confirmPassword"
+                  placeholder="Confirm new password"
+              />
+              <button type="button" class="toggle" @click="togglePasswordVisibility">
+                {{ showPassword ? '🙈' : '👁️' }}
+              </button>
+            </div>
+
+            <p v-if="editableUserData.password && !isPasswordValid(editableUserData.password)" class="error-message" style="margin-top: 5px">
               Password must be 8+ chars with uppercase, lowercase, number, and special character.
             </p>
-          </div>
+
+            <p v-if="editableUserData.password && confirmPassword && editableUserData.password !== confirmPassword" class="error-message" style="margin-top: 5px">
+              Passwords do not match.
+            </p>
+          </template>
         </div>
 
         <button class="submit-btn" type="submit" :disabled="passwordInvalid">
@@ -80,6 +96,7 @@ const editableUserData = reactive({
   birth_date: user.value?.birth_date ? formatDate(user.value.birth_date) : ''
 })
 
+const confirmPassword = ref(user.value?.password || '',)
 const showPassword = ref(false)
 const loading = ref(false)
 const error = ref(null)
@@ -96,7 +113,8 @@ const isPasswordValid = (pwd) => {
 }
 
 const passwordInvalid = computed(() => {
-  return editableUserData.password && !isPasswordValid(editableUserData.password)
+  const pwd = editableUserData.password
+  return pwd && (!isPasswordValid(pwd) || pwd !== confirmPassword.value)
 })
 
 const loadUserData = () => {
@@ -117,7 +135,7 @@ const saveAll = async () => {
   successMessage.value = null
 
   if (editableUserData.password && passwordInvalid.value) {
-    error.value = 'Password does not meet requirements.'
+    error.value = 'Password does not meet requirements or does not match.'
     loading.value = false
     return
   }
@@ -226,6 +244,8 @@ onMounted(() => {
   color: white;
   font-size: 1rem;
   transition: border 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .input:focus {
@@ -235,6 +255,7 @@ onMounted(() => {
 
 .password-wrapper {
   position: relative;
+  margin-bottom: 1rem;
 }
 
 .toggle {
