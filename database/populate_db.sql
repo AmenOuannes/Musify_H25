@@ -444,7 +444,6 @@ VALUES (69, 'La La La', 'Pop', '2014-05-22', 'https://www.youtube.com/watch?v=7-
 INSERT INTO Songs (song_id, song_name, genre, release_date, url)
 VALUES (70, 'Try Everything', 'Pop', '2016-02-18', 'https://www.youtube.com/watch?v=c6rP-YP4c5I');
 
--- Bruno Mars
 INSERT INTO Songs (song_id, song_name, genre, release_date, url)
 VALUES (71, 'Uptown Funk', 'Funk', '2014-11-10', 'https://www.youtube.com/watch?v=kPa7bsKwL-c');
 
@@ -460,7 +459,6 @@ VALUES (74, 'Grenade', 'Pop', '2010-09-28', 'https://www.youtube.com/watch?v=SR6
 INSERT INTO Songs (song_id, song_name, genre, release_date, url)
 VALUES (75, '24K Magic', 'Funk', '2016-10-06', 'https://www.youtube.com/watch?v=UqyT8IEBkvY');
 
--- Ariana Grande
 INSERT INTO Songs (song_id, song_name, genre, release_date, url)
 VALUES (76, '7 rings', 'Pop', '2019-01-18', 'https://www.youtube.com/watch?v=QYh6mYIJG2Y');
 
@@ -694,7 +692,7 @@ INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALU
 INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (10, 'Cardi B Essentials', 'Hip-Hop', '2024-04-17', 'https://yt3.googleusercontent.com/50YeejQslEmP9_pNJHm3SGYRHRuVMuGafgsyrm2AjRNOE8P0bcIsDMA371xebxsd2zMQedm0TA=s160-c-k-c0x00ffffff-no-rj');
 INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (11, 'Beyoncé Essentials', 'Pop', '2024-03-08', 'https://yt3.googleusercontent.com/4UxYRy4fJ0Fo54TRPkw19_W6uCCnzTBSkzm75vGIiEObg4IgY5Ie1BIsNcflFNqofAjxEpTRcQ=s160-c-k-c0x00ffffff-no-rj');
 INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (12, 'Rihanna Essentials', 'Pop', '2024-01-28', 'https://yt3.googleusercontent.com/VAYRM_xcMbmZqsKMzO8SCt8HoMNC-TWBcwm3b3v5gLVnhVQHZ9aq_4DH6RhqlCqEB3RNhA7KHg=s160-c-k-c0x00ffffff-no-rj');
-INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (13, 'Katy Perry Essentials', 'Pop', '2023-12-19', 'hhttps://yt3.googleusercontent.com/0JHDiF44tXg9XWEwdlEz5_q5ygZYwcOIKKcOdi5R8hLRCwe-34nlSNlGzIzg9elk1EHlYqf1HA=s160-c-k-c0x00ffffff-no-rj');
+INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (13, 'Katy Perry Essentials', 'Pop', '2023-12-19', 'https://yt3.googleusercontent.com/0JHDiF44tXg9XWEwdlEz5_q5ygZYwcOIKKcOdi5R8hLRCwe-34nlSNlGzIzg9elk1EHlYqf1HA=s160-c-k-c0x00ffffff-no-rj');
 INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (14, 'Shakira Essentials', 'Pop', '2023-11-09', 'https://yt3.googleusercontent.com/aFFxy2m2TB9dOJJEduJKEyAYsr79uE3ypQZLg-Jbc4TXlxsfCFoe7Ly3E3ou5sTPbglNiTyiKw=s160-c-k-c0x00ffffff-no-rj');
 INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (15, 'Bruno Mars Essentials', 'Pop', '2023-09-30', 'https://yt3.googleusercontent.com/DFAj5Pcujo1P0iXe8x4XoZwwItN9cbHnDxbdamvhqSTzXTmyNlqsE1HN2bEQN5vpXE6SB1IAoCM=s160-c-k-c0x00ffffff-no-rj');
 INSERT INTO Albums (album_id, album_name, genre, release_date, cover_image) VALUES (16, 'Ariana Grande Essentials', 'Pop', '2023-08-21', 'https://yt3.googleusercontent.com/vLWO1tajYHyFJ3lGkcMxKMayA-ZNUqCUYj5bOO8TWhNVL7EV-bjxmguUkZ3B2dMsAtZYir8r=s160-c-k-c0x00ffffff-no-rj');

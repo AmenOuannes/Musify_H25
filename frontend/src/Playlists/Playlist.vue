@@ -1,35 +1,52 @@
 <template>
   <div class="playlist-page" v-if="playlist">
-    <div class="playlist-header">
-      <h1>{{ playlist.playlist_name }}</h1>
-      <p class="meta">By {{ playlist.owner }} <span v-if="playlist.private">• Private</span></p>
-      <div class="action-buttons" v-if="playlist.owner===username">
-        <button
-            v-if="playlist.owner === username"
-            @click="showAddSongModal = true"
-            class="add-song-btn"
-        >
-          ➕ Add Song
-        </button>
-        <button class="like-btn" @click="toggleLike">
-          {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
-        </button>
+    <div class="playlist-hero">
+      <div class="playlist-hero-info">
+        <h1>{{ playlist.playlist_name }}</h1>
+        <p class="meta">
+          👤 {{ playlist.owner }}
+          <span v-if="playlist.private">• 🔒 Private</span>
+        </p>
+        <div class="action-buttons">
+
+          <button class="play-btn" @click="playPlaylist">
+            ▶ Play
+          </button>
+
+          <button
+              v-if="playlist.owner === username"
+              @click="showAddSongModal = true"
+              class="add-song-btn"
+          >
+            ➕ Add Song
+          </button>
+
+          <button class="like-btn" @click="toggleLike">
+            {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="playlist-hero-right">
+        <div class="summary-card">
+          <h3>Songs</h3>
+          <p>{{ songs.length }}</p>
+        </div>
       </div>
     </div>
 
-    <div class="songs-list" v-if="songs.length > 0">
+    <div class="songs-section">
       <h2>Songs</h2>
-      <SongDisplay
-          v-for="song in songs"
-          :key="song.song_name"
-          :song="song"
-          @click="goToSong(song.song_name)"
-          v-bind="playlist.owner === username ? { onRemove: () => confirmRemove(song.song_name) } : {}"
-      />
-    </div>
-
-    <div v-else>
-      <p>No songs in this playlist yet.</p>
+      <div v-if="songs.length > 0" class="songs-list">
+        <SongDisplay
+            v-for="song in songs"
+            :key="song.song_name"
+            :song="song"
+            @click="goToSong(song.song_name)"
+            v-bind="playlist.owner === username ? { onRemove: () => confirmRemove(song.song_name) } : {}"
+        />
+      </div>
+      <div v-else class="empty-message">No songs in this playlist yet.</div>
     </div>
 
     <teleport to="body">
@@ -60,7 +77,7 @@
     </teleport>
   </div>
 
-  <div v-else>
+  <div v-else class="loading">
     <p>Loading playlist...</p>
   </div>
 </template>
@@ -72,13 +89,11 @@ import { useStore } from 'vuex'
 import {
   getPlaylistByName,
   getPlaylistSongs,
-  deleteSongFromPlaylist
-} from '@/api/playlistAPI'
-import {
+  deleteSongFromPlaylist,
   getLikedPlaylists,
   likePlaylist,
   unlikePlaylist
-} from '@/api/playlistAPI.js'
+} from '@/api/playlistAPI'
 import SongDisplay from '@/Songs/SongDisplay.vue'
 import AddSongToPlaylist from '@/MyPlaylists/AddSongsToPlaylist.vue'
 
@@ -99,6 +114,15 @@ const isLiked = ref(false)
 const goToSong = (name) => {
   const formatted = name.toLowerCase().replace(/\s+/g, '_')
   router.push({ name: 'SongDetail', params: { name: formatted } })
+}
+
+const playPlaylist = () => {
+  const formatted = playlist.value.playlist_name.toLowerCase().replace(/\s+/g, '_')
+  router.push({
+    name: 'PlaylistPlayer',
+    params: { name: formatted },
+    query: { owner: playlist.value.owner.toLowerCase() }
+  })
 }
 
 const refreshSongs = async () => {
@@ -163,7 +187,6 @@ onMounted(async () => {
     playlist.value = data
 
     await checkIfLiked(data.playlist_name)
-
     await refreshSongs()
   } catch (err) {
     console.error('Failed to load playlist:', err)
@@ -174,49 +197,135 @@ onMounted(async () => {
 <style scoped>
 .playlist-page {
   padding: 2rem;
-  color: white;
+  color: #f0f0f0;
   background-color: #111;
+  max-width: 1400px;
+  margin: auto;
 }
 
-.playlist-header {
-  margin-bottom: 2rem;
+.playlist-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 20px;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
-.playlist-header h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
-  color: #2a9d8f;
+.playlist-hero-info {
+  flex: 1;
+  min-width: 260px;
 }
 
-.playlist-header .meta {
-  font-size: 1.1rem;
+.playlist-hero-info h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 0.6rem;
+  color: #22c55e;
+}
+
+.meta {
+  font-size: 1rem;
   color: #ccc;
+  margin-bottom: 1.2rem;
 }
 
 .action-buttons {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
 .add-song-btn {
-  padding: 8px 16px;
-  background-color: #2a9d8f;
-  color: white;
+  background-color: #1ed760;
+  color: #111;
   border: none;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
   border-radius: 20px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add-song-btn:hover {
+  background-color: #1db954;
+}
+
+.play-btn {
+  background-color: #22c55e;
+  color: #111;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
   font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-btn:hover {
+  background-color: #1ea347;
 }
 
 .like-btn {
-  padding: 8px 16px;
-  background-color: #e76f51;
+  background-color: #ef4444;
   color: white;
   border: none;
+  padding: 0.6rem 1.2rem;
   border-radius: 20px;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.like-btn:hover {
+  background-color: #dc2626;
+}
+
+.playlist-hero-right {
+  min-width: 200px;
+}
+
+.summary-card {
+  background-color: #222;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 4px 16px rgba(0, 255, 100, 0.1);
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #aaa;
+}
+
+.summary-card p {
+  margin: 0.4rem 0 0 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #0f0;
+}
+
+.songs-section {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.songs-section h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #22c55e;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #22c55e;
+  padding-left: 0.75rem;
 }
 
 .songs-list {
@@ -225,6 +334,14 @@ onMounted(async () => {
   gap: 1rem;
 }
 
+.empty-message {
+  text-align: center;
+  color: #bbb;
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* Modals */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -241,10 +358,10 @@ onMounted(async () => {
 .modal-content {
   background-color: #222;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 0 10px black;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
   color: white;
 }
 
@@ -273,5 +390,20 @@ onMounted(async () => {
 .cancel-btn {
   background-color: #aaa;
   color: #111;
+}
+
+@media (max-width: 900px) {
+  .playlist-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .playlist-hero-right {
+    width: 100%;
+  }
+
+  .action-buttons {
+    justify-content: center;
+  }
 }
 </style>

@@ -1,49 +1,54 @@
 <template>
   <div class="artist-page" v-if="artist">
-    <h1>{{ artist.artist_name }} <span v-if="artist.celebrity">⭐</span></h1>
-    <img :src="artist.image" alt="Artist Image" class="artist-img" />
-    <p><strong>Genre:</strong> {{ artist.genre }}</p>
-    <p><strong>Followers:</strong> {{ artist.followers.toLocaleString() }}</p>
-    <p>
-      <strong>Profile:</strong>
-      <a :href="artist.profile_url" target="_blank">{{ artist.profile_url }}</a>
-    </p>
-
-    <div class="action-buttons">
-      <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
-      <button class="add-album-btn" @click="showAddAlbumModal = true">➕ Add Album</button>
-      <button class="like-btn" @click="toggleLike">
-        {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
-      </button>
+    <div class="artist-hero">
+      <img :src="artist.image" alt="Artist Image" class="artist-hero-img" />
+      <div class="artist-hero-info">
+        <h1>{{ artist.artist_name }} <span v-if="artist.celebrity">⭐</span></h1>
+        <p><strong>Genre:</strong> {{ artist.genre }}</p>
+        <p><strong>Followers:</strong> {{ artist.followers.toLocaleString() }}</p>
+        <div class="profile-link">
+          <button @click="visitProfile" :disabled="!artist?.profile_url">
+            🔗 Visit Profile
+          </button>
+        </div>
+        <div class="action-buttons">
+          <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
+          <button class="add-album-btn" @click="showAddAlbumModal = true">➕ Add Album</button>
+          <button class="like-btn" @click="toggleLike">
+            {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="media-lists">
-      <div class="songs-section" v-if="songs.length > 0">
+      <div class="songs-section">
         <h2>Songs</h2>
-        <SongDisplay
-            v-for="song in songs"
-            :key="song.song_name"
-            :song="song"
-            @click="goToSong(song.song_name)"
-        />
+        <div v-if="songs.length > 0">
+          <SongDisplay
+              v-for="song in songs"
+              :key="song.song_name"
+              :song="song"
+              @click="goToSong(song.song_name)"
+          />
+        </div>
+        <div v-else class="empty-message">No songs found for this artist.</div>
       </div>
 
-      <div class="albums-section" v-if="albums.length > 0">
+      <div class="albums-section">
         <h2>Albums</h2>
-        <AlbumDisplay
-            v-for="album in albums"
-            :key="album.album_name"
-            :album="album"
-            @click="goToAlbum(album.album_name)"
-        />
+        <div v-if="albums.length > 0">
+          <AlbumDisplay
+              v-for="album in albums"
+              :key="album.album_name"
+              :album="album"
+              @click="goToAlbum(album.album_name)"
+          />
+        </div>
+        <div v-else class="empty-message">No albums found for this artist.</div>
       </div>
     </div>
 
-    <div v-if="songs.length === 0 && albums.length === 0" class="empty-message">
-      <p>No songs or albums found for this artist.</p>
-    </div>
-
-    <!-- MODALS -->
     <teleport to="body">
       <div v-if="showAddSongModal" class="modal-overlay" @click.self="showAddSongModal = false">
         <div class="modal-content">
@@ -71,7 +76,9 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import {
-  getArtistByName, getArtistsAlbums, getArtistsSongs,
+  getArtistByName,
+  getArtistsAlbums,
+  getArtistsSongs,
   getLikedArtists,
   likeArtist,
   unlikeArtist
@@ -116,7 +123,7 @@ const handleAddSongClose = () => {
 const checkIfLiked = async (artistName) => {
   try {
     const response = await getLikedArtists(artistName, token)
-    const data = response.artists // ⬅️ This is what you're after
+    const data = response.artists
     if (Array.isArray(data) && data.length > 0) {
       isLiked.value = true
     } else {
@@ -160,6 +167,14 @@ const loadData = async () => {
   }
 }
 
+const visitProfile = () => {
+  if (artist.value?.profile_url) {
+    window.open(artist.value.profile_url, '_blank')
+  } else {
+    console.warn('No profile URL found for this artist.')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -168,83 +183,132 @@ onMounted(() => {
 <style scoped>
 .artist-page {
   padding: 2rem;
-  color: white;
+  color: #f0f0f0;
   background-color: #111;
-  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.artist-img {
-  width: 100%;
-  max-height: 300px;
+.artist-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 3rem;
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.artist-hero-img {
+  width: 280px;
+  height: 280px;
   object-fit: cover;
-  border-radius: 10px;
-  margin: 1rem 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-h1 {
-  font-size: 2rem;
-  color: #2a9d8f;
-  margin-bottom: 1rem;
+.artist-hero-info {
+  flex: 1;
+  min-width: 250px;
 }
 
-p {
+.artist-hero-info h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
   margin-bottom: 0.8rem;
+  color: #2a9d8f;
+}
+
+.artist-hero-info p {
+  font-size: 1.1rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.4;
+}
+
+.profile-link button {
+  background-color: #4ecdc4;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #111;
+  margin-top: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.profile-link button:hover {
+  background-color: #3fbdb7;
 }
 
 .action-buttons {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
   margin-top: 1.5rem;
 }
 
 .add-song-btn,
-.add-album-btn {
+.add-album-btn,
+.like-btn {
   background-color: #2a9d8f;
   color: white;
-  padding: 10px 15px;
+  padding: 0.6rem 1rem;
   border: none;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-song-btn:hover,
+.add-album-btn:hover {
+  background-color: #1f7f72;
 }
 
 .like-btn {
   background-color: #e76f51;
-  color: white;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
 }
 
+.like-btn:hover {
+  background-color: #d55a3c;
+}
+
+/* Side-by-side layout */
 .media-lists {
   display: flex;
-  flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 2.5rem;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .songs-section,
 .albums-section {
-  flex: 1 1 45%;
-  min-width: 300px;
+  flex: 1;
+  background-color: #1a1a1a;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
 }
 
 .songs-section h2,
 .albums-section h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #22c55e;
   margin-bottom: 1rem;
-  font-size: 1.4rem;
-  color: #2a9d8f;
-}
-
-.songs-section > * ,
-.albums-section > * {
-  margin-bottom: 1rem;
+  border-left: 4px solid #22c55e;
+  padding-left: 0.75rem;
 }
 
 .empty-message {
-  margin-top: 2rem;
+  margin-top: 1rem;
+  text-align: center;
+  font-style: italic;
   color: #bbb;
 }
 
@@ -264,9 +328,25 @@ p {
 .modal-content {
   background-color: #222;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 0 10px black;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+}
+
+@media (max-width: 900px) {
+  .media-lists {
+    flex-direction: column;
+  }
+
+  .songs-section,
+  .albums-section {
+    width: 100%;
+  }
+
+  .artist-hero {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 </style>

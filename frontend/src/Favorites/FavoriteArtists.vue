@@ -24,7 +24,7 @@
         />
       </div>
 
-      <div v-if="showingSuggestions" class="artist-list">
+      <div class="artist-list suggested-column" :class="{ hidden: !showingSuggestions }">
         <h2>🤖 Suggested Artists</h2>
         <ArtistDisplay
             v-for="artist in suggestedArtists"
@@ -77,8 +77,6 @@ const toggleSuggestions = async () => {
   showingSuggestions.value = !showingSuggestions.value
   if (showingSuggestions.value && suggestedArtists.value.length === 0) {
     await fetchSuggestedArtists()
-  } else {
-    await fetchLikedArtists()
   }
 }
 
@@ -87,7 +85,10 @@ const goToArtist = (name) => {
   router.push({ name: 'ArtistDetail', params: { name: formattedName } })
 }
 
-onMounted(fetchLikedArtists)
+onMounted(() => {
+  fetchLikedArtists()
+  fetchSuggestedArtists()
+})
 
 watch(searchQuery, async () => {
   if (!showingSuggestions.value) {
@@ -100,46 +101,100 @@ watch(searchQuery, async () => {
 .artist-search {
   padding: 2rem;
   color: white;
-  background-color: #111;
+  background-color: #121212;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .search-container {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: 1.2rem;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
 }
 
 .search-input {
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: 1px solid #888;
-  background-color: #222;
+  flex: 1;
+  min-width: 280px;
+  padding: 1.2rem 1.5rem;
+  border-radius: 2rem;
+  border: none;
+  background-color: #282828;
   color: white;
-  width: 250px;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #1ed760;
 }
 
 .suggested-btn {
-  padding: 10px 15px;
-  background-color: #2a9d8f;
+  padding: 1.2rem 2rem;
+  border-radius: 2rem;
+  background-color: #1ed760;
   color: white;
   border: none;
-  border-radius: 20px;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
+  font-size: 1.05rem;
+  transition: all 0.2s ease;
+}
+
+.suggested-btn:hover {
+  background-color: #1db954;
+  transform: scale(1.03);
 }
 
 .artist-columns {
   display: flex;
-  gap: 4rem;
+  flex-direction: row;
+  gap: 2.5rem;
   justify-content: space-between;
+  padding: 0 1rem;
+  align-items: flex-start;
 }
 
 .artist-list {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
+  min-width: 300px;
+}
+
+.artist-list h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1ed760;
+  margin-bottom: 0.75rem;
+  border-left: 4px solid #1ed760;
+  padding-left: 0.75rem;
+}
+
+/* Suggested column toggle */
+.suggested-column.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.suggested-column {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 900px) {
+  .artist-columns {
+    flex-direction: column;
+  }
 }
 </style>
-

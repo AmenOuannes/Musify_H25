@@ -1,32 +1,30 @@
 <template>
   <div class="album-page" v-if="album">
-    <div class="album-header">
-      <img :src="album.image" alt="Album cover" class="album-cover" />
-      <div class="album-details">
+    <div class="album-hero">
+      <img :src="album.image" alt="Album Cover" class="album-hero-img" />
+      <div class="album-hero-info">
         <h1>{{ album.album_name }}</h1>
-        <p class="artist">By {{ album.artist_name }}</p>
-        <p class="meta">
-          {{ album.genre }} • {{ formatDate(album.release_date) }}
-        </p>
-        <button @click="showAddSongModal = true" class="add-song-btn">
-          Add Song to Album
-        </button>
+        <p><strong>Artist:</strong> {{ album.artist_name }}</p>
+        <p><strong>Genre:</strong> {{ album.genre }}</p>
+        <p><strong>Release:</strong> {{ formatDate(album.release_date) }}</p>
+        <div class="action-buttons">
+          <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
+        </div>
       </div>
     </div>
 
-    <div class="songs-list" v-if="songs.length > 0">
+    <div class="songs-section">
       <h2>Songs</h2>
-      <SongDisplay
-          v-for="song in songs"
-          :key="song.song_name"
-          :song="song"
-          @click="goToSong(song.song_name)"
-          :onRemove="() => confirmRemove(song.song_name)"
-      />
-    </div>
-
-    <div v-else>
-      <p>No songs in this album yet.</p>
+      <div v-if="songs.length > 0" class="songs-list">
+        <SongDisplay
+            v-for="song in songs"
+            :key="song.song_name"
+            :song="song"
+            @click="goToSong(song.song_name)"
+            :onRemove="() => confirmRemove(song.song_name)"
+        />
+      </div>
+      <div v-else class="empty-message">No songs in this album yet.</div>
     </div>
 
     <teleport to="body">
@@ -70,6 +68,7 @@ import { useStore } from 'vuex'
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
+
 const album = ref(null)
 const songs = ref([])
 const showAddSongModal = ref(false)
@@ -119,7 +118,10 @@ onMounted(async () => {
   try {
     const cleaned = route.params.name.replace(/_/g, ' ').toLowerCase()
     const albumData = await getAlbumByName(cleaned)
-    album.value = albumData
+    album.value = {
+      ...albumData,
+      image: albumData.cover_image || albumData.image || ''
+    }
     await refreshSongs()
   } catch (err) {
     console.error('Failed to load album:', err)
@@ -130,56 +132,101 @@ onMounted(async () => {
 <style scoped>
 .album-page {
   padding: 2rem;
-  color: white;
+  color: #f0f0f0;
   background-color: #111;
+  max-width: 1400px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.album-header {
+.album-hero {
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
-  margin-bottom: 2rem;
   align-items: center;
+  margin-bottom: 3rem;
+  background: #1a1a1a;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
-.album-cover {
-  width: 200px;
-  height: 200px;
+.album-hero-img {
+  width: 240px;
+  height: 240px;
   object-fit: cover;
-  border-radius: 10px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
-.album-details h1 {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+.album-hero-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.album-hero-info h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
   color: #2a9d8f;
 }
 
-.album-details .artist {
-  font-size: 1.2rem;
-  margin-bottom: 0.3rem;
-  color: #ddd;
+.album-hero-info p {
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.5;
 }
 
-.album-details .meta {
-  font-size: 0.95rem;
-  color: #aaa;
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .add-song-btn {
-  padding: 8px 16px;
   background-color: #2a9d8f;
   color: white;
+  padding: 0.6rem 1rem;
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
-  margin-top: 1rem;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-song-btn:hover {
+  background-color: #1f7f72;
+}
+
+.songs-section {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.songs-section h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #22c55e;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #22c55e;
+  padding-left: 0.75rem;
 }
 
 .songs-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+  font-size: 1rem;
 }
 
 .modal-overlay {
@@ -198,10 +245,10 @@ onMounted(async () => {
 .modal-content {
   background-color: #222;
   padding: 2rem;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 0 10px black;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
   color: white;
 }
 
@@ -230,5 +277,21 @@ onMounted(async () => {
 .cancel-btn {
   background-color: #aaa;
   color: #111;
+}
+
+@media (max-width: 900px) {
+  .album-hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .album-hero-img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .songs-section {
+    padding: 1.5rem;
+  }
 }
 </style>

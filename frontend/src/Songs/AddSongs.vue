@@ -58,9 +58,77 @@ const submitSong = async () => {
 
 
 <style scoped>
+.add-song-form {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 16px;
+  color: white;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.1);
+}
+
+h2 {
+  color: #00ff00;
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
 form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
+input {
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #444;
+  background-color: #222;
+  color: white;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: #00ff00;
+  outline: none;
+}
+
+button {
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  background-color: #00ff00;
+  color: black;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #00cc00;
+}
+
+button:disabled {
+  background-color: #006600;
+  cursor: not-allowed;
+}
+
+p {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+p.success {
+  color: #00ff00;
+}
+
+p.error {
+  color: #ff4d4d;
+}
 </style>
+
+

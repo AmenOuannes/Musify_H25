@@ -1,31 +1,35 @@
 <template>
-  <div class="add-song-form">
-    <h2>Add Song to Playlist</h2>
+  <div class="add-song-to-playlist">
+    <h2>Add a Song to {{ playlistName }}</h2>
+
     <form @submit.prevent="submit">
-      <input
-          type="text"
-          v-model="searchQuery"
-          placeholder="Search for a song..."
-          @input="handleInput"
-          @blur="hideDropdown"
-          required
-      />
-      <ul v-if="showDropdown" class="dropdown-list">
-        <li
-            v-for="song in displayedSongs"
-            :key="song.song_name"
-            @mousedown.prevent="selectSong(song.song_name)"
-        >
-          {{ song.song_name }} — {{ song.artist_name }}
-        </li>
-      </ul>
+      <div class="form-group">
+        <label for="search">Search for a song:</label>
+        <input
+            type="text"
+            v-model="searchQuery"
+            placeholder="Search for a song..."
+            @input="handleInput"
+            @blur="hideDropdown"
+            required
+        />
+        <ul v-if="showDropdown" class="dropdown-list">
+          <li
+              v-for="song in displayedSongs"
+              :key="song.song_name"
+              @mousedown.prevent="selectSong(song.song_name)"
+          >
+            {{ song.song_name }} — {{ song.artist_name }}
+          </li>
+        </ul>
+      </div>
 
       <button type="submit" :disabled="loading">
         {{ loading ? 'Adding...' : 'Add Song' }}
       </button>
 
-      <p v-if="success">✅ Song added successfully!</p>
-      <p v-if="error">❌ {{ error }}</p>
+      <p v-if="success" class="success-message">✅ Song added successfully!</p>
+      <p v-if="error" class="error-message">❌ {{ error }}</p>
     </form>
 
     <div v-if="recommendations.length > 0" class="recommendations-section">
@@ -50,7 +54,7 @@ import { getSongs } from '@/api/songAPI.js'
 import { useStore } from 'vuex'
 
 const props = defineProps({
-  playlistName: String,
+  playlistName: String
 })
 const emit = defineEmits(['close', 'song-added'])
 
@@ -131,41 +135,50 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.add-song-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.add-song-to-playlist {
   color: white;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #0f0;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ccc;
 }
 
 input {
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: 1px solid #888;
   width: 100%;
+  padding: 10px;
   background-color: #222;
+  border: 1px solid #555;
+  border-radius: 5px;
   color: white;
-}
-
-button {
-  padding: 10px 15px;
-  border-radius: 20px;
-  background-color: #2a9d8f;
-  color: white;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
 }
 
 .dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   background-color: #333;
   border: 1px solid #444;
-  border-radius: 10px;
+  border-radius: 0 0 10px 10px;
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
   max-height: 200px;
   overflow-y: auto;
+  z-index: 10;
 }
 
 .dropdown-list li {
@@ -177,13 +190,41 @@ button {
   background-color: #2a9d8f55;
 }
 
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #0f0;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.success-message {
+  margin-top: 1rem;
+  color: #3ccf7a;
+  text-align: center;
+}
+
+.error-message {
+  margin-top: 1rem;
+  color: #f87171;
+  text-align: center;
+}
+
 .recommendations-section {
   margin-top: 2rem;
 }
 
 .recommendations-section h3 {
   margin-bottom: 0.5rem;
-  color: #2a9d8f;
+  color: #0f0;
 }
 
 .recommendation-list {

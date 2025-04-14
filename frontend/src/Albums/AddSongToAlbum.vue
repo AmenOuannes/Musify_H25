@@ -94,7 +94,7 @@ onMounted(() => {
 h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #2a9d8f;
+  color: #0f0;
 }
 
 .form-group {
@@ -118,7 +118,7 @@ select {
 button {
   width: 100%;
   padding: 10px;
-  background-color: #2a9d8f;
+  background-color: #0f0;
   color: white;
   border: none;
   border-radius: 5px;
@@ -143,3 +143,4 @@ button:disabled {
   text-align: center;
 }
 </style>
+

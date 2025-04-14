@@ -1,10 +1,18 @@
 <template>
   <button class="album-button" @click="$emit('click')">
+    <img
+        v-if="album.image"
+        :src="album.image"
+        alt="Album Cover"
+        class="album-avatar"
+    />
     <div class="info">
       <span class="name">{{ album.album_name }}</span>
-      <span class="genre">{{ album.genre }}</span>
-      <span class="artist">🎤 {{ album.artist_name }}</span>
-      <span class="date">📅 {{ album.release_date }}</span>
+      <span class="meta-line">
+        <span class="genre">{{ album.genre }}</span>
+        <span class="artist">🎤 {{ album.artist_name }}</span>
+        <span class="date">📅 {{ album.release_date }}</span>
+      </span>
     </div>
   </button>
 </template>
@@ -22,40 +30,72 @@ defineProps({
 .album-button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-color: #1e1e1e;
-  border: 1px solid #444;
-  border-radius: 10px;
-  padding: 1rem 1.5rem;
-  color: white;
+  gap: 1rem;
   width: 100%;
-  text-align: left;
+  background-color: #1e1e1e;
+  color: white;
+  padding: 1rem 1.2rem;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.2s;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 255, 255, 0.05);
 }
 
 .album-button:hover {
-  background-color: #2a9d8f22;
-  transform: scale(1.01);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 188, 156, 0.25);
+  border-color: #0f0;
+}
+
+.album-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 .info {
   display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex-grow: 1;
 }
 
 .name {
-  font-weight: bold;
-  color: #2a9d8f;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #22c55e;
+  background-color: rgba(26, 188, 156, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  width: fit-content;
 }
 
-.genre,
-.artist,
-.date {
+.meta-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.85rem;
   color: #ccc;
-  font-size: 0.9rem;
+  align-items: center;
+}
+
+.genre {
+  font-weight: 500;
+  color: #ccc;
+}
+
+.artist {
+  font-weight: 500;
+  color: #eee;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: #aaa;
 }
 </style>
