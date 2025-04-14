@@ -7,7 +7,9 @@
         <p><strong>Genre:</strong> {{ artist.genre }}</p>
         <p><strong>Followers:</strong> {{ artist.followers.toLocaleString() }}</p>
         <div class="profile-link">
-          <button @click="window.open(artist.profile_url, '_blank')">🔗 Visit Profile</button>
+          <button @click="visitProfile" :disabled="!artist?.profile_url">
+            🔗 Visit Profile
+          </button>
         </div>
         <div class="action-buttons">
           <button class="add-song-btn" @click="showAddSongModal = true">➕ Add Song</button>
@@ -162,6 +164,14 @@ const loadData = async () => {
     albums.value = allAlbumsRes.albums
   } catch (err) {
     console.error('Error loading artist data:', err)
+  }
+}
+
+const visitProfile = () => {
+  if (artist.value?.profile_url) {
+    window.open(artist.value.profile_url, '_blank')
+  } else {
+    console.warn('No profile URL found for this artist.')
   }
 }
 

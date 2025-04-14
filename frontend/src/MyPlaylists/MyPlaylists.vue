@@ -70,7 +70,7 @@ const token = store.getters.currentToken
 
 const fetchPlaylists = async () => {
   try {
-    const data = await getPlaylists(50, searchQuery.value, username)
+    const data = await getPlaylists(50, searchQuery.value,1, username)
     playlists.value = data.playlists || []
   } catch (err) {
     console.error('Error fetching playlists:', err)
