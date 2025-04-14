@@ -1,12 +1,13 @@
 <template>
   <div class="playlist-search">
     <div class="search-container">
-      <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Search your favorite playlists..."
-          class="search-input"
-      />
+      <div class="search-bar">
+        <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search your favorite playlists..."
+        />
+      </div>
     </div>
 
     <div class="playlist-list">
@@ -57,27 +58,43 @@ watch(searchQuery, fetchLikedPlaylists)
 .playlist-search {
   padding: 2rem;
   color: white;
-  background-color: #111;
+  background-color: #121212;
 }
 
 .search-container {
   display: flex;
-  justify-content: flex-start;
-  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
 }
 
-.search-input {
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: 1px solid #888;
-  background-color: #222;
+.search-bar {
+  flex: 1 1 200px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  border-radius: 2rem;
+  border: none;
+  background-color: #282828;
   color: white;
-  width: 250px;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.search-bar input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #1ed760;
 }
 
 .playlist-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
 }
 </style>

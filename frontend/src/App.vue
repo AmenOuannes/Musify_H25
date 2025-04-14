@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <Sidebar />
-    <TopBar />
     <main class="main-content">
       <router-view />
     </main>
@@ -19,21 +18,21 @@ html, body {
   height: 100%;
   background-color: #111;
   color: white;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 #app {
   display: flex;
   min-height: 100vh;
+  width: 100%;
 }
 
 .main-content {
-  margin-left: 120px;
-  margin-top: 60px;
-  flex-grow: 1;
-  padding: 20px;
+  flex: 1;
+  margin-left: 220px; /* ✅ Matches sidebar width */
+  padding: 2rem;
   background-color: #111;
-  color: white;
-  min-height: 100vh;
   box-sizing: border-box;
+  min-height: 100vh;
 }
 </style>

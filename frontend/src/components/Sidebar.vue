@@ -2,26 +2,28 @@
   <aside class="sidebar">
     <h1 class="logo" @click="goHome">Musify</h1>
 
-    <nav>
+    <nav class="menu-section">
       <ul class="menu">
         <li><router-link to="/artists">Artists</router-link></li>
         <li><router-link to="/albums">Albums</router-link></li>
         <li><router-link to="/songs">Songs</router-link></li>
         <li><router-link to="/playlists">Playlists</router-link></li>
+
+        <li class="divider"></li>
+
         <li><router-link to="/myplaylists">My Playlists</router-link></li>
-        <li><router-link to="/favorite/artists">My Favorites artist</router-link></li>
-        <li><router-link to="/favorite/playlists">My Favorites Playlists</router-link></li>
+        <li><router-link to="/favorite/artists">My Favorite Artists</router-link></li>
+        <li><router-link to="/favorite/playlists">My Favorite Playlists</router-link></li>
       </ul>
     </nav>
 
-    <!-- 🔥 Login / Profile + dropdown -->
     <div class="login-wrapper">
       <div v-if="isLoggedIn" class="profile-button">
         <button @click.stop="toggleDropdown">Profile</button>
         <div v-if="isDropdownVisible" class="dropdown-menu" ref="dropdown">
           <ul>
-            <li><router-link to="/settings"> Settings</router-link></li>
-            <li><a href="#" @click.prevent="logout"> Logout</a></li>
+            <li><router-link to="/settings">⚙ Settings</router-link></li>
+            <li><a href="#" @click.prevent="logout">🚪 Logout</a></li>
           </ul>
         </div>
       </div>
@@ -59,7 +61,7 @@ export default {
       }
     },
     goHome() {
-      this.$router.push('/')
+      this.$router.push('/home')
     },
   },
   mounted() {
@@ -73,73 +75,85 @@ export default {
 
 <style scoped>
 .sidebar {
-  width: 100px;
-  background: #222;
+  width: 220px;
   height: 100vh;
   position: fixed;
   left: 0;
   top: 0;
+  background: #1a1a1a;
   display: flex;
   flex-direction: column;
-  padding: 10px;
   justify-content: space-between;
+  padding: 1.5rem 1rem 2rem;
+  box-shadow: 2px 0 10px rgba(0, 255, 0, 0.1);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .logo {
   color: #0f0;
-  font-size: 28px;
-  text-align: left;
-  margin: 10px 0 20px 10px;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
   cursor: pointer;
-  line-height: 40px;
+  text-align: left;
+  padding-left: 5px;
+}
+
+.menu-section {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 2rem;
 }
 
 .menu {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-grow: 1;
 }
 
 .menu li {
-  margin-bottom: 15px;
-  text-align: left;
+  margin-bottom: 12px;
 }
 
 .menu li a {
   text-decoration: none;
-  color: white;
-  padding: 8px;
+  color: #ccc;
+  padding: 10px;
   display: block;
-  font-size: 14px;
-  border-radius: 5px;
+  font-size: 15px;
+  border-radius: 8px;
   transition: background 0.3s ease, color 0.3s;
 }
 
 .menu li a:hover {
-  background: #0f0;
-  color: black;
+  background-color: #0f0;
+  color: #111;
+}
+
+.divider {
+  border-top: 1px solid #333;
+  margin: 1rem 0;
 }
 
 .login-wrapper {
   margin-top: auto;
-  padding: 10px;
   text-align: center;
 }
 
 .login-button,
 .profile-button button {
-  background-color: #0f0;
-  color: black;
-  border: none;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
   width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+  background-color: #0f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
-  text-decoration: none;
 }
 
 .login-button:hover,
@@ -151,13 +165,12 @@ export default {
   position: relative;
 }
 
-/* Dropdown style */
 .dropdown-menu {
   position: absolute;
   bottom: 45px;
   left: 0;
   width: 100%;
-  background-color: #444;
+  background-color: #333;
   border-radius: 5px;
   box-shadow: 0 4px 8px rgba(0, 255, 0, 0.2);
   z-index: 1001;
@@ -165,8 +178,8 @@ export default {
 
 .dropdown-menu ul {
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
 .dropdown-menu ul li a {
@@ -175,10 +188,11 @@ export default {
   color: white;
   font-size: 14px;
   text-decoration: none;
+  transition: background-color 0.2s;
 }
 
 .dropdown-menu ul li a:hover {
   background-color: #0f0;
-  color: black;
+  color: #111;
 }
 </style>

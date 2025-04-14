@@ -50,7 +50,10 @@ const showDropdown = ref(false)
 const fetchAlbums = async () => {
   try {
     const data = await getAlbums(25, searchQuery.value)
-    albums.value = data.albums || []
+    albums.value = (data.albums || []).map(album => ({
+      ...album,
+      image: album.cover_image || '' // ✅ map to what AlbumDisplay expects
+    }))
   } catch (err) {
     console.error('Error fetching albums:', err)
     albums.value = []
@@ -87,63 +90,89 @@ onMounted(() => {
 .album-search {
   padding: 2rem;
   color: white;
-  background-color: #111;
+  background-color: #121212;
 }
 
 .search-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  padding: 0 1rem;
+}
+
+.search-bar {
+  flex: 1 1 200px;
 }
 
 .search-bar input {
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: 1px solid #888;
-  width: 250px;
-  background-color: #222;
+  width: 100%;
+  padding: 1.2rem 1.5rem;
+  border-radius: 2rem;
+  border: none;
+  background-color: #282828;
   color: white;
+  font-size: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+}
+
+.search-bar input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px #1ed760;
+}
+
+.add-album {
+  margin-left: 2rem;
 }
 
 .add-album button {
-  padding: 10px 15px;
-  border-radius: 20px;
-  background-color: #0f0;;
+  padding: 1.2rem 2rem;
+  border-radius: 2rem;
+  background-color: #1ed760;
   color: white;
   border: none;
   font-weight: bold;
   cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.add-album button:hover {
+  background-color: #1db954;
+  transform: scale(1.03);
 }
 
 .album-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
 }
 
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.9);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 100;
+  padding: 2rem;
 }
 
 .modal-content {
-  background-color: #222;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 0 10px black;
+  background-color: #282828;
+  padding: 3rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  max-width: 550px;
+  border: 2px solid #1ed760;
+  box-shadow: 0 6px 25px rgba(30, 215, 96, 0.3);
 }
 </style>
