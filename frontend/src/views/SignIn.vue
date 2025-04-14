@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {onMounted, ref} from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { login, getUser } from '@/api/AuthApi'
@@ -32,6 +32,9 @@ const password = ref('')
 const loading = ref(false)
 const error = ref(null)
 
+onMounted(()=>{
+  handleSignIn()
+})
 const handleSignIn = async () => {
   loading.value = true
   error.value = null

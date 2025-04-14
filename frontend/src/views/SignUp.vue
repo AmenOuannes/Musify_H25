@@ -74,11 +74,7 @@ const handleSignUp = async () => {
       birth_date: birthDate.value
     })
 
-    const { token } = await login(username.value, password.value)
-    const user = await getUser(token)
-
-    await store.dispatch('login', { user, token })
-    router.push('/home')
+    router.push('/singin')
   } catch (err) {
     error.value = err.message
   } finally {
