@@ -19,7 +19,7 @@ export async function postArtists(artist_name, genre, profile_url, image, follow
         return response.data;
     } catch (error) {
         console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -32,8 +32,7 @@ export async function getArtists(limit = 5, research = "") {
 
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -43,15 +42,12 @@ export async function getArtistByName(artist_name) {
         const response = await axios.get(`${URL}/artists/${artist_name}`);
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.error || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
 export async function likeArtist(artist_name, token) {
     try {
-        console.log("Sending artist to like:", token)
-
         const response = await axios.post(
             `${URL}/users/likes/artists/${encodeURIComponent(artist_name)}`,{},
             {
@@ -63,8 +59,7 @@ export async function likeArtist(artist_name, token) {
 
         return response.data
     } catch (error) {
-        console.error("❌ likeArtist error:", error.response?.data?.message || error.message)
-        throw new Error(error.response?.data?.message || 'Unexpected error')
+        throw new Error(error.response?.data?.message  || 'Unexpected error')
     }
 }
 
@@ -75,8 +70,7 @@ export async function unlikeArtist(artist_name, token) {
         });
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.message || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -90,8 +84,7 @@ export async function getLikedArtists(research, token) {
         });
         return response.data;
     } catch (error) {
-        console.error(error);
-        throw new Error(error.response?.data?.message || 'Unexpected error');
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }
 
@@ -100,10 +93,28 @@ export async function getRecommendedArtists(token) {
         const response = await axios.get(`${URL}/users/likes/artists/recommended`, {
             headers: {Authorization: `Bearer ${token}`}
         });
-        console.log(response);
         return response.data;
     } catch (error) {
-        console.error(error);
         throw new Error(error.response?.data?.message || 'Unexpected error');
+    }
+}
+
+export async function getArtistsAlbums(artist_name) {
+    try {
+        artist_name = encodeURIComponent(artist_name);
+        const response = await axios.get(`${URL}/artists/${artist_name}/albums`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
+    }
+}
+
+export async function getArtistsSongs(artist_name) {
+    try {
+        artist_name = encodeURIComponent(artist_name);
+        const response = await axios.get(`${URL}/artists/${artist_name}/songs`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message  || 'Unexpected error');
     }
 }

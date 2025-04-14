@@ -31,7 +31,7 @@
 import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { getSongs } from '@/api/songAPI'
-import { addSongToAlbum } from '@/api/albumAPI' // ✅ CORRECTED
+import { addSongToAlbum } from '@/api/albumAPI'
 
 const store = useStore()
 const token = store.getters.currentToken
@@ -73,7 +73,7 @@ const submit = async () => {
     await addSongToAlbum(props.albumName, selectedSongName.value, token)
     success.value = true
     emit('song-added')
-    setTimeout(() => emit('close'), 1000)
+    setTimeout(() => emit('close'), 100)
   } catch (err) {
     error.value = 'Failed to add song to album.'
   } finally {

@@ -139,11 +139,11 @@ export default {
           ...(editableUserData.birth_date && { birth_date: editableUserData.birth_date })
         }
 
-        await putUser(payload, token.value)
+        const newUser = await putUser(payload, token.value)
 
         const { token: newToken } = await login(
-            payload.username,
-            editableUserData.password || payload.password
+            newUser.user_name,
+            newUser.password
         )
 
         const updatedUser = await getUser(newToken)

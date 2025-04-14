@@ -8,9 +8,9 @@ BEFORE INSERT ON Songs
 FOR EACH ROW
 BEGIN
     -- URL validation
-    IF NEW.url NOT LIKE 'https://%' THEN
+    IF NEW.url NOT LIKE 'https://www.youtube.com%' THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Song URL must start with https://';
+        SET MESSAGE_TEXT = 'Song URL must start with https://www.youtube.com';
     END IF;
 
     -- Release date validation
@@ -25,9 +25,9 @@ BEFORE UPDATE ON Songs
 FOR EACH ROW
 BEGIN
     -- URL validation
-    IF NEW.url NOT LIKE 'https://%' THEN
+    IF NEW.url NOT LIKE 'https://www.youtube.com%' THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Song URL must start with https://';
+        SET MESSAGE_TEXT = 'Song URL must start with https://www.youtube.com';
     END IF;
 
     -- Release date validation
