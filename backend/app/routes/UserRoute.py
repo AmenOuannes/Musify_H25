@@ -156,7 +156,7 @@ serializer = URLSafeTimedSerializer("your-secret-key")  # keep secret in config 
 def sign_up():
     try:
         user_name, first_name, last_name, email, password, birth_date = get_user_credentials()
-
+        print(user_name, first_name, last_name, email, password, birth_date)
         # Generate confirmation token
         token = serializer.dumps({
             "user_name": user_name,

@@ -3,12 +3,20 @@ from flask import request
 
 
 def get_user_credentials():
+    print("➡️ Raw request data:", request.data)
+    print("➡️ Request content type:", request.content_type)
+
+    data = request.get_json(silent=True)
+    if not data:
+        raise ValueError("❌ No JSON body received or malformed JSON!")
+
     user_name = unquote(request.json.get('username'))
     first_name = unquote(request.json.get('first_name'))
     last_name = unquote(request.json.get('last_name'))
     email = unquote(request.json.get('email'))
     password = unquote(request.json.get('password'))
     birth_date = unquote(request.json.get('birth_date'))
+    print("✅ Parsed user:", user_name, first_name, last_name, email, password, birth_date)
 
     return user_name, first_name, last_name, email, password, birth_date
 

@@ -2,6 +2,9 @@
   <div class="auth-container">
     <h2>Sign In</h2>
 
+    <!-- Confirmation Message (shown only on first load) -->
+    <p v-if="confirmationMessage" class="confirmation-message">{{ confirmationMessage }}</p>
+
     <form @submit.prevent="handleSignIn">
       <input v-model="username" type="text" placeholder="Username" required />
       <input v-model="password" type="password" placeholder="Password" required />
@@ -19,22 +22,28 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from 'vue'
+import { ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { login, getUser } from '@/api/AuthApi'
 
 const store = useStore()
 const router = useRouter()
+const route = useRoute()
 
 const username = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref(null)
+const confirmationMessage = ref('')
 
-onMounted(()=>{
-  handleSignIn()
+onMounted(() => {
+  // Show confirmation message if redirected from signup
+  if (route.query.confirmed === 'true') {
+    confirmationMessage.value = 'Account created! Please confirm your email before signing in.'
+  }
 })
+
 const handleSignIn = async () => {
   loading.value = true
   error.value = null
@@ -43,10 +52,17 @@ const handleSignIn = async () => {
     const { token } = await login(username.value, password.value)
     const user = await getUser(token)
 
+    confirmationMessage.value = ''
+
+    if (user.email_confirmed === false) {
+      throw new Error('Please confirm your email before logging in.')
+    }
+
     await store.dispatch('login', { user, token })
     router.push('/home')
   } catch (err) {
-    error.value = 'Invalid username or password.'
+    confirmationMessage.value = ''
+    error.value = err.message || 'Invalid username or password.'
   } finally {
     loading.value = false
   }
@@ -102,6 +118,12 @@ button:hover {
 .error-message {
   color: red;
   margin-top: 10px;
+}
+
+.confirmation-message {
+  color: #0f0;
+  margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .switch-link {

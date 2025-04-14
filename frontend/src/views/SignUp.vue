@@ -74,7 +74,7 @@ const handleSignUp = async () => {
       birth_date: birthDate.value
     })
 
-    router.push('/signin')
+    router.push({ path: '/signin', query: { confirmed: 'true' } })
   } catch (err) {
     error.value = err.message
   } finally {

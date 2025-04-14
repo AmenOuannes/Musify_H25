@@ -28,16 +28,18 @@
         </div>
       </div>
 
-      <router-link v-else to="/signin" class="login-button">Login</router-link>
+      <router-link v-else to="/signin" class="login-button">SignIn</router-link>
     </div>
   </aside>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import SignIn from "@/views/SignIn.vue";
 
 export default {
   name: 'Sidebar',
+  components: {SignIn},
   data() {
     return {
       isDropdownVisible: false,
