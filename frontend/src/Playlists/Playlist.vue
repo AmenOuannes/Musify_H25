@@ -8,6 +8,11 @@
           <span v-if="playlist.private">• 🔒 Private</span>
         </p>
         <div class="action-buttons">
+
+          <button class="play-btn" @click="playPlaylist">
+            ▶ Play
+          </button>
+
           <button
               v-if="playlist.owner === username"
               @click="showAddSongModal = true"
@@ -15,6 +20,7 @@
           >
             ➕ Add Song
           </button>
+
           <button class="like-btn" @click="toggleLike">
             {{ isLiked ? '💔 Unlike' : '❤️ Like' }}
           </button>
@@ -108,6 +114,15 @@ const isLiked = ref(false)
 const goToSong = (name) => {
   const formatted = name.toLowerCase().replace(/\s+/g, '_')
   router.push({ name: 'SongDetail', params: { name: formatted } })
+}
+
+const playPlaylist = () => {
+  const formatted = playlist.value.playlist_name.toLowerCase().replace(/\s+/g, '_')
+  router.push({
+    name: 'PlaylistPlayer',
+    params: { name: formatted },
+    query: { owner: playlist.value.owner.toLowerCase() }
+  })
 }
 
 const refreshSongs = async () => {
@@ -239,6 +254,21 @@ onMounted(async () => {
 
 .add-song-btn:hover {
   background-color: #1db954;
+}
+
+.play-btn {
+  background-color: #22c55e;
+  color: #111;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.play-btn:hover {
+  background-color: #1ea347;
 }
 
 .like-btn {
