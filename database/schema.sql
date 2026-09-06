@@ -1,20 +1,4 @@
-USE Musify;
--- Drop child tables first to avoid foreign key errors
-DROP TABLE IF EXISTS ConsistsOf;
-DROP TABLE IF EXISTS Has;
-DROP TABLE IF EXISTS Creates;
-DROP TABLE IF EXISTS Likes;
-DROP TABLE IF EXISTS LikedPlaylists;
-DROP TABLE IF EXISTS LikedArtists;
-DROP TABLE IF EXISTS Sings;
-
--- Then drop these, which are referenced
-DROP TABLE IF EXISTS Playlists;
-DROP TABLE IF EXISTS Songs;
-DROP TABLE IF EXISTS Albums;
-DROP TABLE IF EXISTS Artists;
-DROP TABLE IF EXISTS Users;
-CREATE TABLE Users (
+CREATE TABLE IF NOT EXISTS Users (
     username VARCHAR(50) PRIMARY KEY,
     last_name VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
@@ -24,7 +8,7 @@ CREATE TABLE Users (
     image TEXT
 );
 
-CREATE TABLE Artists (
+CREATE TABLE IF NOT EXISTS Artists (
     artist_id INT AUTO_INCREMENT PRIMARY KEY,
     artist_name VARCHAR(50) NOT NULL,
     genre VARCHAR(50),
@@ -34,18 +18,15 @@ CREATE TABLE Artists (
     image TEXT
 );
 
--- Table des chansons (Song)
-CREATE TABLE Songs (
+CREATE TABLE IF NOT EXISTS Songs (
     song_id INT AUTO_INCREMENT PRIMARY KEY,
     song_name VARCHAR(50) NOT NULL,
     genre VARCHAR(50),
     release_date DATE,
     url TEXT NOT NULL
-
 );
 
--- Table des albums (Album)
-CREATE TABLE Albums (
+CREATE TABLE IF NOT EXISTS Albums (
     album_id INT AUTO_INCREMENT PRIMARY KEY,
     album_name VARCHAR(50) NOT NULL,
     genre VARCHAR(50),
@@ -53,8 +34,7 @@ CREATE TABLE Albums (
     cover_image TEXT
 );
 
--- Table des playlists (Playlist)
-CREATE TABLE Playlists (
+CREATE TABLE IF NOT EXISTS Playlists (
     playlist_id INT AUTO_INCREMENT PRIMARY KEY,
     playlist_name VARCHAR(50) NOT NULL,
     owner VARCHAR(50) NOT NULL,
@@ -63,8 +43,7 @@ CREATE TABLE Playlists (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table pour gérer les chansons dans une playlist (relation plusieurs à plusieurs)
-CREATE TABLE ConsistsOf (
+CREATE TABLE IF NOT EXISTS ConsistsOf (
     playlist_id INT,
     song_id INT,
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -72,12 +51,10 @@ CREATE TABLE ConsistsOf (
     FOREIGN KEY (playlist_id) REFERENCES Playlists(playlist_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY (song_id) REFERENCES Songs(song_id)
-	ON UPDATE CASCADE ON DELETE CASCADE
-
+    ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table pour gérer les albums contenant des chansons (relation plusieurs à plusieurs)
-CREATE TABLE Has (
+CREATE TABLE IF NOT EXISTS Has (
     song_id INT,
     album_id INT,
     PRIMARY KEY (song_id, album_id),
@@ -87,8 +64,7 @@ CREATE TABLE Has (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table des relations : un artiste peut créer plusieurs albums
-CREATE TABLE Creates (
+CREATE TABLE IF NOT EXISTS Creates (
     artist_id INT,
     album_id INT,
     PRIMARY KEY (artist_id, album_id),
@@ -98,8 +74,7 @@ CREATE TABLE Creates (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table des relations : un artiste peut créer plusieurs albums
-CREATE TABLE Sings (
+CREATE TABLE IF NOT EXISTS Sings (
     artist_id INT,
     song_id INT,
     PRIMARY KEY (artist_id, song_id),
@@ -109,8 +84,7 @@ CREATE TABLE Sings (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table des utilisateurs qui aiment des chansons
-CREATE TABLE Likes (
+CREATE TABLE IF NOT EXISTS Likes (
     user_id VARCHAR(50),
     song_id INT,
     liked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -121,8 +95,7 @@ CREATE TABLE Likes (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table pour gérer les favoris des utilisateurs
-CREATE TABLE LikedPlaylists (
+CREATE TABLE IF NOT EXISTS LikedPlaylists (
     user_id VARCHAR(50),
     playlist_id INT,
     fav_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -133,8 +106,7 @@ CREATE TABLE LikedPlaylists (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
--- Table pour gérer les artistes que l'utilisateur ne veut pas voir
-CREATE TABLE LikedArtists (
+CREATE TABLE IF NOT EXISTS LikedArtists (
     user_id VARCHAR(50),
     artist_id INT,
     PRIMARY KEY (user_id, artist_id),
@@ -143,5 +115,3 @@ CREATE TABLE LikedArtists (
     FOREIGN KEY (artist_id) REFERENCES Artists(artist_id)
     ON UPDATE CASCADE ON DELETE CASCADE
 );
-
-

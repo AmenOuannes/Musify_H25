@@ -5,6 +5,8 @@
     <!-- Confirmation Message (shown only on first load) -->
     <p v-if="confirmationMessage" class="confirmation-message">{{ confirmationMessage }}</p>
 
+    <p class="demo-hint">Demo login: admin / demo123</p>
+
     <form @submit.prevent="handleSignIn">
       <input v-model="username" type="text" placeholder="Username" required />
       <input v-model="password" type="password" placeholder="Password" required />
@@ -123,6 +125,12 @@ button:hover {
 .confirmation-message {
   color: #0f0;
   margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.demo-hint {
+  color: #ccc;
+  margin-bottom: 1rem;
   font-size: 14px;
 }
 
