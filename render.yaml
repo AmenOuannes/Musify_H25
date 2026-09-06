@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: musify-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: gunicorn backend.main:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONPATH
+        value: .
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: EMAIL_CONFIRM_SECRET
+        generateValue: true
+      - key: KEY_PASSWORD
+        value: demo-key-password
+      - key: FRONTEND_ORIGIN
+        sync: false

@@ -1,5 +1,5 @@
 import axios from "axios";
-export const URL = "/api";
+import { URL } from "./api";
 
 export async function likePlaylist(playlist_name, token) {
     try {

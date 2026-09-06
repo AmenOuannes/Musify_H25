@@ -137,11 +137,13 @@ def recommend_artists():
 from itsdangerous import URLSafeTimedSerializer
 from flask import url_for
 
-serializer = URLSafeTimedSerializer("your-secret-key")  # keep secret in config or env
+serializer = URLSafeTimedSerializer(os.getenv("EMAIL_CONFIRM_SECRET", os.getenv("SECRET_KEY", "supersecretkey")))
 
 @user_bp.route('/users', methods=['POST'])
 def sign_up():
     try:
+        if not os.getenv("EMAIL_PASSWORD"):
+            return jsonify({"message": "Signup is disabled in this demo. Use the seeded account."}), 503
         user_name, first_name, last_name, email, password, birth_date = get_user_credentials()
         print(user_name, first_name, last_name, email, password, birth_date)
         # Generate confirmation token

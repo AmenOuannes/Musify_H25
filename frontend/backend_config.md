@@ -1,6 +1,6 @@
 LOG IN:
-usernam: admin
-password: admin123
+username: admin
+password: demo123
 
 EXÉCUTION:
 npm run dev

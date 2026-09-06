@@ -5,7 +5,6 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from .app.config import Config
 
-# Initialize Flask extensions
 db = SQLAlchemy()
 migrate = Migrate()
 jwt = JWTManager()
@@ -14,17 +13,18 @@ jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
 
-    # Load config
     app.config.from_object(Config)
-    app.config["JWT_SECRET_KEY"] = "HS256"
 
-    # Init extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
-    CORS(app)
+    CORS(
+        app,
+        origins=app.config["FRONTEND_ORIGINS"],
+        supports_credentials=True,
+        allow_headers=["Content-Type", "Authorization"],
+    )
 
-    # Register routes (blueprints)
     from .app.routes.ArtistRoute import artist_bp
     from .app.routes.PlaylistRoute import playlist_bp
     from .app.routes.SongRoute import song_bp
@@ -37,9 +37,12 @@ def create_app():
     app.register_blueprint(playlist_bp, url_prefix='/')
     app.register_blueprint(album_bp, url_prefix='/')
 
-    # Test route
     @app.route("/")
     def main():
         return "musify_h25 API"
+
+    @app.route("/health")
+    def health():
+        return {"status": "ok"}, 200
 
     return app
