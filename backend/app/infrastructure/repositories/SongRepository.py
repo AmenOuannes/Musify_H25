@@ -1,6 +1,6 @@
 from sqlalchemy.exc import DBAPIError
 
-from backend.__init__ import db
+from backend.extensions import db
 
 from backend.app.domain.Song import Song
 from backend.app.infrastructure.Queries.SongQueries import *

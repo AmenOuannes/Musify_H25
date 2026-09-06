@@ -3,7 +3,7 @@ from sqlalchemy.exc import DBAPIError
 from backend.app.domain.Artist import Artist
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.User import User
-from backend.__init__ import db
+from backend.extensions import db
 from backend.app.domain.encryption import encrypt_password, KEY
 from backend.app.infrastructure.Queries.ArtistQueries import get_artist_by_name_query
 from backend.app.infrastructure.Queries.PlaylistQueries import get_liked_artists_query, get_playlist_by_name_query

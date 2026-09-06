@@ -1,4 +1,4 @@
-from backend.__init__ import db
+from backend.extensions import db
 from backend.app.domain.Playlist import Playlist
 from backend.app.domain.Song import Song
 from backend.app.infrastructure.Queries.SongQueries import get_singer_query, get_song_by_name_query

@@ -1,6 +1,6 @@
 from sqlalchemy.exc import DBAPIError
 
-from backend.__init__ import db
+from backend.extensions import db
 from backend.app.domain.Album import Album
 from backend.app.domain.Artist import Artist
 from backend.app.domain.Song import Song
